@@ -1,379 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Patient Records System</title>
-
-.net/npm/@supabase/supabase-js@2"></script>
-
+<title>Patient Records System V2</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-
-body{
-font-family:Arial,sans-serif;
-max-width:1200px;
-margin:auto;
-padding:20px;
-background:#f5f5f5;
-}
-
-h1{
-text-align:center;
-}
-
-.top{
-display:flex;
-gap:10px;
-margin-bottom:20px;
-flex-wrap:wrap;
-}
-
-input{
-padding:10px;
-}
-
-button{
-padding:10px 15px;
-cursor:pointer;
-border:none;
-border-radius:5px;
-background:#0d6efd;
-color:white;
-}
-
-.card{
-background:white;
-padding:15px;
-margin-top:10px;
-border-radius:10px;
-box-shadow:0 0 5px rgba(0,0,0,.15);
-}
-
-.deleteBtn{
-background:#dc3545;
-}
-
-.editBtn{
-background:#ffc107;
-color:black;
-}
-
-.modal{
-display:none;
-position:fixed;
-left:0;
-top:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.4);
-}
-
-.modal-content{
-background:white;
-padding:20px;
-width:650px;
-max-width:95%;
-margin:30px auto;
-border-radius:10px;
-}
-
-textarea,
-select{
-width:100%;
-padding:10px;
-margin-top:5px;
-margin-bottom:10px;
-}
-
+body{font-family:Arial,sans-serif;max-width:1200px;margin:auto;padding:20px;background:#f5f5f5;}
+h1{text-align:center;}
+.top{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+input,textarea{padding:10px;}
+button{padding:10px 15px;border:none;border-radius:5px;cursor:pointer;}
+.card{background:#fff;padding:15px;margin-top:10px;border-radius:10px;box-shadow:0 0 5px rgba(0,0,0,.15);}
+.deleteBtn{background:#dc3545;color:white;}
+.editBtn{background:#ffc107;color:black;}
+.modal{display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.4);}
+.modal-content{background:white;padding:20px;width:650px;max-width:95%;margin:30px auto;border-radius:10px;}
 </style>
-
 </head>
-
 <body>
-
 <h1>Patient Records System</h1>
-
 <div class="top">
-
-<input
-id="searchText"
-placeholder="Search File No or Name">
-
-<button onclick="searchPatients()">
-Search
-</button>
-
-<button onclick="openAddForm()">
-Add Patient
-</button>
-
-<button onclick="loadPatients()">
-Refresh
-</button>
-
+<input id="searchText" placeholder="Search File No or Name">
+<button onclick="searchPatients()">Search</button>
+<button onclick="openAddForm()">Add Patient</button>
+<button onclick="loadPatients()">Refresh</button>
 </div>
-
 <div id="results"></div>
-
 <div id="modal" class="modal">
-
 <div class="modal-content">
-
 <h2>Patient Entry</h2>
-
-<input id="fileNo" placeholder="File No">
-
-<input id="patientName" placeholder="Patient Name">
-
-<input id="diagnosis" placeholder="Diagnosis">
-
-<textarea
-id="remarks"
-placeholder="Remarks"></textarea>
-
-<input
-id="lastUpdate"
-placeholder="Last Update">
-
-<button onclick="savePatient()">
-Save
-</button>
-
-<button onclick="closeForm()">
-Cancel
-</button>
-
+<input id="fileNo" placeholder="File No"><br><br>
+<input id="patientName" placeholder="Patient Name"><br><br>
+<input id="diagnosis" placeholder="Diagnosis"><br><br>
+<textarea id="remarks" placeholder="Remarks"></textarea><br>
+<input id="lastUpdate" placeholder="Last Update"><br><br>
+<button onclick="savePatient()">Save</button>
+<button onclick="closeForm()">Cancel</button>
 </div>
-
 </div>
-
 <script>
-
-const SUPABASE_URL =
-"https://frgoxmfoucaqhevfmfbb.supabase.co";
-
-const SUPABASE_KEY =
-"ضع_الـ_ANON_KEY_هنا";
-
-const client =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
-
-let editId = null;
-
-function openAddForm(){
-
-editId = null;
-
-document.getElementById("fileNo").value = "";
-document.getElementById("patientName").value = "";
-document.getElementById("diagnosis").value = "";
-document.getElementById("remarks").value = "";
-
-document.getElementById("lastUpdate").value =
-new Date().toLocaleDateString();
-
-document.getElementById("modal").style.display =
-"block";
-
-}
-
-function closeForm(){
-
-document.getElementById("modal").style.display =
-"none";
-
-}
-
-async function loadPatients(){
-
-const result =
-await client
-.from("patients")
-.select("*")
-.order("id",{ascending:false});
-
-showPatients(result.data || []);
-
-}
-
-async function searchPatients(){
-
-const search =
-document.getElementById("searchText")
-.value
-.toLowerCase();
-
-const result =
-await client
-.from("patients")
-.select("*");
-
-const filtered =
-(result.data || []).filter(function(p){
-
-return (
-String(p.file_no || "")
-.toLowerCase()
-.includes(search)
-
-||
-
-String(p.name || "")
-.toLowerCase()
-.includes(search)
-
-);
-
-});
-
-showPatients(filtered);
-
-}
-
-async function savePatient(){
-
-const data = {
-
-file_no:
-document.getElementById("fileNo").value,
-
-name:
-document.getElementById("patientName").value,
-
-diagnosis:
-document.getElementById("diagnosis").value,
-
-remarks:
-document.getElementById("remarks").value,
-
-last_update:
-document.getElementById("lastUpdate").value
-
-};
-
-if(editId){
-
-await client
-.from("patients")
-.update(data)
-.eq("id",editId);
-
-}else{
-
-await client
-.from("patients")
-.insert([data]);
-
-}
-
-closeForm();
-
+const SUPABASE_URL='https://frgoxmfoucaqhevfmfbb.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88';
+const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let editId=null;
+function openAddForm(){editId=null;document.getElementById('modal').style.display='block';}
+function closeForm(){document.getElementById('modal').style.display='none';}
+async function loadPatients(){const r=await client.from('patients').select('*').order('id',{ascending:false});showPatients(r.data||[])}
+async function searchPatients(){const s=document.getElementById('searchText').value.toLowerCase();const r=await client.from('patients').select('*');showPatients((r.data||[]).filter(p=>String(p.file_no||'').toLowerCase().includes(s)||String(p.name||'').toLowerCase().includes(s)));}
+async function savePatient(){const data={file_no:fileNo.value,name:patientName.value,diagnosis:diagnosis.value,remarks:remarks.value,last_update:lastUpdate.value};if(editId){await client.from('patients').update(data).eq('id',editId);}else{await client.from('patients').insert([data]);}closeForm();loadPatients();}
+function editPatient(p){editId=p.id;fileNo.value=p.file_no||'';patientName.value=p.name||'';diagnosis.value=p.diagnosis||'';remarks.value=p.remarks||'';lastUpdate.value=p.last_update||'';openAddForm();}
+async function deletePatient(id){if(confirm('Delete this patient?')){await client.from('patients').delete().eq('id',id);loadPatients();}}
+function showPatients(list){let html='';list.forEach(p=>{html+=`<div class='card'><b>${p.file_no||''}</b><br>${p.name||''}<br>${p.diagnosis||''}<br>${p.remarks||''}<br>${p.last_update||''}<br><button class='editBtn' onclick='editPatient(${JSON.stringify(p)})'>Edit</button> <button class='deleteBtn' onclick='deletePatient(${p.id})'>Delete</button></div>`});results.innerHTML=html;}
 loadPatients();
-
-}
-
-function editPatient(patient){
-
-editId = patient.id;
-
-document.getElementById("fileNo").value =
-patient.file_no || "";
-
-document.getElementById("patientName").value =
-patient.name || "";
-
-document.getElementById("diagnosis").value =
-patient.diagnosis || "";
-
-document.getElementById("remarks").value =
-patient.remarks || "";
-
-document.getElementById("lastUpdate").value =
-patient.last_update || "";
-
-document.getElementById("modal").style.display =
-"block";
-
-}
-
-async function deletePatient(id){
-
-if(!confirm("Delete this patient?")){
-return;
-}
-
-await client
-.from("patients")
-.delete()
-.eq("id",id);
-
-loadPatients();
-
-}
-
-function showPatients(list){
-
-let html = "";
-
-list.forEach(function(p){
-
-html += `
-
-<div class="card">
-
-<div>
-📁 <b>${p.file_no || ""}</b>
-</div>
-
-<div>
-👤 ${p.name || ""}
-</div>
-
-<div>
-🩺 ${p.diagnosis || ""}
-</div>
-
-<div>
-📝 ${p.remarks || ""}
-</div>
-
-<div>
-📅 ${p.last_update || ""}
-</div>
-
-<br>
-
-<button
-class="editBtn"
-onclick='editPatient(${JSON.stringify(p)})'>
-Edit
-</button>
-
-<button
-class="deleteBtn"
-onclick='deletePatient(${p.id})'>
-Delete
-</button>
-
-</div>
-
-`;
-
-});
-
-document.getElementById("results").innerHTML =
-html;
-
-}
-
-loadPatients();
-
 </script>
-
 </body>
 </html>
