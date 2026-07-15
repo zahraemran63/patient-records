@@ -1,4 +1,4 @@
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -242,6 +242,10 @@ OK
 </div>
 
 <script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+const client = window.supabase.createClient(
+  'https://frgoxmfoucaqhevfmfbb.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88
   let adminMode = false;
 let limitedAdmin = false;
 
@@ -728,18 +732,6 @@ async function addDiagnosis(){
 }
 
 
-google.script.run
-.withSuccessHandler(function(){
-
-alert("Diagnosis Added Successfully");
-
-loadDiagnoses();
-loadDiagnosisButtons();
-
-})
-.addDiagnosis(name);
-
-}
 
 function openForm(){
 document.getElementById("modal").style.display="block";
