@@ -1,58 +1,1110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Patient Records System V2</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Patient Records System</title>
+
 <style>
-body{font-family:Arial,sans-serif;max-width:1200px;margin:auto;padding:20px;background:#f5f5f5;}
-h1{text-align:center;}
-.top{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-input,textarea{padding:10px;}
-button{padding:10px 15px;border:none;border-radius:5px;cursor:pointer;}
-.card{background:#fff;padding:15px;margin-top:10px;border-radius:10px;box-shadow:0 0 5px rgba(0,0,0,.15);}
-.deleteBtn{background:#dc3545;color:white;}
-.editBtn{background:#ffc107;color:black;}
-.modal{display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.4);}
-.modal-content{background:white;padding:20px;width:650px;max-width:95%;margin:30px auto;border-radius:10px;}
+.diagBtn.active{
+background:#198754 !important;
+color:white;
+border:3px solid #0f5132;
+font-weight:bold;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+margin:20px;
+}
+
+h1{
+text-align:center;
+}
+
+.top{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+input,select,textarea{
+width:100%;
+padding:10px;
+box-sizing:border-box;
+margin-top:5px;
+margin-bottom:10px;
+}
+
+button{
+padding:10px 15px;
+cursor:pointer;
+border:none;
+border-radius:5px;
+}
+
+.addBtn{
+background:green;
+color:white;
+}
+
+.searchBtn{
+background:#0d6efd;
+color:white;
+}
+
+.diagBtn{
+background:#0d6efd;
+color:white;
+margin:3px;
+}
+
+.card{
+background:white;
+padding:15px;
+margin-top:10px;
+border-radius:10px;
+box-shadow:0 0 5px rgba(0,0,0,0.15);
+}
+
+.modal{
+display:none;
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+}
+
+.modal-content{
+background:white;
+width:700px;
+max-width:95%;
+margin:30px auto;
+padding:20px;
+border-radius:10px;
+}
+
 </style>
+
 </head>
+
 <body>
-<h1>Patient Records System</h1>
+  <div id="welcomeBox" style="
+position:absolute;
+top:15px;
+left:15px;
+background:#198754;
+color:white;
+padding:8px 15px;
+border-radius:20px;
+font-weight:bold;
+display:none;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+">
+Welcome
+</div>
+
+<div id="loginBox" style="
+position:absolute;
+top:15px;
+right:15px;
+display:flex;
+gap:5px;
+">
+
+
+<input
+type="password"
+id="passwordInput"
+placeholder="Password"
+style="width:120px;">
+
+<button
+id="loginBtn"
+style="background:#0d6efd;color:white;"
+onclick="login()">
+Login
+</button>
+
+<button
+id="logoutBtn"
+style="background:#dc3545;color:white;display:none;"
+onclick="logout()">
+Logout
+</button>
+
+</div>
+
+<div style="text-align:center;padding:15px;">
+
+<div style="
+font-size:80px;
+margin-bottom:10px;
+">
+🩺❤️
+</div>
+
+<h1 style="
+color:#0d6efd;
+margin:0;
+">
+Patient Records System
+</h1>
+
+</div>
+
 <div class="top">
-<input id="searchText" placeholder="Search File No or Name">
-<button onclick="searchPatients()">Search</button>
-<button onclick="openAddForm()">Add Patient</button>
-<button onclick="loadPatients()">Refresh</button>
+
+<input
+id="searchFile"
+placeholder="Search File No or Name"
+style="display:none;">
+
+<button
+id="searchBtn"
+class="searchBtn"
+style="display:none;"
+onclick="searchPatient()">
+Search
+</button>
+
+<button
+id="addPatientBtn"
+class="addBtn"
+onclick="addPatient()">
++ Add Patient
+</button>
+
+<button
+id="addDiagnosisBtn"
+class="addBtn"
+onclick="addDiagnosis()">
+
++ Add Diagnosis
+
+</button>
+<button
+id="deleteDiagnosisBtn"
+class="addBtn"
+style="background:#dc3545;"
+onclick="deleteDiagnosisPrompt()">
+
+- Delete Diagnosis
+
+</button>
+
+<button
+id="exportBtn"
+class="addBtn"
+style="background:#198754;display:none;"
+onclick="exportExcel()">
+📊 Export Excel
+</button>
+
 </div>
+
+<div id="diagnosisButtons"></div>
 <div id="results"></div>
-<div id="modal" class="modal">
+
+<div class="modal" id="modal">
+
 <div class="modal-content">
-<h2>Patient Entry</h2>
-<input id="fileNo" placeholder="File No"><br><br>
-<input id="patientName" placeholder="Patient Name"><br><br>
-<input id="diagnosis" placeholder="Diagnosis"><br><br>
-<textarea id="remarks" placeholder="Remarks"></textarea><br>
-<input id="lastUpdate" placeholder="Last Update"><br><br>
-<button onclick="savePatient()">Save</button>
+
+<h2>File Entry</h2>
+
+<label>File No</label>
+<input id="fileNo">
+
+<label>Name</label>
+<input id="name">
+
+<label>Diagnosis</label>
+
+<select id="diagnosis"></select>
+
+<label>Remarks</label>
+<textarea id="remarks"></textarea>
+
+<label>Last Update</label>
+<input id="lastUpdate">
+
+<button id="saveBtn" onclick="savePatient()">
+OK
+</button>
 <button onclick="closeForm()">Cancel</button>
+
 </div>
+
 </div>
+
 <script>
-const SUPABASE_URL='https://frgoxmfoucaqhevfmfbb.supabase.co';
-const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88';
-const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let editId=null;
-function openAddForm(){editId=null;document.getElementById('modal').style.display='block';}
-function closeForm(){document.getElementById('modal').style.display='none';}
-async function loadPatients(){const r=await client.from('patients').select('*').order('id',{ascending:false});showPatients(r.data||[])}
-async function searchPatients(){const s=document.getElementById('searchText').value.toLowerCase();const r=await client.from('patients').select('*');showPatients((r.data||[]).filter(p=>String(p.file_no||'').toLowerCase().includes(s)||String(p.name||'').toLowerCase().includes(s)));}
-async function savePatient(){const data={file_no:fileNo.value,name:patientName.value,diagnosis:diagnosis.value,remarks:remarks.value,last_update:lastUpdate.value};if(editId){await client.from('patients').update(data).eq('id',editId);}else{await client.from('patients').insert([data]);}closeForm();loadPatients();}
-function editPatient(p){editId=p.id;fileNo.value=p.file_no||'';patientName.value=p.name||'';diagnosis.value=p.diagnosis||'';remarks.value=p.remarks||'';lastUpdate.value=p.last_update||'';openAddForm();}
-async function deletePatient(id){if(confirm('Delete this patient?')){await client.from('patients').delete().eq('id',id);loadPatients();}}
-function showPatients(list){let html='';list.forEach(p=>{html+=`<div class='card'><b>${p.file_no||''}</b><br>${p.name||''}<br>${p.diagnosis||''}<br>${p.remarks||''}<br>${p.last_update||''}<br><button class='editBtn' onclick='editPatient(${JSON.stringify(p)})'>Edit</button> <button class='deleteBtn' onclick='deletePatient(${p.id})'>Delete</button></div>`});results.innerHTML=html;}
-loadPatients();
+  let adminMode = false;
+let limitedAdmin = false;
+
+const ADMIN_PASSWORD = "3136";
+const LIMITED_PASSWORD = "000";
+function login(){
+
+  let pass =
+    document.getElementById("passwordInput").value;
+
+  if(pass === ADMIN_PASSWORD){
+
+    adminMode = true;
+    limitedAdmin = false;
+
+    document.getElementById("welcomeBox").innerHTML =
+"🛡️ Welcome Zahy";
+
+  }else if(pass === LIMITED_PASSWORD){
+
+    adminMode = true;
+    limitedAdmin = true;
+
+    document.getElementById("welcomeBox").innerHTML =
+"👋 Welcome Admin";
+
+  }else{
+
+    adminMode = false;
+    limitedAdmin = false;
+
+    alert("View Only Mode");
+
+  }
+
+if(pass === ADMIN_PASSWORD){
+
+  document.getElementById("welcomeBox").innerHTML =
+  "🛡️ Welcome Zahy";
+
+}else if(pass === LIMITED_PASSWORD){
+
+  document.getElementById("welcomeBox").innerHTML =
+  "👋 Welcome Admin";
+
+}
+
+if(adminMode){
+
+  document.getElementById("welcomeBox").style.display =
+  "block";
+
+  document.getElementById("passwordInput").style.display =
+  "none";
+
+  document.getElementById("loginBtn").style.display =
+  "none";
+
+  document.getElementById("logoutBtn").style.display =
+  "";
+
+}
+
+applyPermissions();
+loadDiagnosisButtons();
+loadAll();
+const welcomeBox =
+document.getElementById("welcomeBox");
+
+if(pass === ADMIN_PASSWORD){
+
+  welcomeBox.innerHTML =
+    "🛡️ Welcome Zahy";
+
+  welcomeBox.style.display = "block";
+
+}else if(pass === LIMITED_PASSWORD){
+
+  welcomeBox.innerHTML =
+    "👋 Welcome Admin";
+
+  welcomeBox.style.display = "block";
+
+}else{
+
+  welcomeBox.style.display = "none";
+
+}
+
+
+}
+function logout(){
+
+  adminMode = false;
+  limitedAdmin = false;
+
+  document.getElementById("passwordInput").value = "";
+
+  document.getElementById("passwordInput").style.display = "";
+  document.getElementById("loginBtn").style.display = "";
+  document.getElementById("logoutBtn").style.display = "none";
+
+  document.getElementById("welcomeBox").style.display = "none";
+
+applyPermissions();
+
+document.getElementById("results").innerHTML =
+  "<h3 style='text-align:center'>🔒 Please Login</h3>";
+
+document.getElementById("diagnosisButtons").innerHTML = "";
+
+
+}
+function applyPermissions(){
+
+  document.getElementById("searchFile").style.display =
+    adminMode ? "" : "none";
+
+  document.getElementById("searchBtn").style.display =
+    adminMode ? "" : "none";
+
+  document.getElementById("addPatientBtn").style.display =
+    adminMode ? "" : "none";
+
+  document.getElementById("addDiagnosisBtn").style.display =
+    adminMode ? "" : "none";
+
+  document.getElementById("deleteDiagnosisBtn").style.display =
+    adminMode ? "" : "none";
+
+  document.getElementById("exportBtn").style.display =
+    adminMode ? "" : "none";
+
+}
+
+function exportExcel(){
+
+  const btn = document.getElementById("exportBtn");
+
+  if(btn.disabled) return;
+
+  btn.disabled = true;
+  btn.innerHTML = "Exporting...";
+
+  google.script.run
+    .withSuccessHandler(function(url){
+
+      window.open(url, "_blank");
+
+      btn.innerHTML = "✅ Exported";
+
+    })
+    .withFailureHandler(function(err){
+
+      alert("Export Failed: " + err);
+
+      btn.disabled = false;
+      btn.innerHTML = "📊 Export Excel";
+
+    })
+    .exportExcel();
+
+}
+function addPatient(){
+
+  editRow = "";
+
+  document.getElementById("fileNo").value = "";
+  document.getElementById("name").value = "";
+  document.getElementById("diagnosis").selectedIndex = 0;
+  document.getElementById("remarks").value = "";
+  document.getElementById("lastUpdate").value =
+new Date().toLocaleDateString("en-GB");
+
+  openForm();
+}
+
+  function deleteDiagnosisPrompt(){
+
+google.script.run
+.withSuccessHandler(function(list){
+
+let options = "";
+
+list.forEach(function(d){
+
+options += "<option>"+d+"</option>";
+
+});
+
+let html = `
+<div id="deleteDiagBox"
+style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+">
+
+<div style="
+background:white;
+padding:20px;
+border-radius:10px;
+width:350px;
+">
+
+<h3>Select Diagnosis</h3>
+
+<select id="diagToDelete"
+style="width:100%;padding:10px;">
+
+${options}
+
+</select>
+
+<br><br>
+
+<button
+style="background:#dc3545;color:white;"
+onclick="confirmDeleteDiagnosis()">
+
+Delete
+
+</button>
+
+<button
+onclick="closeDeleteDiagnosis()">
+
+Cancel
+
+</button>
+
+</div>
+
+</div>
+`;
+
+document.body.insertAdjacentHTML(
+"beforeend",
+html
+);
+
+})
+.getDiagnoses();
+
+}
+function closeDeleteDiagnosis(){
+
+let box =
+document.getElementById("deleteDiagBox");
+
+if(box){
+box.remove();
+}
+
+}
+function confirmDeleteDiagnosis(){
+
+let name = document.getElementById(
+"diagToDelete"
+).value;
+
+if(!confirm(
+"Delete Diagnosis: " + name + " ?"
+)){
+return;
+}
+
+google.script.run
+.withSuccessHandler(function(){
+
+alert("Diagnosis Deleted");
+
+closeDeleteDiagnosis();
+
+loadDiagnoses();
+loadDiagnosisButtons();
+
+})
+.deleteDiagnosis(name);
+
+}
+
+  function deletePatient(row){
+
+if(!confirm("Delete this patient?")){
+return;
+}
+
+google.script.run
+.withSuccessHandler(function(){
+
+alert("Patient Deleted");
+
+
+
+loadAll();
+loadDiagnoses();
+loadDiagnosisButtons();
+
+})
+.deletePatient(row);
+
+}
+
+  function loadDiagnosisButtons(){
+
+  if(!adminMode){
+    return;
+  }
+
+  google.script.run
+  .withSuccessHandler(function(diagnoses){
+
+google.script.run
+.withSuccessHandler(function(counts){
+
+google.script.run
+.withSuccessHandler(function(followUpCount){
+
+google.script.run
+.withSuccessHandler(function(importantCount){
+
+  let html = "";
+
+      let totalPatients = 0;
+
+      Object.keys(counts).forEach(function(key){
+
+  if(key !== "Explain"){
+    totalPatients += counts[key];
+  }
+
+});
+html += `
+  <button class="diagBtn"
+    onclick="setActiveDiagnosis(this);loadAll()">
+    All Patients (${totalPatients})
+  </button>
+  
+`;
+html += `
+<button class="diagBtn"
+onclick="setActiveDiagnosis(this);loadFollowUpPatients()"
+style="background:#fd7e14;">
+🔔 Follow Up (${followUpCount})
+</button>
+`;
+
+html += `
+<button class="diagBtn"
+onclick="setActiveDiagnosis(this);loadImportantPatients()"
+style="background:#ffc107;color:black;">
+⭐ Important (${importantCount})
+</button>
+`;
+
+
+      diagnoses.forEach(function(d){
+
+  if(d === "Explain" && limitedAdmin){
+  return;
+}
+
+if(d === "Explain" && !adminMode){
+  return;
+}
+
+  let count = counts[d] || 0;
+
+  let btnColor = "#0d6efd"; // default blue
+
+  if(d === "Explain"){
+    btnColor = "#ffc107"; // yellow
+  }
+
+
+html += `
+  <div style="display:inline-block;margin:3px;">
+    <button class="diagBtn"
+      style="background:${btnColor};color:${d === 'Explain' ? '#000' : '#fff'};"
+      onclick="setActiveDiagnosis(this);filterDiagnosis('${d}')">
+      ${d} (${count})
+    </button>
+  </div>
+`;
+
+      });
+
+
+
+      document.getElementById("diagnosisButtons").innerHTML = html;
+
+      setTimeout(function(){
+
+        const buttons =
+          document.querySelectorAll(".diagBtn");
+
+        if(buttons.length > 0){
+  buttons[0]
+    .classList.add("active");
+}
+
+      }, 100);
+})
+.getImportantCount();
+
+})
+.getFollowUpCount();
+
+
+})
+.getDiagnosisCounts();
+  })
+  .getDiagnoses();
+
+}
+
+
+
+
+  function loadDiagnoses(){
+
+google.script.run
+.withSuccessHandler(function(list){
+
+let html = "";
+
+list.forEach(function(d){
+
+html += "<option>"+d+"</option>";
+
+});
+
+document.getElementById("diagnosis").innerHTML = html;
+
+})
+.getDiagnoses();
+
+}
+
+function addDiagnosis(){
+
+let name = prompt("Enter Diagnosis Name");
+
+if(!name){
+return;
+}
+
+
+
+google.script.run
+.withSuccessHandler(function(){
+
+alert("Diagnosis Added Successfully");
+
+loadDiagnoses();
+loadDiagnosisButtons();
+
+})
+.addDiagnosis(name);
+
+}
+
+function openForm(){
+document.getElementById("modal").style.display="block";
+}
+
+function closeForm(){
+document.getElementById("modal").style.display="none";
+}
+
+let isSaving = false;
+let editRow = "";
+function loadImportantPatients(){
+
+  google.script.run
+  .withSuccessHandler(showPatients)
+  .getImportantPatients();
+
+}
+
+function editPatient(
+  row,
+  fileNo,
+  name,
+  diagnosis,
+  remarks,
+  lastUpdate
+){
+
+  editRow = row;
+
+  document.getElementById("fileNo").value = fileNo;
+  document.getElementById("name").value = name;
+  document.getElementById("diagnosis").value = diagnosis;
+  document.getElementById("remarks").value = remarks;
+  document.getElementById("lastUpdate").value =
+new Date().toLocaleDateString("en-GB");
+
+  document.getElementById("modal").style.display = "block";
+}
+
+
+function savePatient(){
+
+if(isSaving){
+return;
+}
+
+isSaving = true;
+
+var btn = document.getElementById("saveBtn");
+
+btn.disabled = true;
+btn.innerHTML = "Saving...";
+
+
+
+let data = {
+
+  row: editRow,
+
+  fileNo:
+  document.getElementById("fileNo").value,
+
+  name:
+  document.getElementById("name").value,
+
+  diagnosis:
+  document.getElementById("diagnosis").value,
+
+  remarks:
+  document.getElementById("remarks").value,
+
+  lastUpdate:
+  document.getElementById("lastUpdate").value
+
+};
+
+google.script.run
+.withSuccessHandler(function(){
+
+isSaving = false;
+
+btn.disabled = false;
+btn.innerHTML = "OK";
+editRow = "";
+
+document.getElementById("fileNo").value = "";
+document.getElementById("name").value = "";
+document.getElementById("remarks").value = "";
+alert("Saved Successfully");
+
+closeForm();
+
+
+loadAll();
+loadDiagnoses();
+loadDiagnosisButtons();
+
+})
+.savePatient(data);
+
+}
+
+let isSearching = false;
+
+function searchPatient(){
+
+  if(!adminMode){
+    return;
+  }
+
+if(isSearching){
+return;
+}
+
+isSearching = true;
+
+var btn = document.getElementById("searchBtn");
+
+btn.disabled = true;
+btn.innerHTML = "Searching...";
+
+let fileNo =
+document.getElementById("searchFile").value;
+
+google.script.run
+.withSuccessHandler(function(list){
+
+isSearching = false;
+
+btn.disabled = false;
+btn.innerHTML = "Search";
+
+if(!list || list.length === 0){
+
+document.getElementById("results").innerHTML =
+"<h3>No Record Found</h3>";
+
+return;
+
+}
+
+showPatients(list);
+
+})
+.searchPatient(fileNo);
+
+}
+
+
+function loadAll(){
+
+  if(!adminMode){
+    return;
+  }
+
+  google.script.run
+    .withSuccessHandler(function(list){
+      showPatients(list);
+    })
+    .withFailureHandler(function(err){
+      alert("ERROR: " + err.message);
+    })
+    .getAllPatients();
+}
+function updateCounts(list){
+
+let counts = {};
+
+list.forEach(function(p){
+
+counts[p.diagnosis] =
+(counts[p.diagnosis] || 0) + 1;
+
+});
+
+if(document.getElementById("c_HYPERTENSION"))
+document.getElementById("c_HYPERTENSION").innerHTML =
+counts["HYPERTENSION"] || 0;
+
+if(document.getElementById("c_CKD"))
+document.getElementById("c_CKD").innerHTML =
+counts["CKD"] || 0;
+
+if(document.getElementById("c_AKI"))
+document.getElementById("c_AKI").innerHTML =
+counts["AKI"] || 0;
+
+if(document.getElementById("c_DM"))
+document.getElementById("c_DM").innerHTML =
+counts["DM"] || 0;
+
+}
+
+function setActiveDiagnosis(button){
+
+  document.querySelectorAll(".diagBtn").forEach(function(btn){
+    btn.classList.remove("active");
+  });
+
+  button.classList.add("active");
+
+}
+
+function filterDiagnosis(diagnosis){
+
+google.script.run
+.withSuccessHandler(showPatients)
+.getPatientsByDiagnosis(diagnosis);
+
+}
+function loadFollowUpPatients(){
+
+  google.script.run
+  .withSuccessHandler(showPatients)
+  .getFollowUpPatients();
+
+}
+function toggleImportantPatient(btn,row){
+
+  btn.style.pointerEvents = "none";
+
+  google.script.run
+  .withSuccessHandler(function(){
+
+    loadAll();
+    loadDiagnosisButtons();
+
+  })
+  .toggleImportant(row);
+
+}
+function toggleFollowUpPatient(btn,row){
+
+  btn.style.pointerEvents = "none";
+
+  google.script.run
+  .withSuccessHandler(function(){
+
+    loadAll();
+    loadDiagnosisButtons();
+
+  })
+  .toggleFollowUp(row);
+
+}
+
+
+function showPatients(list){
+
+  let html = "";
+
+  list.forEach(function(p){
+
+    html += `
+      <div class="card"
+style="
+${
+p.important === 'YES' && p.followUp === 'YES'
+? 'background:#fff8e1;border-left:6px solid #ff9800;'
+
+: p.important === 'YES'
+? 'background:#fffbea;border-left:6px solid #f4c542;'
+
+: p.followUp === 'YES'
+? 'background:#fff4e8;border-left:6px solid #e67e22;'
+
+: ''
+}
+">
+${
+adminMode ?
+
+`
+<div style="
+float:right;
+display:flex;
+gap:10px;
+">
+
+<span
+style="
+font-size:30px;
+
+position:relative;
+top:-5px;
+vertical-align:middle;
+cursor:pointer;
+color:${p.important === 'YES' ? '#ffc107' : '#bdbdbd'};
+"
+onclick="toggleImportantPatient(this,${p.row})">
+★
+</span>
+
+<span
+style="
+font-size:24px;
+vertical-align:middle;
+cursor:pointer;
+color:${p.followUp === 'YES' ? '#fd7e14' : '#bdbdbd'};
+"
+onclick="toggleFollowUpPatient(this,${p.row})">
+🔔︎
+</span>
+
+</div>
+
+`
+
+: ''
+}
+
+
+
+        
+<div style="margin:8px 0;">
+  📁 <b>File No:</b> ${p.fileNo}
+
+  ${p.important === "YES"
+    ? '<span style="color:#b8860b;font-weight:600;margin-left:10px;">⭐ Important Case</span>'
+    : ''}
+
+  ${p.followUp === "YES"
+    ? '<span style="color:#e67e22;font-weight:600;margin-left:10px;">🔔 Follow-Up Needed</span>'
+    : ''}
+</div>
+
+<div style="margin:8px 0;">
+  👤 <b>Name:</b> ${p.name}
+</div>
+
+<div style="margin:8px 0;">
+  <span style="font-weight:bold;">🩺 Diagnosis:</span>
+  <span>${p.diagnosis}</span>
+</div>
+
+<div style="margin:8px 0;">
+  📝 <b>Remarks:</b> ${p.remarks || ''}
+</div>
+
+<div style="margin:8px 0;">
+  📅 <b>Last Update:</b> ${p.lastUpdate || ''}
+</div>
+
+${
+  (adminMode && !limitedAdmin) ?
+
+  `
+
+
+  <button
+    style="background:#ffc107;margin-right:5px;"
+    onclick="editPatient(
+
+              '${p.row}',
+              '${String(p.fileNo).replace(/'/g,"\\'")}',
+              '${String(p.name).replace(/'/g,"\\'")}',
+              '${String(p.diagnosis).replace(/'/g,"\\'")}',
+              '${String(p.remarks || '').replace(/'/g,"\\'")}',
+              '${String(p.lastUpdate || '').replace(/'/g,"\\'")}'
+            )">
+            Edit
+          </button>
+
+          <button
+            style="background:#dc3545;color:white;"
+            onclick="deletePatient(${p.row})">
+            Delete
+          </button>`
+
+          : ''
+        }
+
+      </div>
+    `;
+
+  });
+
+  document.getElementById("results").innerHTML = html;
+
+}
+
+
+window.onload = function(){
+
+  applyPermissions();
+
+  document.getElementById("results").innerHTML =
+    "<h3 style='text-align:center'>🔒 Please Login</h3>";
+
+  document.getElementById("diagnosisButtons").innerHTML = "";
+
+};
+
 </script>
+
 </body>
 </html>
