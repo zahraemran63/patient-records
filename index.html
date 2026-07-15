@@ -1,38 +1,59 @@
-<!-- ضع هذا بعد شريط الأزرار العلوي -->
-
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;">
-
-<button class="diagBtn active">
-All Patients (0)
-</button>
-
-<button
-class="diagBtn"
-style="background:#fd7e14;">
-🔔 Follow Up (0)
-</button>
-
-<button
-class="diagBtn"
-style="background:#ffc107;color:black;">
-⭐ Important (0)
-</button>
-
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patient Records System</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#f5f5f5;margin:20px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;}
+.welcome{background:#198754;color:#fff;padding:12px 20px;border-radius:30px;font-weight:bold;}
+.logout{background:#dc3545;color:#fff;border:none;padding:12px 20px;border-radius:8px;}
+.title{text-align:center;}
+.title .icon{font-size:90px;}
+.title h1{color:#0d6efd;font-size:55px;margin:10px 0;}
+.search-row{display:flex;gap:10px;margin-top:25px;}
+.search-row input{flex:1;padding:15px;font-size:18px;}
+button{cursor:pointer;border:none;border-radius:8px;}
+.btn-blue{background:#0d6efd;color:white;padding:15px 25px;}
+.btn-green{background:green;color:white;padding:15px 25px;}
+.filters{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px;}
+.filters button{padding:14px 20px;font-size:18px;}
+.all{background:#198754;color:white;font-weight:bold;}
+.follow{background:#fd7e14;color:white;}
+.important{background:#ffc107;color:black;}
+#results{margin-top:30px;}
+</style>
+</head>
+<body>
+<div class="topbar">
+<div class="welcome">🛡️ Welcome Zahy</div>
+<button class="logout">Logout</button>
 </div>
+<div class="title">
+<div class="icon">🩺❤️</div>
+<h1>Patient Records System</h1>
+</div>
+<div class="search-row">
+<input id="searchFile" placeholder="Search File No or Name">
+<button class="btn-blue">Search</button>
+<button class="btn-green">+ Add Patient</button>
+</div>
+<div class="filters">
+<button class="all">All Patients (0)</button>
+<button class="follow">🔔 Follow Up (0)</button>
+<button class="important">⭐ Important (0)</button>
+</div>
+<div id="results"></div>
 
-<!-- أضف هذا إلى قسم CSS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-.diagBtn{
-background:#0d6efd;
-color:white;
-padding:12px 18px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-size:18px;
-}
-
-.diagBtn.active{
-background:#198754;
-font-weight:bold;
-}
+<script>
+const client = window.supabase.createClient(
+  'https://frgoxmfoucaqhevfmfbb.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88'
+);
+</script>
+</body>
+</html>
