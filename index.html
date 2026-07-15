@@ -1,39 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Patient Records System</title>
 
-https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body{
-    font-family:Arial;
-    max-width:1000px;
-    margin:auto;
-    padding:20px;
+font-family:Arial;
+max-width:1000px;
+margin:auto;
+padding:20px;
 }
-
 input{
-    padding:10px;
-    margin:5px;
+padding:10px;
+margin:5px;
 }
-
 button{
-    padding:10px;
+padding:10px;
 }
-
 .card{
-    border:1px solid #ddd;
-    padding:10px;
-    margin-top:10px;
-    border-radius:8px;
+border:1px solid #ddd;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
 }
 </style>
-
 </head>
+
 <body>
 
 <h1>Patient Records System</h1>
@@ -53,7 +49,7 @@ const supabaseUrl =
 'https://frgoxmfoucaqhevfmfbb.supabase.co';
 
 const supabaseKey =
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88;
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88';
 
 const supabase =
 window.supabase.createClient(
@@ -63,50 +59,54 @@ supabaseKey
 
 async function loadPatients(){
 
-    const {data,error} =
-    await supabase
-    .from('patients')
-    .select('*')
-    .order('id');
+const { data } = await supabase
+.from('patients')
+.select('*')
+.order('id');
 
-    let html*'';
+let html = '';
 
-    data.forEach(p=>{
+(data || []).forEach(p => {
 
-      * html += `
-        <div class="car*">
-            <b>${p.file_no || '*}</b>
-            <br>
-           *${p.name || ''}
-        </div>
-   *    `;
+html += `
+<div class="card">
+<b>${p.file_no || ''}</b>
+<br>
+${p.name || ''}
+</div>
+`;
 
-    });
+});
 
-    document.getE*ementById(
-    'patients'
-    ).in*erHTML = html;
+document.getElementById('patients').innerHTML =
+html;
+
 }
 
-async function s*vePatient(){
+async function savePatient(){
 
-    await supabase
- *  .from('patients')
-    .insert([
-      {
-        file_no:
-        document.getElementById('fileNo').val*e,
+await supabase
+.from('patients')
+.insert([
+{
+file_no:
+document.getElementById('fileNo').value,
 
-        name:
-        document*getElementById('name').value
-     *}
-    ]);
+name:
+document.getElementById('name').value
+}
+]);
 
-    loadPatients();
+document.getElementById('fileNo').value = '';
+document.getElementById('name').value = '';
+
+loadPatients();
+
 }
 
-*oadPatients();
+loadPatients();
 
 </script>
 
-</body>*</html>
+</body>
+</html>
