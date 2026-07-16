@@ -10,9 +10,10 @@
 
 <style>
     .diagnosis-btn.active{
-    background:#198754 !important;
-    border:3px solid #146c43;
-    box-shadow:0 0 10px rgba(25,135,84,.4);
+    background:#ffc107 !important;
+    color:black !important;
+    border:3px solid #e0a800;
+    box-shadow:0 0 10px rgba(255,193,7,.4);
 }
 #diagnosesContainer{
     display:flex;
@@ -386,6 +387,7 @@ function closeDeleteDiagnosisModal(){
     ).style.display = 'none';
 }
 loadDiagnoses();
+    showAllPatients();
 async function openPatientModal(){
 
     const today =
@@ -479,12 +481,14 @@ async function loadDiagnoses(){
 
     container.innerHTML = `
     <button
-    class="diagnosis-btn"
-    style="background:#198754;"
-    onclick="
+
+class="diagnosis-btn"
+onclick="
 showAllPatients();
 setActiveDiagnosis(this);
 ">
+All Patients (${allCount || 0})
+</button>
     All Patients (${allCount || 0})
     </button>
     `;
