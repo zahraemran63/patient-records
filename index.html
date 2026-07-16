@@ -493,9 +493,7 @@ All Patients (${allCount || 0})
 
     for(const item of data){
 
-        if(item.name === 'Explain'){
-            continue;
-        }
+        
 
         const { count } = await client
             .from('patients')
