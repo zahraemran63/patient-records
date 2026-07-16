@@ -187,9 +187,45 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 
 <style>
+.diagnosis-tag{
 
+    display:inline-block;
+
+    padding:4px 12px;
+
+    margin-left:6px;
+
+    border-radius:20px;
+
+    background:#e8f2ff;
+
+    color:#0d6efd;
+
+    font-weight:bold;
+}
     
+.card-header{
 
+    margin:-24px -24px 20px -24px;
+
+    padding:14px 20px;
+
+    background:
+    linear-gradient(
+        90deg,
+        #0d6efd,
+        #198754
+    );
+
+    color:white;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    border-radius:
+        16px 16px 0 0;
+}
 
 .diagnosis-btn.active{
     background:#198754 !important;
@@ -308,83 +344,46 @@ button{
 }
 
 .card{
-    position:relative;
-
-    background:white;
-
-    padding:24px 24px 24px 30px;
-
-    margin-top:18px;
-
-    border-radius:20px;
-
     overflow:hidden;
-
-    border:none;
-
-    box-shadow:
-        0 10px 25px rgba(0,0,0,.08);
-
-    transition:.25s;
+position:relative;
+    background:
+    linear-gradient(
+        135deg,
+        #ffffff,
+        #f8fbff
+    );
+    padding:24px;
+    margin-top:15px;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    line-height:1.6;
+    border-left:5px solid #0d6efd;
 }
-
-.card:hover{
-    transform:translateY(-3px);
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.12);
-}
-    .card::before{
+    .card::after{
 
     content:'';
 
     position:absolute;
 
     top:0;
-    left:0;
+    right:-150px;
 
-    width:8px;
+    width:250px;
     height:100%;
 
     background:
     linear-gradient(
-        180deg,
-        #0d6efd,
-        #198754
+        90deg,
+        transparent,
+        rgba(255,255,255,.5),
+        transparent
     );
-}
-    .card::after{
 
-    content:'✚';
-
-    position:absolute;
-
-    top:10px;
-    right:20px;
-
-    font-size:90px;
-
-    font-weight:bold;
-
-    color:rgba(13,110,253,.05);
+    transform:skewX(-25deg);
 
     pointer-events:none;
 }
-    .card::after{
 
-    content:'🩺';
-
-    position:absolute;
-
-    right:15px;
-    bottom:10px;
-
-    font-size:70px;
-
-    opacity:.05;
-
-    pointer-events:none;
-}
 #loginOverlay{
     position:fixed;
     inset:0;
@@ -1623,6 +1622,10 @@ async function showAllPatients(){
        container.innerHTML += `
 <div class="card">
 
+<div class="card-header">
+🩺 Patient Record
+</div>
+
     <div style="margin-bottom:14px;font-size:18px;">
         📁 <b>File No:</b> ${patient.file_no}
     </div>
@@ -1632,7 +1635,11 @@ async function showAllPatients(){
     </div>
 
     <div style="margin-bottom:12px;font-size:17px;">
-        🩺 <b>Diagnosis:</b> ${patient.diagnosis}
+        🩺 <b>Diagnosis:</b>
+
+<span class="diagnosis-tag">
+${patient.diagnosis}
+</span>
     </div>
 
     <div style="margin-bottom:12px;font-size:17px;">
@@ -1698,6 +1705,10 @@ async function showPatients(diagnosis){
 
  container.innerHTML += `
 <div class="card">
+
+<div class="card-header">
+🩺 Patient Record
+</div>
 
 <div style="font-size:22px;">
 📁 <b>File No:</b> ${patient.file_no}
