@@ -726,11 +726,16 @@ onchange="importExcel(event)">
         <br><br>
 
         <label>Name:</label>
-        <input id="patientName">
+<input id="patientName">
 
-        <br><br>
+<br><br>
 
-        <label>Diagnosis:</label>
+<label>Mobile:</label>
+<input id="phone">
+
+<br><br>
+
+<label>Diagnosis:</label>
         <select
         id="patientDiagnosis"
         style="width:100%;padding:12px;">
@@ -1031,43 +1036,49 @@ async function exportExcel() {
                 `Export Date: ${new Date().toLocaleDateString()}`;
 
             sheet.columns = [
-                {
-                    header:'S.No',
-                    key:'no',
-                    width:10
-                },
-                {
-                    header:'MRN',
-                    key:'mrn',
-                    width:20
-                },
-                {
-                    header:'Name',
-                    key:'name',
-                    width:35
-                },
-                {
-                    header:'Remark',
-                    key:'remark',
-                    width:50
-                },
-                {
-                    header:'Last Update',
-                    key:'update',
-                    width:20
-                }
-            ];
+{
+header:'S.No',
+key:'no',
+width:10
+},
+{
+header:'MRN',
+key:'mrn',
+width:20
+},
+{
+header:'Name',
+key:'name',
+width:35
+},
+{
+header:'Mobile',
+key:'phone',
+width:25
+},
+{
+header:'Remark',
+key:'remark',
+width:50
+},
+{
+header:'Last Update',
+key:'update',
+width:20
+}
+];
 
             const headerRow =
                 sheet.getRow(6);
 
             headerRow.values = [
-                'S.No',
-                'MRN',
-                'Name',
-                'Remark',
-                'Last Update'
-            ];
+'S.No',
+'MRN',
+'Name',
+'Mobile',
+'Remark',
+'Last Update'
+];
 
             headerRow.eachCell(cell => {
 
@@ -1157,9 +1168,9 @@ async function exportExcel() {
             ];
 
             sheet.autoFilter = {
-                from:'A6',
-                to:'E6'
-            };
+from:'A6',
+to:'F6'
+};
         }
 
         const buffer =
@@ -1277,11 +1288,14 @@ async function exportExcel() {
                 const name =
                     row[2] || '';
 
-                const remarks =
-                    row[3] || '';
+                const phone =
+row[3] || '';
 
-                const lastUpdate =
-                    row[4] || null;
+const remarks =
+row[4] || '';
+
+const lastUpdate =
+row[5] || null;
 
                 if(
                     !fileNo &&
@@ -1294,22 +1308,13 @@ async function exportExcel() {
 
                 await client
                     .from('patients')
-                    .insert({
-
-                        file_no:
-                            String(fileNo),
-
-                        name:
-                            String(name),
-
-                        diagnosis:
-                            diagnosisName,
-
-                        remarks:
-                            String(remarks),
-
-                        last_update:
-                            lastUpdate || null
+.insert({
+file_no:String(fileNo),
+name:String(name),
+phone:String(phone),
+diagnosis:diagnosisName,
+remarks:String(remarks),
+last_update:lastUpdate || null
 
                     });
 
@@ -1346,11 +1351,14 @@ async function exportExcel() {
     const fileNo =
         document.getElementById('fileNo').value.trim();
 
-    const name =
-        document.getElementById('patientName').value.trim();
+const name =
+document.getElementById('patientName').value.trim();
 
-    const diagnosis =
-        document.getElementById('patientDiagnosis').value;
+const phone =
+document.getElementById('phone').value.trim();
+
+const diagnosis =
+document.getElementById('patientDiagnosis').value;
 
     const remarks =
         document.getElementById('remarks').value;
@@ -1382,13 +1390,14 @@ async function exportExcel() {
 
     const { error } = await client
         .from('patients')
-        .insert({
-            file_no:fileNo,
-            name:name,
-            diagnosis:diagnosis,
-            remarks:remarks,
-            last_update:lastUpdate
-        });
+.insert({
+    file_no:fileNo,
+    name:name,
+    phone:phone,
+    diagnosis:diagnosis,
+    remarks:remarks,
+    last_update:lastUpdate
+});
 
     if(error){
 
@@ -1401,6 +1410,7 @@ alert('Patient Added Successfully');
 
 document.getElementById('fileNo').value='';
 document.getElementById('patientName').value='';
+document.getElementById('phone').value='';
 document.getElementById('remarks').value='';
 
 await loadDiagnoses();
@@ -1738,6 +1748,10 @@ font-size:16px;
 </div>
 
 <div style="margin-bottom:12px;font-size:17px;">
+📞 <b>Mobile:</b> ${patient.phone || '-'}
+</div>
+
+<div style="margin-bottom:12px;font-size:17px;">
 🩺 <b>Diagnosis:</b>
 <span class="diagnosis-badge">
 ${patient.diagnosis}
@@ -1846,9 +1860,13 @@ font-size:16px;
 ` : ''}
 
 </div>
-    <div style="margin-bottom:12px;font-size:17px;">
-        👤 <b>Name:</b> ${patient.name}
-    </div>
+<div style="margin-bottom:12px;font-size:17px;">
+👤 <b>Name:</b> ${patient.name}
+</div>
+
+<div style="margin-bottom:12px;font-size:17px;">
+📞 <b>Mobile:</b> ${patient.phone || '-'}
+</div>
 
 <div style="margin-bottom:12px;font-size:17px;">
         🩺 <b>Diagnosis:</b>
@@ -1960,9 +1978,13 @@ font-size:16px;
 </span>
 ` : ''}
 </div>
-    <div style="margin-bottom:12px;font-size:17px;">
-        👤 <b>Name:</b> ${patient.name}
-    </div>
+<div style="margin-bottom:12px;font-size:17px;">
+👤 <b>Name:</b> ${patient.name}
+</div>
+
+<div style="margin-bottom:12px;font-size:17px;">
+📞 <b>Mobile:</b> ${patient.phone || '-'}
+</div>
 
     <div style="margin-bottom:12px;font-size:17px;">
         🩺 <b>Diagnosis:</b>
@@ -2048,8 +2070,11 @@ setTimeout(() => {
     document.getElementById('editFileNo').value =
         data.file_no;
 
-    document.getElementById('editPatientName').value =
-        data.name;
+document.getElementById('editPatientName').value =
+data.name;
+
+document.getElementById('editPhone').value =
+data.phone || '';
 
     document.getElementById('editRemarks').value =
         data.remarks || '';
@@ -2107,10 +2132,15 @@ async function updatePatient(){
                     'editFileNo'
                 ).value,
 
-            name:
-                document.getElementById(
-                    'editPatientName'
-                ).value,
+name:
+document.getElementById(
+'editPatientName'
+).value,
+
+phone:
+document.getElementById(
+'editPhone'
+).value,
 
             diagnosis:
                 document.getElementById(
@@ -2157,12 +2187,17 @@ await showAllPatients();
 
         <br><br>
 
-        <label>Name:</label>
-        <input id="editPatientName">
+<label>Name:</label>
+<input id="editPatientName">
 
-        <br><br>
+<br><br>
 
-        <label>Diagnosis:</label>
+<label>Mobile:</label>
+<input id="editPhone">
+
+<br><br>
+
+<label>Diagnosis:</label>
        <select
 id="editDiagnosis"
 style="width:100%;padding:12px;">
