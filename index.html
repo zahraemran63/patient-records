@@ -208,15 +208,8 @@ console.log('ExcelJS =', typeof ExcelJS);
 }
     
 .followup-icon{
-    position:absolute;
-    top:18px;
-    right:20px;
-
-    font-size:28px;
     cursor:pointer;
-
     color:#c7c7c7;
-
     transition:.2s;
 }
 
@@ -1758,34 +1751,6 @@ ${patient.diagnosis}
 <div style="margin-bottom:18px;font-size:17px;">
 📅 <b>Last Update:</b> ${patient.last_update || '-'}
 </div>
-<div style="
-display:flex;
-gap:12px;
-border-top:1px solid #eee;
-padding-top:15px;
-">
-
-<button
-onclick="openEditPatient(${patient.id})"
-style="
-background:#ffc107;
-color:#000;
-min-width:90px;
-font-weight:600;">
-Edit
-</button>
-
-<button
-onclick="deletePatient(${patient.id})"
-style="
-background:#dc3545;
-color:#fff;
-min-width:90px;
-font-weight:600;">
-Delete
-</button>
-
-</div>
 </div>
 `;
     });
@@ -1818,8 +1783,21 @@ Number(a.needs_followup)
        container.innerHTML += `
 <div class="card ${patient.needs_followup ? 'followup-card' : ''}">
 
+<div style="
+position:absolute;
+top:15px;
+right:15px;
+display:flex;
+gap:8px;
+align-items:center;
+">
+
 <span
 class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+style="
+position:static;
+font-size:24px;
+"
 onclick="
 toggleFollowUp(
 ${patient.id},
@@ -1828,14 +1806,30 @@ ${patient.needs_followup}
 )">
 🔔
 </span>
-<div style="
-display:flex;
-align-items:center;
-gap:15px;
-margin-bottom:14px;
-font-size:18px;
-">
 
+<button
+onclick="openEditPatient(${patient.id})"
+style="
+background:#ffc107;
+color:black;
+padding:6px 10px;
+font-size:12px;
+">
+✏️
+</button>
+
+<button
+onclick="deletePatient(${patient.id})"
+style="
+background:#dc3545;
+color:white;
+padding:6px 10px;
+font-size:12px;
+">
+🗑️
+</button>
+
+</div>
 <span>
 📁 <b>File No:</b> ${patient.file_no}
 </span>
@@ -1870,35 +1864,7 @@ font-size:16px;
         📅 <b>Last Update:</b> ${patient.last_update || '-'}
     </div>
 
-    <div style="
-        display:flex;
-        gap:12px;
-        border-top:1px solid #eee;
-        padding-top:15px;
-    ">
-
-        <button
-        onclick="openEditPatient(${patient.id})"
-        style="
-        background:#ffc107;
-        color:#000;
-        min-width:90px;
-        font-weight:600;">
-        Edit
-        </button>
-
-        <button
-        onclick="deletePatient(${patient.id})"
-        style="
-        background:#dc3545;
-        color:#fff;
-        min-width:90px;
-        font-weight:600;">
-        Delete
-        </button>
-
-    </div>
-
+   
 </div>
 `;
     });
@@ -1931,8 +1897,21 @@ Number(a.needs_followup)
  container.innerHTML += `
 
 <div class="card ${patient.needs_followup ? 'followup-card' : ''}">
+<div style="
+position:absolute;
+top:15px;
+right:15px;
+display:flex;
+gap:8px;
+align-items:center;
+">
+
 <span
 class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+style="
+position:static;
+font-size:24px;
+"
 onclick="
 toggleFollowUp(
 ${patient.id},
@@ -1941,14 +1920,30 @@ ${patient.needs_followup}
 )">
 🔔
 </span>
-<div style="
-display:flex;
-align-items:center;
-gap:15px;
-margin-bottom:14px;
-font-size:18px;
-">
 
+<button
+onclick="openEditPatient(${patient.id})"
+style="
+background:#ffc107;
+color:black;
+padding:6px 10px;
+font-size:12px;
+">
+✏️
+</button>
+
+<button
+onclick="deletePatient(${patient.id})"
+style="
+background:#dc3545;
+color:white;
+padding:6px 10px;
+font-size:12px;
+">
+🗑️
+</button>
+
+</div>
 <span>
 📁 <b>File No:</b> ${patient.file_no}
 </span>
@@ -1979,35 +1974,6 @@ font-size:16px;
 
     <div style="margin-bottom:18px;font-size:17px;">
         📅 <b>Last Update:</b> ${patient.last_update || '-'}
-    </div>
-
-    <div style="
-        display:flex;
-        gap:12px;
-        border-top:1px solid #eee;
-        padding-top:15px;
-    ">
-
-        <button
-        onclick="openEditPatient(${patient.id})"
-        style="
-        background:#ffc107;
-        color:#000;
-        min-width:90px;
-        font-weight:600;">
-        Edit
-        </button>
-
-        <button
-        onclick="deletePatient(${patient.id})"
-        style="
-        background:#dc3545;
-        color:#fff;
-        min-width:90px;
-        font-weight:600;">
-        Delete
-        </button>
-
     </div>
 
 </div>
