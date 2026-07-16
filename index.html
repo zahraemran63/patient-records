@@ -1716,7 +1716,7 @@ closeDiagnosisModal();
 
 loadDiagnoses();
 }
-    async function showFollowUpPatients(){
+async function showFollowUpPatients(){
 
     const { data, error } = await client
         .from('patients')
@@ -1732,121 +1732,89 @@ loadDiagnoses();
         document.getElementById('patientsContainer');
 
     container.innerHTML = '';
-        data.forEach(patient => {
 
-    container.innerHTML += `
-   container.innerHTML += `
+    data.forEach(patient => {
 
+        container.innerHTML += `
+<div class="card followup-card">
 
-        📁 <b>File No:</b> ${patient.file_no}
+    <div class="card-top">
 
-        ${
-        patient.needs_followup
-        ? `
-        <span style="
-        margin-left:15px;
-        color:#7c3aed;
-        font-weight:700;
-        ">
-        🔔 Follow‑Up Needed
-        </span>
-        `
-        : ''
-        }
+        <div>
+            📁 <b>File No:</b> ${patient.file_no}
+        </div>
 
-    </div>
+        <div style="display:flex;gap:12px;align-items:center;">
 
-    <div style="
-    display:flex;
-    gap:12px;
-    align-items:center;
-    ">
+            <span
+            onclick="deletePatient(${patient.id})"
+            style="cursor:pointer;font-size:24px;">
+            🗑️
+            </span>
 
-        <span
-        onclick="deletePatient(${patient.id})"
-        style="
-        cursor:pointer;
-        font-size:24px;
-        ">
-        🗑️
-        </span>
+            <span
+            onclick="openEditPatient(${patient.id})"
+            style="cursor:pointer;font-size:24px;">
+            ✏️
+            </span>
 
-        <span
-        onclick="openEditPatient(${patient.id})"
-        style="
-        cursor:pointer;
-        font-size:24px;
-        ">
-        ✏️
-        </span>
+            <span
+            class="followup-icon active"
+            style="font-size:24px;"
+            onclick="
+            toggleFollowUp(
+            ${patient.id},
+            '${patient.diagnosis}',
+            ${patient.needs_followup}
+            )">
+            🔔
+            </span>
 
-        <span
-        class="followup-icon ${patient.needs_followup ? 'active' : ''}"
-        style="
-        position:static;
-        font-size:24px;
-        "
-        onclick="
-        toggleFollowUp(
-        ${patient.id},
-        '${patient.diagnosis}',
-        ${patient.needs_followup}
-        )">
-        🔔
-        </span>
+        </div>
 
     </div>
 
-</div>
+    <div class="card-row">
 
-<div class="card-row">
+        <div>
+            👤 <b>Name:</b><br>
+            ${patient.name}
+        </div>
 
-    <div>
-        👤 <b>Name:</b><br>
-        ${patient.name}
+        <div>
+            📞 <b>Mobile:</b><br>
+            ${patient.phone || '-'}
+        </div>
+
+        <div>
+            🩺 <b>Diagnosis:</b><br>
+            <span class="diagnosis-badge">
+                ${patient.diagnosis}
+            </span>
+        </div>
+
     </div>
 
-    <div>
-        📞 <b>Mobile:</b><br>
-        ${patient.phone || '-'}
+    <hr>
+
+    <div class="card-row">
+
+        <div>
+            📝 <b>Remarks:</b><br>
+            ${patient.remarks || '-'}
+        </div>
+
+        <div>
+            📅 <b>Last Update:</b><br>
+            ${patient.last_update || '-'}
+        </div>
+
     </div>
-
-    <div>
-        🩺 <b>Diagnosis:</b><br>
-
-        <span class="diagnosis-badge">
-            ${patient.diagnosis}
-        </span>
-    </div>
-
-</div>
-
-<hr style="
-border:none;
-border-top:1px solid #ececec;
-margin:12px 0;
-">
-
-<div class="card-row">
-
-    <div>
-        📝 <b>Remarks:</b><br>
-        ${patient.remarks || '-'}
-    </div>
-
-    <div>
-        📅 <b>Last Update:</b><br>
-        ${patient.last_update || '-'}
-    </div>
-
-</div>
 
 </div>
 `;
-    `;
-});
+    });
 
-   
 }
     async function showAllPatients(){
 
@@ -1859,12 +1827,14 @@ margin:12px 0;
         alert(error.message);
         return;
     }
-data.sort(
-(a,b)=>
-Number(b.needs_followup)
--
-Number(a.needs_followup)
-);
+
+    data.sort(
+        (a,b) =>
+        Number(b.needs_followup)
+        -
+        Number(a.needs_followup)
+    );
+
     const container =
         document.getElementById('patientsContainer');
 
@@ -1872,260 +1842,193 @@ Number(a.needs_followup)
 
     data.forEach(patient => {
 
-       container.innerHTML += `
-       data.forEach(patient => {
+        container.innerHTML += `
+<div class="card ${patient.needs_followup ? 'followup-card' : ''}">
 
-    container.innerHTML += `
-   container.innerHTML += `
+    <div class="card-top">
 
+        <div>
+            📁 <b>File No:</b> ${patient.file_no}
+        </div>
 
-        📁 <b>File No:</b> ${patient.file_no}
+        <div style="display:flex;gap:12px;align-items:center;">
 
-        ${
-        patient.needs_followup
-        ? `
-        <span style="
-        margin-left:15px;
-        color:#7c3aed;
-        font-weight:700;
-        ">
-        🔔 Follow‑Up Needed
-        </span>
-        `
-        : ''
-        }
+            <span
+            onclick="deletePatient(${patient.id})"
+            style="cursor:pointer;font-size:24px;">
+            🗑️
+            </span>
 
-    </div>
+            <span
+            onclick="openEditPatient(${patient.id})"
+            style="cursor:pointer;font-size:24px;">
+            ✏️
+            </span>
 
-    <div style="
-    display:flex;
-    gap:12px;
-    align-items:center;
-    ">
+            <span
+            class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+            style="font-size:24px;"
+            onclick="
+            toggleFollowUp(
+            ${patient.id},
+            '${patient.diagnosis}',
+            ${patient.needs_followup}
+            )">
+            🔔
+            </span>
 
-        <span
-        onclick="deletePatient(${patient.id})"
-        style="
-        cursor:pointer;
-        font-size:24px;
-        ">
-        🗑️
-        </span>
-
-        <span
-        onclick="openEditPatient(${patient.id})"
-        style="
-        cursor:pointer;
-        font-size:24px;
-        ">
-        ✏️
-        </span>
-
-        <span
-        class="followup-icon ${patient.needs_followup ? 'active' : ''}"
-        style="
-        position:static;
-        font-size:24px;
-        "
-        onclick="
-        toggleFollowUp(
-        ${patient.id},
-        '${patient.diagnosis}',
-        ${patient.needs_followup}
-        )">
-        🔔
-        </span>
+        </div>
 
     </div>
 
-</div>
+    <div class="card-row">
 
-<div class="card-row">
+        <div>
+            👤 <b>Name:</b><br>
+            ${patient.name}
+        </div>
 
-    <div>
-        👤 <b>Name:</b><br>
-        ${patient.name}
+        <div>
+            📞 <b>Mobile:</b><br>
+            ${patient.phone || '-'}
+        </div>
+
+        <div>
+            🩺 <b>Diagnosis:</b><br>
+            <span class="diagnosis-badge">
+                ${patient.diagnosis}
+            </span>
+        </div>
+
     </div>
 
-    <div>
-        📞 <b>Mobile:</b><br>
-        ${patient.phone || '-'}
+    <hr>
+
+    <div class="card-row">
+
+        <div>
+            📝 <b>Remarks:</b><br>
+            ${patient.remarks || '-'}
+        </div>
+
+        <div>
+            📅 <b>Last Update:</b><br>
+            ${patient.last_update || '-'}
+        </div>
+
     </div>
-
-    <div>
-        🩺 <b>Diagnosis:</b><br>
-
-        <span class="diagnosis-badge">
-            ${patient.diagnosis}
-        </span>
-    </div>
-
-</div>
-
-<hr style="
-border:none;
-border-top:1px solid #ececec;
-margin:12px 0;
-">
-
-<div class="card-row">
-
-    <div>
-        📝 <b>Remarks:</b><br>
-        ${patient.remarks || '-'}
-    </div>
-
-    <div>
-        📅 <b>Last Update:</b><br>
-        ${patient.last_update || '-'}
-    </div>
-
-</div>
 
 </div>
 `;
-    `;
-});
+    });
 
 }
-async function showPatients(diagnosis){
+    async function showPatients(diagnosis){
 
     const { data, error } = await client
         .from('patients')
         .select('*')
-        .eq('diagnosis', diagnosis);
+        .eq('diagnosis', diag*osis);
 
     if(error){
-        alert(error.message);
+        ale*t(error.message);
         return;
-    }
-data.sort(
-(a,b)=>
-Number(b.needs_followup)
--
-Number(a.needs_followup)
-);
-    const container =
-        document.getElementById('patientsContainer');
+*   }
 
-    container.innerHTML = '';
-data.forEach(patient => {
+    data.sort(
+        (a,b)*=>
+        Number(b.needs_followup*
+        -
+        Number(a.needs_*ollowup)
+    );
 
-    container.innerHTML += `
-   container.innerHTML += `
+    const contain*r =
+        document.getElementByI*('patientsContainer');
 
+    contai*er.innerHTML = '';
 
-        📁 <b>File No:</b> ${patient.file_no}
+    data.forEa*h(patient => {
 
-        ${
-        patient.needs_followup
-        ? `
-        <span style="
-        margin-left:15px;
-        color:#7c3aed;
-        font-weight:700;
-        ">
-        🔔 Follow‑Up Needed
-        </span>
-        `
-        : ''
-        }
+        container.*nnerHTML += `
+<div class="card ${p*tient.needs_followup ? 'followup-c*rd' : ''}">
 
-    </div>
+    <div class="card-*op">
 
-    <div style="
-    display:flex;
-    gap:12px;
-    align-items:center;
-    ">
+        <div>
+            📁*<b>File No:</b> ${patient.file_no}*        </div>
 
-        <span
-        onclick="deletePatient(${patient.id})"
-        style="
-        cursor:pointer;
-        font-size:24px;
-        ">
-        🗑️
-        </span>
+        <div style*"display:flex;gap:12px;align-items*center;">
 
-        <span
-        onclick="openEditPatient(${patient.id})"
-        style="
-        cursor:pointer;
-        font-size:24px;
-        ">
-        ✏️
-        </span>
+            <span
+     *      onclick="deletePatient(${pat*ent.id})"
+            style="curso*:pointer;font-size:24px;">
+            🗑️
+            </span>
 
-        <span
-        class="followup-icon ${patient.needs_followup ? 'active' : ''}"
-        style="
-        position:static;
-        font-size:24px;
-        "
-        onclick="
-        toggleFollowUp(
-        ${patient.id},
-        '${patient.diagnosis}',
-        ${patient.needs_followup}
-        )">
-        🔔
-        </span>
+            <span
+            onclick="openEditPatient(${patient.id})"
+            style="cursor:pointer;font-size:24px;">
+            ✏️
+            </span>
+
+            <span
+            class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+            style="font-size:24px;"
+            onclick="
+            toggleFollowUp(
+            ${patient.id},
+            '${patient.diagnosis}',
+            ${patient.needs_followup}
+            )">
+            🔔
+            </span>
+
+        </div>
 
     </div>
 
-</div>
+    <div class="card-row">
 
-<div class="card-row">
+        <div>
+            👤 <b>Name:</b><br>
+            ${patient.name}
+        </div>
 
-    <div>
-        👤 <b>Name:</b><br>
-        ${patient.name}
+        <div>
+            📞 <b>Mobile:</b><br>
+            ${patient.phone || '-'}
+        </div>
+
+        <div>
+            🩺 <b>Diagnosis:</b><br>
+            <span class="diagnosis-badge">
+                ${patient.diagnosis}
+            </span>
+        </div>
+
     </div>
 
-    <div>
-        📞 <b>Mobile:</b><br>
-        ${patient.phone || '-'}
+    <hr>
+
+    <div class="card-row">
+
+        <div>
+            📝 <b>Remarks:</b><br>
+            ${patient.remarks || '-'}
+        </div>
+
+        <div>
+            📅 <b>Last Update:</b><br>
+            ${patient.last_update || '-'}
+        </div>
+
     </div>
-
-    <div>
-        🩺 <b>Diagnosis:</b><br>
-
-        <span class="diagnosis-badge">
-            ${patient.diagnosis}
-        </span>
-    </div>
-
-</div>
-
-<hr style="
-border:none;
-border-top:1px solid #ececec;
-margin:12px 0;
-">
-
-<div class="card-row">
-
-    <div>
-        📝 <b>Remarks:</b><br>
-        ${patient.remarks || '-'}
-    </div>
-
-    <div>
-        📅 <b>Last Update:</b><br>
-        ${patient.last_update || '-'}
-    </div>
-
-</div>
 
 </div>
 `;
-    `;
-});
-    
-}
+    });
 
-    
+}
 async function deleteDiagnosis(id){
 
     if(!confirm('Delete Diagnosis ?')){
