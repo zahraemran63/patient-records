@@ -1736,80 +1736,99 @@ font-size:24px;
 "
 onclick="
 toggleFollowUp(
-${patient.id},
-'${patient.diagnosis}',
-true
-)">
-🔔
+<span
+onclick="deletePatient(${patient.id})"
+style="cursor:pointer;font-size:24px;">
+🗑️
 </span>
 
 <span
 onclick="openEditPatient(${patient.id})"
-style="
-cursor:pointer;
-font-size:24px;
-">
+style="cursor:pointer;font-size:24px;">
 ✏️
 </span>
 
 <span
-onclick="deletePatient(${patient.id})"
-style="
-cursor:pointer;
-font-size:24px;
-">
-🗑️
+class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+style="position:static;font-size:24px;"
+onclick="
+toggleFollowUp(
+${patient.id},
+'${patient.diagnosis}',
+${patient.needs_followup}
+)">
+🔔
 </span>
-
 </div>
 
 <div style="
 display:flex;
 align-items:center;
 gap:15px;
-margin-bottom:14px;
+margin-bottom:18px;
+font-size:18px;
+">
+    <span>
+        📁 <b>File No:</b> ${patient.file_no}
+    </span>
+
+    ${patient.needs_followup ? `
+    <span style="
+    color:#ff8c1a;
+    font-weight:700;
+    ">
+    🔔 Follow‑Up Needed
+    </span>
+    ` : ''}
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+gap:20px;
+margin-bottom:15px;
 font-size:18px;
 ">
 
-<span>
-📁 <b>File No:</b> ${patient.file_no}
-</span>
+    <div>
+        👤 <b>${patient.name}</b>
+    </div>
 
-${patient.needs_followup ? `
-<span style="
-color:#ff8c1a;
-font-weight:700;
-font-size:16px;
+    <div>
+        📞 <b>${patient.phone || '-'}</b>
+    </div>
+
+</div>
+
+<div style="
+margin-bottom:15px;
+font-size:17px;
 ">
-🔔 Follow‑Up Needed
-</span>
-` : ''}
-</div>
-<div style="margin-bottom:12px;font-size:17px;">
-👤 <b>Name:</b> ${patient.name}
-</div>
 
-<div style="margin-bottom:12px;font-size:17px;">
-📞 <b>Mobile:</b> ${patient.phone || '-'}
-</div>
-
-<div style="margin-bottom:12px;font-size:17px;">
 🩺 <b>Diagnosis:</b>
+
 <span class="diagnosis-badge">
 ${patient.diagnosis}
 </span>
+
 </div>
 
-<div style="margin-bottom:12px;font-size:17px;">
-📝 <b>Remarks:</b> ${patient.remarks || '-'}
+<div style="
+display:flex;
+justify-content:space-between;
+gap:20px;
+font-size:17px;
+">
+
+<div>
+📝 <b>${patient.remarks || '-'}</b>
 </div>
 
-<div style="margin-bottom:18px;font-size:17px;">
-📅 <b>Last Update:</b> ${patient.last_update || '-'}
+<div>
+📅 <b>${patient.last_update || '-'}</b>
 </div>
+
 </div>
-`;
-    });
 
 }
     async function showAllPatients(){
@@ -1856,76 +1875,97 @@ font-size:24px;
 "
 onclick="
 toggleFollowUp(
-${patient.id},
-'${patient.diagnosis}',
-${patient.needs_followup}
-)">🔔</span>
+<span
+onclick="deletePatient(${patient.id})"
+style="cursor:pointer;font-size:24px;">
+🗑️
+</span>
 
 <span
 onclick="openEditPatient(${patient.id})"
-style="
-cursor:pointer;
-font-size:24px;
-">
+style="cursor:pointer;font-size:24px;">
 ✏️
 </span>
 
 <span
-onclick="deletePatient(${patient.id})"
-style="
-cursor:pointer;
-font-size:24px;
-">
-🗑️
+class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+style="position:static;font-size:24px;"
+onclick="
+toggleFollowUp(
+${patient.id},
+'${patient.diagnosis}',
+${patient.needs_followup}
+)">
+🔔
 </span>
-
 </div>
 <div style="
 display:flex;
 align-items:center;
 gap:15px;
-margin-bottom:14px;
+margin-bottom:18px;
 font-size:18px;
 ">
-<span>
-📁 <b>File No:</b> ${patient.file_no}
-</span>
-
-${patient.needs_followup ? `
-<span style="
-color:#ff8c1a;
-font-weight:700;
-font-size:16px;
-">
-🔔 Follow‑Up Needed
-</span>
-` : ''}
-
-</div>
-<div style="margin-bottom:12px;font-size:17px;">
-👤 <b>Name:</b> ${patient.name}
-</div>
-
-<div style="margin-bottom:12px;font-size:17px;">
-📞 <b>Mobile:</b> ${patient.phone || '-'}
-</div>
-
-<div style="margin-bottom:12px;font-size:17px;">
-        🩺 <b>Diagnosis:</b>
-    <span class="diagnosis-badge">
-        ${patient.diagnosis}
+    <span>
+        📁 <b>File No:</b> ${patient.file_no}
     </span>
+
+    ${patient.needs_followup ? `
+    <span style="
+    color:#ff8c1a;
+    font-weight:700;
+    ">
+    🔔 Follow‑Up Needed
+    </span>
+    ` : ''}
 </div>
 
-    <div style="margin-bottom:12px;font-size:17px;">
-        📝 <b>Remarks:</b> ${patient.remarks || '-'}
+<div style="
+display:flex;
+justify-content:space-between;
+gap:20px;
+margin-bottom:15px;
+font-size:18px;
+">
+
+    <div>
+        👤 <b>${patient.name}</b>
     </div>
 
-    <div style="margin-bottom:18px;font-size:17px;">
-        📅 <b>Last Update:</b> ${patient.last_update || '-'}
+    <div>
+        📞 <b>${patient.phone || '-'}</b>
     </div>
 
-   
+</div>
+
+<div style="
+margin-bottom:15px;
+font-size:17px;
+">
+
+🩺 <b>Diagnosis:</b>
+
+<span class="diagnosis-badge">
+${patient.diagnosis}
+</span>
+
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+gap:20px;
+font-size:17px;
+">
+
+<div>
+📝 <b>${patient.remarks || '-'}</b>
+</div>
+
+<div>
+📅 <b>${patient.last_update || '-'}</b>
+</div>
+
 </div>
 `;
     });
@@ -1975,27 +2015,28 @@ font-size:24px;
 "
 onclick="
 toggleFollowUp(
-${patient.id},
-'${patient.diagnosis}',
-${patient.needs_followup}
-)">🔔</span>
+<span
+onclick="deletePatient(${patient.id})"
+style="cursor:pointer;font-size:24px;">
+🗑️
+</span>
 
 <span
 onclick="openEditPatient(${patient.id})"
-style="
-cursor:pointer;
-font-size:24px;
-">
+style="cursor:pointer;font-size:24px;">
 ✏️
 </span>
 
 <span
-onclick="deletePatient(${patient.id})"
-style="
-cursor:pointer;
-font-size:24px;
-">
-🗑️
+class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+style="position:static;font-size:24px;"
+onclick="
+toggleFollowUp(
+${patient.id},
+'${patient.diagnosis}',
+${patient.needs_followup}
+)">
+🔔
 </span>
 
 </div>
@@ -2003,45 +2044,68 @@ font-size:24px;
 display:flex;
 align-items:center;
 gap:15px;
-margin-bottom:14px;
+margin-bottom:18px;
+font-size:18px;
+">
+    <span>
+        📁 <b>File No:</b> ${patient.file_no}
+    </span>
+
+    ${patient.needs_followup ? `
+    <span style="
+    color:#ff8c1a;
+    font-weight:700;
+    ">
+    🔔 Follow‑Up Needed
+    </span>
+    ` : ''}
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+gap:20px;
+margin-bottom:15px;
 font-size:18px;
 ">
 
-<span>
-📁 <b>File No:</b> ${patient.file_no}
-</span>
-${patient.needs_followup ? `
-<span style="
-color:#ff8c1a;
-font-weight:700;
-font-size:16px;
+    <div>
+        👤 <b>${patient.name}</b>
+    </div>
+
+    <div>
+        📞 <b>${patient.phone || '-'}</b>
+    </div>
+
+</div>
+
+<div style="
+margin-bottom:15px;
+font-size:17px;
 ">
-🔔 Follow‑Up Needed
+
+🩺 <b>Diagnosis:</b>
+
+<span class="diagnosis-badge">
+${patient.diagnosis}
 </span>
-` : ''}
-</div>
-<div style="margin-bottom:12px;font-size:17px;">
-👤 <b>Name:</b> ${patient.name}
+
 </div>
 
-<div style="margin-bottom:12px;font-size:17px;">
-📞 <b>Mobile:</b> ${patient.phone || '-'}
+<div style="
+display:flex;
+justify-content:space-between;
+gap:20px;
+font-size:17px;
+">
+
+<div>
+📝 <b>${patient.remarks || '-'}</b>
 </div>
 
-    <div style="margin-bottom:12px;font-size:17px;">
-        🩺 <b>Diagnosis:</b>
-        <span class="diagnosis-badge">
-            ${patient.diagnosis}
-        </span>
-    </div>
-
-    <div style="margin-bottom:12px;font-size:17px;">
-        📝 <b>Remarks:</b> ${patient.remarks || '-'}
-    </div>
-
-    <div style="margin-bottom:18px;font-size:17px;">
-        📅 <b>Last Update:</b> ${patient.last_update || '-'}
-    </div>
+<div>
+📅 <b>${patient.last_update || '-'}</b>
+</div>
 
 </div>
 `;
