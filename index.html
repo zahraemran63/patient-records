@@ -131,6 +131,13 @@ onclick="openDeleteDiagnosisModal()">
 - Delete Diagnosis
 </button>
 
+    <button
+class="diagnosis-btn"
+style="background:#198754;"
+onclick="showAllPatients()">
+All Patients
+</button>
+    
 </div>
 
 <div id="deleteDiagnosisModal" class="modal">
@@ -158,12 +165,7 @@ onclick="openDeleteDiagnosisModal()">
             onclick="closeDeleteDiagnosisModal()">
             Cancel
             </button>
-<button
-class="diagnosis-btn"
-style="background:#198754;"
-onclick="showAllPatients()">
-All Patients
-</button>
+
         </div>
 
     </div>
@@ -525,39 +527,39 @@ closeDiagnosisModal();
 
 loadDiagnoses();
 }
-    async function showAllPatients(){
+async function showAllPatients(){
 
     const { data, error } = await client
         .from('patients')
         .select('*')
-        .neq('diagnosis', 'Expl*in');
+        .neq('diagnosis', 'Explain');
 
     if(error){
-        aler*(error.message);
+        alert(error.message);
         return;
- *  }
+    }
 
     const container =
-       *document.getElementById('patientsC*ntainer');
+        document.getElementById('patientsContainer');
 
-    container.innerHTM* = '';
+    container.innerHTML = '';
 
     data.forEach(patient => {
 
         container.innerHTML += `
         <div class="card">
 
-        <b>File No:</b> ${patient.file_no}<br>
-        <b>Name:</b> ${patient.name}<br>
-        <b>Diagnosis:</b> ${patient.diagnosis}<br>
-        <b>Remarks:</b> ${patient.remarks || '-'}<br>
-        <b>Last Update:</b> ${patient.last_update || '-'}
+            <b>File No:</b> ${patient.file_no}<br>
+            <b>Name:</b> ${patient.name}<br>
+            <b>Diagnosis:</b> ${patient.diagnosis}<br>
+            <b>Remarks:</b> ${patient.remarks || '-'}<br>
+            <b>Last Update:</b> ${patient.last_update || '-'}
 
         </div>
         `;
     });
-}
-    
+
+}    
 async function showPatients(diagnosis){
 
     const { data, error } = await client
