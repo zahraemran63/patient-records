@@ -100,6 +100,10 @@ button{
     border-radius:8px;
     cursor:pointer;
 }
+    button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
 
 .add{
     background:#198754;
@@ -184,17 +188,19 @@ button{
     - Delete Diagnosis
     </button>
 
-    <button
-    style="background:#198754;color:white;"
-    onclick="exportExcel()">
-    📊 Export Excel
-    </button>
+<button
+id="exportBtn"
+style="background:#198754;color:white;"
+onclick="exportExcel()">
+📊 Export Excel
+</button>
 
-    <button
-    class="add"
-    onclick="document.getElementById('excelFile').click()">
-    Import Excel
-    </button>
+<button
+id="importBtn"
+class="add"
+onclick="document.getElementById('excelFile').click()">
+Import Excel
+</button>
 
 </div>
 <div id="deleteDiagnosisModal" class="modal">
@@ -365,170 +371,220 @@ console.log(client);
 }
     async function exportExcel() {
 
-    const { data: diagnoses } = await client
-        .from('diagnoses')
-        .select('*')
-        .order('name');
+    const btn =
+        document.getElementById('exportBtn');
 
-    const workbook = XLSX.utils.book_new();
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Exporting...';
 
-    for (const diag of diagnoses) {
+    try {
 
-        // Skip Explain
-        if (diag.name.toLowerCase() === 'explain') {
-            continue;
-        }
-
-        const { data: patients } = await client
-            .from('patients')
+        const { data: diagnoses } = await client
+            .from('diagnoses')
             .select('*')
-            .eq('diagnosis', diag.name)
-            .order('file_no');
+            .order('name');
 
-        const rows = [];
+  *     const workbook =
+            XLSX.utils.book_new();
 
-        // Header Row
-        rows.push([
-            'S.No',
-            'MRN',
-            'Name',
-            'Remark',
-            'Last Update'
-        ]);
+        for (const diag of diagnoses) {
 
-        // Data Rows
-        patients.forEach((patient, index) => {
+            if (
+                diag.name.toLowerCase() === 'explain'
+            ) {
+                continue;
+            }
+
+            const { data: patients } =
+                await client
+                    .from('patients')
+                    .select('*')
+                    .eq('diagnosis', diag.name);
+
+            const rows = [];
 
             rows.push([
-                index + 1,
-                patient.file_no || '',
-                patient.name || '',
-                patient.remarks || '',
-                patient.last_update || ''
+                'S.No',
+                'MRN',
+                'Name',
+                'Remark',
+                'Last Update'
             ]);
 
-        });
+            patients.forEach((patient, index) => {
 
-        const worksheet =
-            XLSX.utils.aoa_to_sheet(rows);
+                rows.push([
+                    index + 1,
+                    patient.file_no || '',
+                    patient.name || '',
+                    patient.remarks || '',
+                    patient.last_update || ''
+                ]);
 
-        XLSX.utils.book_append_sheet(
+            });
+
+            const worksheet =
+                XLSX.utils.aoa_to_sheet(rows);
+
+            XLSX.utils.book_append_sheet(
+                workbook,
+                worksheet,
+                diag.name.substring(0, 31)
+            );
+
+        }
+
+        XLSX.writeFile(
             workbook,
-            worksheet,
-            diag.name.substring(0, 31)
+            'Patient_Records.xlsx'
         );
-    }
 
-    XLSX.writeFile(
-        workbook,
-        'Patient_Records.xlsx'
-    );
+    } catch(error){
+
+        alert(error.message);
+
+    } finally {
+
+        btn.disabled = false;
+
+        btn.innerHTML =
+            '📊 Export Excel';
+
+    }
 }
     
     async function importExcel(event){
 
-    const file = event.target.files[0];
+    const btn =
+        document.getElementById('importBtn');
 
-    if(!file){
-        return;
-    }
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Importing...';
 
-    const data = await file.arrayBuffer();
+    try {
 
-    const workbook = XLSX.read(data);
+        const file = event.target.files[0];
 
-    for(const sheetName of workbook.SheetNames){
-
-        const diagnosisName = sheetName.trim();
-
-        // إنشاء التشخيص إذا غير موجود
-
-        const { data: existingDiagnosis } = await client
-            .from('diagnoses')
-            .select('id')
-            .ilike('name', diagnosisName);
-
-        if(!existingDiagnosis || existingDiagnosis.length === 0){
-
-            await client
-                .from('diagnoses')
-                .insert({
-                    name: diagnosisName
-                });
-
+        if(!file){
+            return;
         }
 
-        const sheet =
-            workbook.Sheets[sheetName];
+        const data =
+            await file.arrayBuffer();
 
-        const rows =
-            XLSX.utils.sheet_to_json(
-                sheet,
-                { header:1 }
-            );
+        const workbook =
+            XLSX.read(data);
 
-        for(let i = 4; i < rows.length; i++){
+        for(const sheetName of workbook.SheetNames){
 
-            const row = rows[i];
+            const diagnosisName =
+                sheetName.trim();
 
-            if(!row){
-                continue;
-            }
-
-            const fileNo =
-                row[1] || '';
-
-            const name =
-                row[2] || '';
-
-            const remarks =
-                row[3] || '';
-
-            const lastUpdate =
-                row[4] || null;
-
-            // تجاهل الصف الفارغ بالكامل
+            const {
+                data: existingDiagnosis
+            } = await client
+                .from('diagnoses')
+                .select('id')
+                .ilike('name', diagnosisName);
 
             if(
-                !fileNo &&
-                !name &&
-                !remarks &&
-                !lastUpdate
+                !existingDiagnosis ||
+                existingDiagnosis.length === 0
             ){
-                continue;
+
+                await client
+                    .from('diagnoses')
+                    .insert({
+                        name: diagnosisName
+                    });
             }
 
-            await client
-                .from('patients')
-                .insert({
+            const sheet =
+                workbook.Sheets[sheetName];
 
-                    file_no:
-                        String(fileNo),
+            const rows =
+                XLSX.utils.sheet_to_json(
+                    sheet,
+                    { header:1 }
+                );
 
-                    name:
-                        String(name),
+            for(let i = 1; i < rows.length; i++){
 
-                    diagnosis:
-                        diagnosisName,
+                const row = rows[i];
 
-                    remarks:
-                        String(remarks),
+                if(!row){
+                    continue;
+                }
 
-                    last_update:
-                        lastUpdate || null
+                const fileNo =
+                    row[1] || '';
 
-                });
+                const name =
+                    row[2] || '';
 
+                const remarks =
+                    row[3] || '';
+
+                const lastUpdate =
+                    row[4] || null;
+
+                if(
+                    !fileNo &&
+                    !name &&
+                    !remarks &&
+                    !lastUpdate
+                ){
+                    continue;
+                }
+
+                await client
+                    .from('patients')
+                    .insert({
+
+                        file_no:
+                            String(fileNo),
+
+                        name:
+                            String(name),
+
+                        diagnosis:
+                            diagnosisName,
+
+                        remarks:
+                            String(remarks),
+
+                        last_update:
+                            lastUpdate || null
+
+                    });
+
+            }
         }
 
+        await loadDiagnoses();
+
+        await showAllPatients();
+
+        alert(
+            'Import completed successfully'
+        );
+
     }
+    catch(error){
 
-    await loadDiagnoses();
+        alert(error.message);
 
-    await showAllPatients();
+    }
+    finally {
 
-    alert('Import completed successfully');
+        btn.disabled = false;
+        btn.innerHTML = 'Import Excel';
 
+        document.getElementById(
+            'excelFile'
+        ).value = '';
+
+    }
 }
     async function savePatient(){
 
