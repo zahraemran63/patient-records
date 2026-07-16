@@ -120,6 +120,41 @@ onclick="openDiagnosisModal()">
 + Add Diagnosis
 </button>
 
+<button
+class="delete"
+onclick="openDeleteDiagnosisModal()">
+- Delete Diagnosis
+</button>
+<div id="deleteDiagnosisModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>Delete Diagnosis</h2>
+
+        <select
+        id="deleteDiagnosisSelect"
+        style="width:100%;padding:12px;">
+
+        </select>
+
+        <div class="modal-actions">
+
+            <button
+            class="delete"
+            onclick="confirmDeleteDiagnosis()">
+            OK
+            </button>
+
+            <button
+            class="add"
+            onclick="closeDeleteDiagnosisModal()">
+            Cancel
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
 
 <div id="diagnosesContainer"></div>
@@ -169,8 +204,67 @@ function openDiagnosisModal(){
 function closeDiagnosisModal(){
     document.getElementById('diagnosisModal').style.display='none';
 }
+    async function openDeleteDiagnosisModal(){
+
+    const select =
+        document.getElementById('deleteDiagnosisSelect');
+
+    select.innerHTML = '';
+
+    const { data } = await client
+        .from('diagnoses')
+        .select('*')
+        .order('name');
+
+    data.forEach(item => {
+
+        select.innerHTML += `
+        <option value="${item.id}">
+            ${item.name}
+        </option>
+        `;
+
+    });
+
+    document.getElementById(
+        'deleteDiagnosisModal'
+    ).style.display = 'block';
+}
+
+function closeDeleteDiagnosisModal(){
+
+    document.getElementById(
+        'deleteDiagnosisModal'
+    ).style.display = 'none';
+}
 loadDiagnoses();
 
+    async function confirmDeleteDiagnosis(){
+
+    const id =
+        document.getElementById(
+            'deleteDiagnosisSelect'
+        ).value;
+
+    if(!id) return;
+
+    const { error } = await client
+        .from('diagnoses')
+        .delete()
+        .eq('id', id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    closeDeleteDiagnosisModal();
+
+    loadDiagnoses();
+
+    alert('Diagnosis deleted successfully');
+}
+    
 async function loadDiagnoses(){
 
     const { data, error } = await client
