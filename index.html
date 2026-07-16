@@ -385,6 +385,16 @@ button{
 
     pointer-events:none;
 }
+    .diagnosis-badge{
+    display:inline-block;
+    padding:8px 14px;
+    background:#EEF4FF;
+    color:#0d6efd;
+    font-weight:700;
+    border-radius:10px;
+    border:1px solid #cfe2ff;
+    margin-top:10px;
+}
 #loginOverlay{
     position:fixed;
     inset:0;
@@ -1708,7 +1718,10 @@ async function showPatients(diagnosis){
 </div>
 
 <div style="margin-top:10px;">
-🩺 <b>Diagnosis:</b> ${patient.diagnosis}
+🩺
+<span class="diagnosis-badge">
+${patient.diagnosis}
+</span>
 </div>
 
 <div style="margin-top:10px;">
