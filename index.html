@@ -9,6 +9,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+    .diagnosis-btn.active{
+    background:#198754 !important;
+    border:3px solid #146c43;
+    box-shadow:0 0 10px rgba(25,135,84,.4);
+}
 #diagnosesContainer{
     display:flex;
     flex-wrap:wrap;
@@ -264,6 +269,16 @@ const client = window.supabase.createClient(
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88'
 );
 console.log(client);
+    function setActiveDiagnosis(button){
+
+    document
+        .querySelectorAll('.diagnosis-btn')
+        .forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+    button.classList.add('active');
+}
     async function savePatient(){
 
     const fileNo =
@@ -466,7 +481,10 @@ async function loadDiagnoses(){
     <button
     class="diagnosis-btn"
     style="background:#198754;"
-    onclick="showAllPatients()">
+    onclick="
+showAllPatients();
+setActiveDiagnosis(this);
+">
     All Patients (${allCount || 0})
     </button>
     `;
@@ -488,7 +506,10 @@ async function loadDiagnoses(){
         container.innerHTML += `
         <button
         class="diagnosis-btn"
-        onclick="showPatients('${item.name}')">
+        onclick="
+showPatients('${item.name}');
+setActiveDiagnosis(this);
+">
         ${item.name} (${count || 0})
         </button>
         `;
