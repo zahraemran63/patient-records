@@ -1324,7 +1324,10 @@ if (followUp) {
 }
 
 
-if (explain) {
+if (
+    explain &&
+    sessionStorage.getItem('loggedIn') === 'zahy'
+) {
 
     const { data: patients } = await client
         .from('patients')
@@ -1344,8 +1347,8 @@ if (explain) {
     </button>
     `;
 }
-
-
+const currentUser =
+    sessionStorage.getItem('loggedIn');
 for(const item of data){
 
     if(
