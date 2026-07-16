@@ -202,6 +202,13 @@ onclick="document.getElementById('excelFile').click()">
 Import Excel
 </button>
 
+<input
+type="file"
+id="excelFile"
+accept=".xlsx,.xls"
+style="display:none"
+onchange="importExcel(event)">
+
 </div>
 <div id="deleteDiagnosisModal" class="modal">
 
