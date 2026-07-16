@@ -1676,72 +1676,103 @@ loadDiagnoses();
     if(error){
         alert(error.message);
         return;
-  * }
+    }
 
     const container =
-       document.getElementById('patientsContainer');
+        document.getElementById('patientsContainer');
 
-    container.innerHTML*= '';
+    container.innerHTML = '';
 
-    data.forEach(patient =>*{
+    data.forEach(patient => {
 
-        container.innerHTML += *
+        container.innerHTML += `
 <div class="card">
 
 <span
-class="*ollowup-icon active"
+class="followup-icon active"
 onclick="
-tog*leFollowUp(
+toggleFollowUp(
 ${patient.id},
-'${pati*nt.diagnosis}',
+'${patient.diagnosis}',
 true
 )">
 🔔
-</span*
+</span>
 
 <div style="
 display:flex;
-align*items:center;
+align-items:center;
 gap:15px;
-margin-bot*om:14px;
+margin-bottom:14px;
 font-size:18px;
 ">
-<span>*📁 <b>File No:</b> ${patient.file_*o}
+
+<span>
+📁 <b>File No:</b> ${patient.file_no}
 </span>
 
+${patient.needs_followup ? `
 <span style="
-color:#f*8c1a;
+color:#ff8c1a;
 font-weight:700;
-font-size:1*px;
+font-size:16px;
 ">
 🔔 Follow‑Up Needed
-</span>*</div>
-
-<div style="margin-bottom:*2px;font-size:17px;">
-👤 <b>Name:<*b> ${patient.name}
+</span>
+` : ''}
+</div>
+<div style="margin-bottom:12px;font-size:17px;">
+👤 <b>Name:</b> ${patient.name}
 </div>
 
-<div st*le="margin-bottom:12px;font-size:1*px;">
+<div style="margin-bottom:12px;font-size:17px;">
 🩺 <b>Diagnosis:</b>
-<span c*ass="diagnosis-badge">
-${patient.d*agnosis}
+<span class="diagnosis-badge">
+${patient.diagnosis}
 </span>
 </div>
 
-<div styl*="margin-bottom:12px;font-size:17p*;">
-📝 <b>Remarks:</b> ${patient.r*marks || '-'}
+<div style="margin-bottom:12px;font-size:17px;">
+📝 <b>Remarks:</b> ${patient.remarks || '-'}
 </div>
 
-<div style="*argin-bottom:18px;font-size:17px;"*
-📅 <b>Last Update:</b> ${patient.*ast_update || '-'}
+<div style="margin-bottom:18px;font-size:17px;">
+📅 <b>Last Update:</b> ${patient.last_update || '-'}
 </div>
+<div style="
+display:flex;
+gap:12px;
+border-top:1px solid #eee;
+padding-top:15px;
+">
+
+<button
+onclick="openEditPatient(${patient.id})"
+style="
+background:#ffc107;
+color:#000;
+min-width:90px;
+font-weight:600;">
+Edit
+</button>
+
+<button
+onclick="deletePatient(${patient.id})"
+style="
+background:#dc3545;
+color:#fff;
+min-width:90px;
+font-weight:600;">
+Delete
+</button>
 
 </div>
-*;
+</div>
+`;
     });
 
 }
-async function showAllPatients(){
+    async function showAllPatients(){
 
     const { data, error } = await client
         .from('patients')
@@ -1777,7 +1808,7 @@ ${patient.needs_followup}
 )">
 🔔
 </span>
-    <div style="
+<div style="
 display:flex;
 align-items:center;
 gap:15px;
@@ -1789,17 +1820,17 @@ font-size:18px;
 📁 <b>File No:</b> ${patient.file_no}
 </span>
 
-</div>
 ${patient.needs_followup ? `
-<div style="
-margin-bottom:10px;
-font-size:15px;
-font-weight:700;
+<span style="
 color:#ff8c1a;
+font-weight:700;
+font-size:16px;
 ">
 🔔 Follow‑Up Needed
-</div>
+</span>
 ` : ''}
+
+</div>
     <div style="margin-bottom:12px;font-size:17px;">
         👤 <b>Name:</b> ${patient.name}
     </div>
@@ -1901,7 +1932,6 @@ font-size:18px;
 <span>
 📁 <b>File No:</b> ${patient.file_no}
 </span>
-
 ${patient.needs_followup ? `
 <span style="
 color:#ff8c1a;
@@ -1911,18 +1941,7 @@ font-size:16px;
 🔔 Follow‑Up Needed
 </span>
 ` : ''}
-
 </div>
-${patient.needs_followup ? `
-<div style="
-margin-bottom:10px;
-font-size:15px;
-font-weight:700;
-color:#ff8c1a;
-">
-🔔 Follow‑Up Needed
-</div>
-` : ''}
     <div style="margin-bottom:12px;font-size:17px;">
         👤 <b>Name:</b> ${patient.name}
     </div>
