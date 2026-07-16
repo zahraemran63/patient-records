@@ -201,15 +201,13 @@ console.log('ExcelJS =', typeof ExcelJS);
 }
 
 .card-row{
-    display:flex !important;
-    flex-wrap:wrap;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
     gap:20px;
-    width:100%;
 }
 
 .card-row > div{
-    flex:1 1 250px;
-    min-width:250px;
+    min-width:0;
 }
 
 .card hr{
