@@ -1641,9 +1641,12 @@ async function showAllPatients(){
         👤 <b>Name:</b> ${patient.name}
     </div>
 
-    <div style="margin-bottom:12px;font-size:17px;">
-        🩺 <b>Diagnosis:</b> ${patient.diagnosis}
-    </div>
+<div style="margin-bottom:12px;font-size:17px;">
+    🩺
+    <span class="diagnosis-badge">
+        ${patient.diagnosis}
+    </span>
+</div>
 
     <div style="margin-bottom:12px;font-size:17px;">
         📝 <b>Remarks:</b> ${patient.remarks || '-'}
