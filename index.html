@@ -164,7 +164,12 @@ onclick="openDeleteDiagnosisModal()">
     </div>
 
 </div>
-
+<button
+class="diagnosis-btn"
+style="background:#198754;"
+onclick="showAllPatients()">
+All Patients
+</button>
 <div id="diagnosesContainer"></div>
     <div id="patientsContainer"></div>
     <div id="patientModal" class="modal">
@@ -456,18 +461,25 @@ async function loadDiagnoses(){
 
     container.innerHTML='';
 
-    data.forEach(item=>{
+    for(const item of data){
 
-container.innerHTML += `
-<button
-class="diagnosis-btn"
-onclick="showPatients('${item.name}')"
->
-${item.name} (0)
-</button>
-`;
+        const { count } = await client
+            .from('patients')
+            .select('*', {
+                count:'exact',
+                head:true
+            })
+            .eq('diagnosis', item.name);
 
-    });
+        container.innerHTML += `
+        <button
+        class="diagnosis-btn"
+        onclick="showPatients('${item.name}')"
+        >
+        ${item.name} (${count || 0})
+        </button>
+        `;
+    }
 
 }
 
@@ -513,6 +525,39 @@ closeDiagnosisModal();
 
 loadDiagnoses();
 }
+    async function showAllPatients(){
+
+    const { data, error } = await client
+        .from('patients')
+        .select('*')
+        .neq('diagnosis', 'Expl*in');
+
+    if(error){
+        aler*(error.message);
+        return;
+ *  }
+
+    const container =
+       *document.getElementById('patientsC*ntainer');
+
+    container.innerHTM* = '';
+
+    data.forEach(patient => {
+
+        container.innerHTML += `
+        <div class="card">
+
+        <b>File No:</b> ${patient.file_no}<br>
+        <b>Name:</b> ${patient.name}<br>
+        <b>Diagnosis:</b> ${patient.diagnosis}<br>
+        <b>Remarks:</b> ${patient.remarks || '-'}<br>
+        <b>Last Update:</b> ${patient.last_update || '-'}
+
+        </div>
+        `;
+    });
+}
+    
 async function showPatients(diagnosis){
 
     const { data, error } = await client
