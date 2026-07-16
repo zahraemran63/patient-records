@@ -316,9 +316,15 @@ console.log(client);
         return;
     }
 
-    alert('Patient Added Successfully');
+alert('Patient Added Successfully');
 
-    closePatientModal();
+document.getElementById('fileNo').value='';
+document.getElementById('patientName').value='';
+document.getElementById('remarks').value='';
+
+showPatients(diagnosis);
+
+closePatientModal();
 }
 function openDiagnosisModal(){
     document.getElementById('diagnosisModal').style.display='block';
@@ -523,13 +529,21 @@ async function showPatients(diagnosis){
     data.forEach(patient => {
 
         container.innerHTML += `
-        <div class="card">
-            <div>
-                <b>${patient.file_no}</b><br>
-                ${patient.name}
-            </div>
-        </div>
-        `;
+<div class="card">
+
+<div>
+
+<b>File No:</b> ${patient.file_no}<br>
+<b>Name:</b> ${patient.name}<br>
+<b>Diagnosis:</b> ${patient.diagnosis}<br>
+<b>Remarks:</b> ${patient.remarks || '-'}<br>
+<b>Last Update:</b> ${patient.last_update || '-'}
+
+</div>
+
+</div>
+`;
+
 
     });
 
