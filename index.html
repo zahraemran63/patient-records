@@ -142,7 +142,14 @@ button{
 </div>
 
 
-<div style="margin-bottom:15px;">
+<div style="
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+">
 
     <input
         id="searchInput"
@@ -150,57 +157,51 @@ button{
         placeholder="Search File No or Name"
         onkeyup="searchPatients()"
         style="
-            width:60%;
-            padding:16px;
-            font-size:20px;
+            width:600px;
+            padding:12px;
+            font-size:18px;
             border:1px solid #ccc;
             border-radius:8px;
         "
     >
 
-</div>
-<div class="row">
-
-    
-<button
-class="add"
-onclick="document.getElementById('excelFile').click()">
-Import Excel
-</button>
     <button
-style="background:#198754;color:white;"
-onclick="exportExcel()">
-📊 Export Excel
-</button>
+    style="background:#0d6efd;color:white;"
+    onclick="searchPatients()">
+    🔍 Search
+    </button>
 
-<input
-type="file"
-id="excelFile"
-accept=".xlsx,.xls"
-style="display:none"
-onchange="importExcel(event)">
-    
     <button
-class="add"
-onclick="openPatientModal()">
-+ Add Patient
-</button>
-    
+    class="add"
+    onclick="openPatientModal()">
+    + Add Patient
+    </button>
 
-<button class="add"
-onclick="openDiagnosisModal()">
-+ Add Diagnosis
-</button>
+    <button
+    class="add"
+    onclick="openDiagnosisModal()">
+    + Add Diagnosis
+    </button>
 
-<button class="delete"
-onclick="openDeleteDiagnosisModal()">
-- Delete Diagnosis
-</button>
+    <button
+    class="delete"
+    onclick="openDeleteDiagnosisModal()">
+    - Delete Diagnosis
+    </button>
 
+    <button
+    style="background:#198754;color:white;"
+    onclick="exportExcel()">
+    📊 Export Excel
+    </button>
 
-    
+    <button
+    class="add"
+    onclick="document.getElementById('excelFile').click()">
+    Import Excel
+    </button>
+
 </div>
-
 <div id="deleteDiagnosisModal" class="modal">
 
     <div class="modal-content">
