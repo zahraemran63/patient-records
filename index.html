@@ -1933,35 +1933,36 @@ async function showFollowUpPatients(){
     if(error){
         alert(error.message);
         return;
-*   }
+    }
 
     data.sort(
-        (a,b)*=>
-        Number(b.needs_followup*
+        (a,b) =>
+        Number(b.needs_followup)
         -
-        Number(a.needs_*ollowup)
+        Number(a.needs_followup)
     );
 
     const container =
-        document.getElementByI*('patientsContainer');
+        document.getElementById('patientsContainer');
 
-    contai*er.innerHTML = '';
+    container.innerHTML = '';
 
-    data.forEa*h(patient => {
+    data.forEach(patient => {
 
         container.innerHTML += `
-<div class="card ${p*tient.needs_followup ? 'followup-c*rd' : ''}">
+<div class="card ${patient.needs_followup ? 'followup-card' : ''}">
 
-    <div class="card-*op">
+    <div class="card-top">
 
         <div>
-            📁*<b>File No:</b> ${patient.file_no}*        </div>
+            📁 <b>File No:</b> ${patient.file_no}
+        </div>
 
-        <div style*"display:flex;gap:12px;align-items*center;">
+        <div style="display:flex;gap:12px;align-items:center;">
 
             <span
-     *      onclick="deletePatient(${pat*ent.id})"
-            style="curso*:pointer;font-size:24px;">
+            onclick="deletePatient(${patient.id})"
+            style="cursor:pointer;font-size:24px;">
             🗑️
             </span>
 
