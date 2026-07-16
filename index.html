@@ -359,6 +359,7 @@ const client = window.supabase.createClient(
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88'
 );
 console.log(client);
+    console.log('XLSX =', XLSX);
     function setActiveDiagnosis(button){
 
     document
@@ -370,7 +371,7 @@ console.log(client);
     button.classList.add('active');
 }
     async function exportExcel() {
-
+alert(typeof XLSX);
     const btn =
         document.getElementById('exportBtn');
 
