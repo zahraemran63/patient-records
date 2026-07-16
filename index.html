@@ -1533,9 +1533,9 @@ async function loadDiagnoses(){
     container.innerHTML = `
     <button
     class="diagnosis-btn active"
-    onclick="
-    showAllPatients();
-    setActiveDiagnosis(this);
+onclick="
+showFollowUpPatients();
+setActiveDiagnosis(this);
     ">
     All Patients (${allCount})
     </button>
@@ -1560,9 +1560,9 @@ if (followUp) {
     container.innerHTML += `
     <button
     class="diagnosis-btn special-followup"
-    onclick="
-    showPatients('${followUp.name}');
-    setActiveDiagnosis(this);
+onclick="
+showFollowUpPatients();
+setActiveDiagnosis(this);
     ">
     ${followUp.name} (${count})
     </button>
@@ -1666,6 +1666,81 @@ closeDiagnosisModal();
 
 loadDiagnoses();
 }
+    async function showFollowUpPatients(){
+
+    const { data, error } = await client
+        .from('patients')
+        .select('*')
+        .eq('needs_followup', t*ue);
+
+    if(error){
+        alert*error.message);
+        return;
+  * }
+
+    const container =
+        *ocument.getElementById('patientsCo*tainer');
+
+    container.innerHTML*= '';
+
+    data.forEach(patient =>*{
+
+        container.innerHTML += *
+<div class="card">
+
+<span
+class="*ollowup-icon active"
+onclick="
+tog*leFollowUp(
+${patient.id},
+'${pati*nt.diagnosis}',
+true
+)">
+🔔
+</span*
+
+<div style="
+display:flex;
+align*items:center;
+gap:15px;
+margin-bot*om:14px;
+font-size:18px;
+">
+<span>*📁 <b>File No:</b> ${patient.file_*o}
+</span>
+
+<span style="
+color:#f*8c1a;
+font-weight:700;
+font-size:1*px;
+">
+🔔 Follow‑Up Needed
+</span>*</div>
+
+<div style="margin-bottom:*2px;font-size:17px;">
+👤 <b>Name:<*b> ${patient.name}
+</div>
+
+<div st*le="margin-bottom:12px;font-size:1*px;">
+🩺 <b>Diagnosis:</b>
+<span c*ass="diagnosis-badge">
+${patient.d*agnosis}
+</span>
+</div>
+
+<div styl*="margin-bottom:12px;font-size:17p*;">
+📝 <b>Remarks:</b> ${patient.r*marks || '-'}
+</div>
+
+<div style="*argin-bottom:18px;font-size:17px;"*
+📅 <b>Last Update:</b> ${patient.*ast_update || '-'}
+</div>
+
+</div>
+*;
+    });
+
+}
 async function showAllPatients(){
 
     const { data, error } = await client
@@ -1677,7 +1752,12 @@ async function showAllPatients(){
         alert(error.message);
         return;
     }
-
+data.sort(
+(a,b)=>
+Number(b.needs_followup)
+-
+Number(a.needs_followup)
+);
     const container =
         document.getElementById('patientsContainer');
 
@@ -1697,9 +1777,19 @@ ${patient.needs_followup}
 )">
 🔔
 </span>
-    <div style="margin-bottom:14px;font-size:18px;">
-        📁 <b>File No:</b> ${patient.file_no}
-    </div>
+    <div style="
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:14px;
+font-size:18px;
+">
+
+<span>
+📁 <b>File No:</b> ${patient.file_no}
+</span>
+
+</div>
 ${patient.needs_followup ? `
 <div style="
 margin-bottom:10px;
@@ -1800,9 +1890,29 @@ ${patient.needs_followup}
 )">
 🔔
 </span>
-    <div style="margin-bottom:14px;font-size:18px;">
-        📁 <b>File No:</b> ${patient.file_no}
-    </div>
+<div style="
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:14px;
+font-size:18px;
+">
+
+<span>
+📁 <b>File No:</b> ${patient.file_no}
+</span>
+
+${patient.needs_followup ? `
+<span style="
+color:#ff8c1a;
+font-weight:700;
+font-size:16px;
+">
+🔔 Follow‑Up Needed
+</span>
+` : ''}
+
+</div>
 ${patient.needs_followup ? `
 <div style="
 margin-bottom:10px;
