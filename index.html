@@ -9,11 +9,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-    .diagnosis-btn.active{
-    background:#ffc107 !important;
-    color:black !important;
-    border:3px solid #e0a800;
-    box-shadow:0 0 10px rgba(255,193,7,.4);
+.diagnosis-btn.active{
+    background:#198754 !important;
+    color:white !important;
+    transform:translateY(-2px);
+    border:2px solid #146c43;
+    box-shadow:0 4px 12px rgba(25,135,84,.35);
 }
 #diagnosesContainer{
     display:flex;
@@ -479,10 +480,9 @@ async function loadDiagnoses(){
         })
         .neq('diagnosis', 'Explain');
 
-    container.innerHTML = `
-    <button
-
-class="diagnosis-btn"
+container.innerHTML = `
+<button
+class="diagnosis-btn active"
 onclick="
 showAllPatients();
 setActiveDiagnosis(this);
@@ -680,6 +680,7 @@ async function showPatients(diagnosis){
 <div style="margin-top:15px;display:flex;gap:10px;">
 
 <button
+onclick="openEditPatient(${patient.id})"
 style="
 background:#ffc107;
 color:black;
@@ -690,6 +691,7 @@ Edit
 </button>
 
 <button
+onclick="deletePatient(${patient.id})"
 style="
 background:#dc3545;
 color:white;
@@ -698,7 +700,6 @@ border:none;
 border-radius:8px;">
 Delete
 </button>
-
 </div>
 
 </div>
@@ -745,9 +746,14 @@ async function deletePatient(id){
 
     alert('Patient deleted successfully');
 
-    loadDiagnoses();
+loadDiagnoses();
+showAllPatients();
 
-    showAllPatients();
+setTimeout(() => {
+    document
+        .querySelector('.diagnosis-btn')
+        ?.classList.add('active');
+}, 300);
 
 }
     async function openEditPatient(id){
