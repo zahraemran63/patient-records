@@ -200,7 +200,26 @@ console.log('ExcelJS =', typeof ExcelJS);
         0 10px 25px rgba(255,140,26,.15);
 }
 
+.card-row{
+    display:flex;
+    gap:30px;
+    justify-content:space-between;
+    margin:15px 0;
+}
 
+.card-row > div{
+    flex:1;
+}
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    padding-bottom:12px;
+    border-bottom:1px solid #e5e7eb;
+}
+    
 .card.followup-card::before{
 
     background:
@@ -407,7 +426,7 @@ button{
 
     pointer-events:none;
 }
-}
+
    
     .card.followup-card::after{
 
@@ -1768,68 +1787,56 @@ gap:15px;
 margin-bottom:18px;
 font-size:18px;
 ">
-    <span>
+    <div class="card-top">
+
+    <div>
         📁 <b>File No:</b> ${patient.file_no}
-    </span>
-
-    ${patient.needs_followup ? `
-    <span style="
-    color:#ff8c1a;
-    font-weight:700;
-    ">
-    🔔 Follow‑Up Needed
-    </span>
-    ` : ''}
-</div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-gap:20px;
-margin-bottom:15px;
-font-size:18px;
-">
-
-    <div>
-        👤 <b>${patient.name}</b>
     </div>
 
-    <div>
-        📞 <b>${patient.phone || '-'}</b>
+    <div class="card-actions">
+
+        🗑️ ✏️ 🔔
+
     </div>
 
 </div>
 
-<div style="
-margin-bottom:15px;
-font-size:17px;
-">
+<div class="card-row">
 
-🩺 <b>Diagnosis:</b>
+    <div>
+        👤 <b>Name:</b><br>
+        ${patient.name}
+    </div>
 
-<span class="diagnosis-badge">
-${patient.diagnosis}
-</span>
+    <div>
+        📞 <b>Mobile:</b><br>
+        ${patient.phone || '-'}
+    </div>
 
-</div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-gap:20px;
-font-size:17px;
-">
-
-<div>
-📝 <b>${patient.remarks || '-'}</b>
-</div>
-
-<div>
-📅 <b>${patient.last_update || '-'}</b>
-</div>
+    <div>
+        🩺 <b>Diagnosis:</b><br>
+        <span class="diagnosis-badge">
+            ${patient.diagnosis}
+        </span>
+    </div>
 
 </div>
 
+<hr>
+
+<div class="card-row">
+
+    <div>
+        📝 <b>Remarks:</b><br>
+        ${patient.remarks || '-'}
+    </div>
+
+    <div>
+        📅 <b>Last Update:</b><br>
+        ${patient.last_update || '-'}
+    </div>
+
+</div>
 }
     async function showAllPatients(){
 
@@ -1906,68 +1913,57 @@ gap:15px;
 margin-bottom:18px;
 font-size:18px;
 ">
-    <span>
+    <div class="card-top">
+
+    <div>
         📁 <b>File No:</b> ${patient.file_no}
-    </span>
-
-    ${patient.needs_followup ? `
-    <span style="
-    color:#ff8c1a;
-    font-weight:700;
-    ">
-    🔔 Follow‑Up Needed
-    </span>
-    ` : ''}
-</div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-gap:20px;
-margin-bottom:15px;
-font-size:18px;
-">
-
-    <div>
-        👤 <b>${patient.name}</b>
     </div>
 
-    <div>
-        📞 <b>${patient.phone || '-'}</b>
+    <div class="card-actions">
+
+        🗑️ ✏️ 🔔
+
     </div>
 
 </div>
 
-<div style="
-margin-bottom:15px;
-font-size:17px;
-">
+<div class="card-row">
 
-🩺 <b>Diagnosis:</b>
+    <div>
+        👤 <b>Name:</b><br>
+        ${patient.name}
+    </div>
 
-<span class="diagnosis-badge">
-${patient.diagnosis}
-</span>
+    <div>
+        📞 <b>Mobile:</b><br>
+        ${patient.phone || '-'}
+    </div>
 
-</div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-gap:20px;
-font-size:17px;
-">
-
-<div>
-📝 <b>${patient.remarks || '-'}</b>
-</div>
-
-<div>
-📅 <b>${patient.last_update || '-'}</b>
-</div>
+    <div>
+        🩺 <b>Diagnosis:</b><br>
+        <span class="diagnosis-badge">
+            ${patient.diagnosis}
+        </span>
+    </div>
 
 </div>
-`;
+
+<hr>
+
+<div class="card-row">
+
+    <div>
+        📝 <b>Remarks:</b><br>
+        ${patient.remarks || '-'}
+    </div>
+
+    <div>
+        📅 <b>Last Update:</b><br>
+        ${patient.last_update || '-'}
+    </div>
+
+</div>
+    `;
     });
 
 }
@@ -2047,68 +2043,57 @@ gap:15px;
 margin-bottom:18px;
 font-size:18px;
 ">
-    <span>
+    <div class="card-top">
+
+    <div>
         📁 <b>File No:</b> ${patient.file_no}
-    </span>
-
-    ${patient.needs_followup ? `
-    <span style="
-    color:#ff8c1a;
-    font-weight:700;
-    ">
-    🔔 Follow‑Up Needed
-    </span>
-    ` : ''}
-</div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-gap:20px;
-margin-bottom:15px;
-font-size:18px;
-">
-
-    <div>
-        👤 <b>${patient.name}</b>
     </div>
 
-    <div>
-        📞 <b>${patient.phone || '-'}</b>
+    <div class="card-actions">
+
+        🗑️ ✏️ 🔔
+
     </div>
 
 </div>
 
-<div style="
-margin-bottom:15px;
-font-size:17px;
-">
+<div class="card-row">
 
-🩺 <b>Diagnosis:</b>
+    <div>
+        👤 <b>Name:</b><br>
+        ${patient.name}
+    </div>
 
-<span class="diagnosis-badge">
-${patient.diagnosis}
-</span>
+    <div>
+        📞 <b>Mobile:</b><br>
+        ${patient.phone || '-'}
+    </div>
 
-</div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-gap:20px;
-font-size:17px;
-">
-
-<div>
-📝 <b>${patient.remarks || '-'}</b>
-</div>
-
-<div>
-📅 <b>${patient.last_update || '-'}</b>
-</div>
+    <div>
+        🩺 <b>Diagnosis:</b><br>
+        <span class="diagnosis-badge">
+            ${patient.diagnosis}
+        </span>
+    </div>
 
 </div>
-`;
+
+<hr>
+
+<div class="card-row">
+
+    <div>
+        📝 <b>Remarks:</b><br>
+        ${patient.remarks || '-'}
+    </div>
+
+    <div>
+        📅 <b>Last Update:</b><br>
+        ${patient.last_update || '-'}
+    </div>
+
+</div>
+        `;
 
 
     });
