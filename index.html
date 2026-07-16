@@ -150,7 +150,7 @@ button{
         placeholder="Search File No or Name"
         onkeyup="searchPatients()"
         style="
-            width:100%;
+            width:60%;
             padding:16px;
             font-size:20px;
             border:1px solid #ccc;
@@ -160,6 +160,12 @@ button{
 
 </div>
 <div class="row">
+    <button
+style="background:#0d6efd;color:white;"
+onclick="searchPatients()">
+🔍 Search
+</button>
+    
 <button
 class="add"
 onclick="document.getElementById('excelFile').click()">
