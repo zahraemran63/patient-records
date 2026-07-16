@@ -1,92 +1,197 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Patient Records System</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<title>Diagnoses Management</title>
+
+/supabase-js@2"></script>
+
 <style>
-body{font-family:Arial,sans-serif;background:#f5f5f5;margin:20px;}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;}
-.welcome{background:#198754;color:#fff;padding:12px 20px;border-radius:30px;font-weight:bold;}
-.logout{background:#dc3545;color:#fff;border:none;padding:12px 20px;border-radius:8px;}
-.title{text-align:center;}
-.title .icon{font-size:90px;}
-.title h1{color:#0d6efd;font-size:55px;margin:10px 0;}
-.search-row{display:flex;gap:10px;margin-top:25px;}
-.search-row input{flex:1;padding:15px;font-size:18px;}
-button{cursor:pointer;border:none;border-radius:8px;}
-.btn-blue{background:#0d6efd;color:white;padding:15px 25px;}
-.btn-green{background:green;color:white;padding:15px 25px;}
-.filters{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px;}
-.filters button{padding:14px 20px;font-size:18px;}
-.all{background:#198754;color:white;font-weight:bold;}
-.follow{background:#fd7e14;color:white;}
-.important{background:#ffc107;color:black;}
-#results{margin-top:30px;}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    padding:20px;
+}
+
+h1{
+    color:#0d6efd;
+}
+
+.row{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+input{
+    flex:1;
+    padding:12px;
+    font-size:16px;
+}
+
+button{
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.add{
+    background:#198754;
+    color:white;
+}
+
+.delete{
+    background:#dc3545;
+    color:white;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
 </style>
 </head>
-  <script>
-async function addDiagnosis() {
 
-  const patientId = prompt("Patient ID");
-
-  if (!patientId) return;
-
-  const diagnosis = prompt("Diagnosis Name");
-
-  if (!diagnosis) return;
-
-  const { error } = await client
-    .from('diagnoses')
-    .insert({
-      patient_id: patientId,
-      diagnosis_name: diagnosis
-    });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  alert("Diagnosis Added");
-}
-</script>
 <body>
-<div class="topbar">
-<div class="welcome">🛡️ Welcome Zahy</div>
-<button class="logout">Logout</button>
-</div>
-<div class="title">
-<div class="icon">🩺❤️</div>
-<h1>Patient Records System</h1>
-</div>
-<div class="search-row">
-<input id="searchFile" placeholder="Search File No or Name">
 
-<button class="btn-blue">Search</button>
+<h1>🩺 Diagnoses Management</h1>
 
-<button class="btn-green">+ Add Patient</button>
+<div class="row">
 
-<button class="btn-green" onclick="addDiagnosis()">
-+ Add Diagnosis
+<input
+id="diagnosisName"
+placeholder="Diagnosis Name"
+>
+
+<button
+class="add"
+onclick="addDiagnosis()">
+Add Diagnosis
 </button>
 
 </div>
-<div class="filters">
-<button class="all">All Patients (0)</button>
-<button class="follow">🔔 Follow Up (0)</button>
-<button class="important">⭐ Important (0)</button>
-</div>
-<div id="results"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<div id="diagnosesContainer"></div>
 
 <script>
+
 const client = window.supabase.createClient(
-  'https://frgoxmfoucaqhevfmfbb.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88'
+'https://frgoxmfoucaqhevfmfbb.supabase.co',
+'YOUR_ANON_KEY'
 );
+
+loadDiagnoses();
+
+async function loadDiagnoses(){
+
+    const { data, error } = await client
+        .from('diagnoses')
+        .select('*')
+        .order('name');
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    const container =
+        document.getElementById('diagnosesContainer');
+
+    container.innerHTML='';
+
+    data.forEach(item=>{
+
+        container.innerHTML += `
+        <div class="card">
+
+            <b>${item.name}</b>
+
+            <button
+            class="delete"
+            onclick="deleteDiagnosis(${item.id})">
+            Delete
+            </button>
+
+        </div>
+        `;
+
+    });
+
+}
+
+async function addDiagnosis(){
+
+    const name =
+        document.getElementById('diagnosisName')
+        .value
+        .trim();
+
+    if(!name){
+        alert('Enter diagnosis name');
+        return;
+    }
+
+    const { data: existing } = await client
+        .from('diagnoses')
+        .select('id')
+        .ilike('name', name);
+
+    if(existing.length > 0){
+
+        alert('Diagnosis already exists');
+
+        return;
+    }
+
+    const { error } = await client
+        .from('diagnoses')
+        .insert({
+            name:name
+        });
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    document.getElementById('diagnosisName').value='';
+
+    loadDiagnoses();
+
+}
+
+async function deleteDiagnosis(id){
+
+    if(!confirm('Delete Diagnosis ?')){
+        return;
+    }
+
+    const { error } = await client
+        .from('diagnoses')
+        .delete()
+        .eq('id', id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    loadDiagnoses();
+
+}
+
 </script>
+
 </body>
 </html>
