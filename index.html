@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+    <script src="https://cdn.jsdelivr.nett/xlsx.full.min.js>
 <head>
     
 <meta charset="UTF-8">
@@ -119,7 +120,19 @@ button{
 <h1>🩺 Diagnoses Management</h1>
 
 <div class="row">
+<button
+class="add"
+onclick="document.getElementById('excelFile').click()">
+Import Excel
+</button>
 
+<input
+type="file"
+id="excelFile"
+accept=".xlsx,.xls"
+style="display:none"
+onchange="importExcel(event)">
+    
     <button
 class="add"
 onclick="openPatientModal()">
@@ -281,6 +294,111 @@ console.log(client);
         });
 
     button.classList.add('active');
+}
+    async function importExcel(event){
+
+    const file = event.target.files[0];
+
+    if(!file){
+        return;
+    }
+
+    const data = await file.arrayBuffer();
+
+    const workbook = XLSX.read(data);
+
+    for(const sheetName of workbook.SheetNames){
+
+        const diagnosisName = sheetName.trim();
+
+        // إنشاء التشخيص إذا غير موجود
+
+        const { data: existingDiagnosis } = await client
+            .from('diagnoses')
+            .select('id')
+            .ilike('name', diagnosisName);
+
+        if(!existingDiagnosis || existingDiagnosis.length === 0){
+
+            await client
+                .from('diagnoses')
+                .insert({
+                    name: diagnosisName
+                });
+
+        }
+
+        const sheet =
+            workbook.Sheets[sheetName];
+
+        const rows =
+            XLSX.utils.sheet_to_json(
+                sheet,
+                { header:1 }
+            );
+
+        for(let i = 4; i < rows.length; i++){
+
+            const row = rows[i];
+
+            if(!row){
+                continue;
+            }
+
+            const fileNo =
+                row[1] || '';
+
+            const name =
+                row[2] || '';
+
+            const remarks =
+                row[3] || '';
+
+            const lastUpdate =
+                row[4] || null;
+
+            // تجاهل الصف الفارغ بالكامل
+
+            if(
+                !fileNo &&
+                !name &&
+                !remarks &&
+                !lastUpdate
+            ){
+                continue;
+            }
+
+            await client
+                .from('patients')
+                .insert({
+
+                    file_no:
+                        String(fileNo),
+
+                    name:
+                        String(name),
+
+                    diagnosis:
+                        diagnosisName,
+
+                    remarks:
+                        String(remarks),
+
+                    last_update:
+                        lastUpdate || null
+
+                });
+
+        }
+
+    }
+
+    await loadDiagnoses();
+
+    await showAllPatients();
+
+    alert('Import completed successfully');
+
 }
     async function savePatient(){
 
