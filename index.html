@@ -878,11 +878,7 @@ console.log(client);
     await showAllPatients();
 }
     
-    await loadDiagnoses();
-    await showAllPatients();
 
-    alert('Patient moved to Follow Up');
-}
 async function exportExcel() {
 
     const btn =
@@ -1557,7 +1553,7 @@ if (followUp) {
     const { data: patients } = await client
         .from('patients')
         .select('id')
-        .eq('diagnosis', followUp.name);
+        .eq('needs_followup', true);
 
     const count = patients?.length || 0;
 
@@ -1807,7 +1803,16 @@ ${patient.needs_followup}
     <div style="margin-bottom:14px;font-size:18px;">
         📁 <b>File No:</b> ${patient.file_no}
     </div>
-
+${patient.needs_followup ? `
+<div style="
+margin-bottom:10px;
+font-size:15px;
+font-weight:700;
+color:#ff8c1a;
+">
+🔔 Follow‑Up Needed
+</div>
+` : ''}
     <div style="margin-bottom:12px;font-size:17px;">
         👤 <b>Name:</b> ${patient.name}
     </div>
