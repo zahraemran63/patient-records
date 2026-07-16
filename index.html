@@ -9,7 +9,26 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+#diagnosesContainer{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:20px;
+}
 
+.diagnosis-btn{
+    background:#0d6efd;
+    color:white;
+    padding:12px 20px;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+}
+
+.diagnosis-btn:hover{
+    background:#0b5ed7;
+}
+    
 body{
     font-family:Arial,sans-serif;
     background:#f5f5f5;
@@ -170,18 +189,14 @@ async function loadDiagnoses(){
 
     data.forEach(item=>{
 
-        container.innerHTML += `
-        <div class="card">
-
-            <b>${item.name}</b>
-
-            <button
-            class="delete"
-            onclick="deleteDiagnosis(${item.id})">
-            Delete
-            </button>
-
-        </div>
+container.innerHTML += `
+<button
+class="diagnosis-btn"
+onclick="deleteDiagnosis(${item.id})"
+title="Click to delete"
+>
+${item.name}
+</button>
         `;
 
     });
