@@ -454,16 +454,28 @@ async function loadDiagnoses(){
     const container =
         document.getElementById('diagnosesContainer');
 
+    const { count: allCount } = await client
+        .from('patients')
+        .select('*', {
+            count:'exact',
+            head:true
+        })
+        .neq('diagnosis', 'Explain');
+
     container.innerHTML = `
     <button
     class="diagnosis-btn"
     style="background:#198754;"
     onclick="showAllPatients()">
-    All Patients
+    All Patients (${allCount || 0})
     </button>
     `;
 
     for(const item of data){
+
+        if(item.name === 'Explain'){
+            continue;
+        }
 
         const { count } = await client
             .from('patients')
