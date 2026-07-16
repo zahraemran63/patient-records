@@ -1712,53 +1712,59 @@ async function showPatients(diagnosis){
  container.innerHTML += `
 <div class="card">
 
-<div style="font-size:22px;">
-📁 <b>File No:</b> ${patient.file_no}
-</div>
+<div class="card">
 
-<div style="margin-top:10px;">
-👤 <b>Name:</b> ${patient.name}
-</div>
+    <div style="margin-bottom:14px;font-size:18px;">
+        📁 <b>File No:</b> ${patient.file_no}
+    </div>
 
-<div style="margin-top:10px;">
-🩺 <b>Diagnosis:</b>
-<span class="diagnosis-badge">
-${patient.diagnosis}
-</span>
-</div>
+    <div style="margin-bottom:12px;font-size:17px;">
+        👤 <b>Name:</b> ${patient.name}
+    </div>
 
-<div style="margin-top:10px;">
-📝 <b>Remarks:</b> ${patient.remarks || '-'}
-</div>
+    <div style="margin-bottom:12px;font-size:17px;">
+        🩺 <b>Diagnosis:</b>
+        <span class="diagnosis-badge">
+            ${patient.diagnosis}
+        </span>
+    </div>
 
-<div style="margin-top:10px;">
-📅 <b>Last Update:</b> ${patient.last_update || '-'}
-</div>
+    <div style="margin-bottom:12px;font-size:17px;">
+        📝 <b>Remarks:</b> ${patient.remarks || '-'}
+    </div>
 
-<div style="margin-top:15px;display:flex;gap:10px;">
+    <div style="margin-bottom:18px;font-size:17px;">
+        📅 <b>Last Update:</b> ${patient.last_update || '-'}
+    </div>
 
-<button
-onclick="openEditPatient(${patient.id})"
-style="
-background:#ffc107;
-color:black;
-padding:10px 20px;
-border:none;
-border-radius:8px;">
-Edit
-</button>
+    <div style="
+        display:flex;
+        gap:12px;
+        border-top:1px solid #eee;
+        padding-top:15px;
+    ">
 
-<button
-onclick="deletePatient(${patient.id})"
-style="
-background:#dc3545;
-color:white;
-padding:10px 20px;
-border:none;
-border-radius:8px;">
-Delete
-</button>
-</div>
+        <button
+        onclick="openEditPatient(${patient.id})"
+        style="
+        background:#ffc107;
+        color:#000;
+        min-width:90px;
+        font-weight:600;">
+        Edit
+        </button>
+
+        <button
+        onclick="deletePatient(${patient.id})"
+        style="
+        background:#dc3545;
+        color:#fff;
+        min-width:90px;
+        font-weight:600;">
+        Delete
+        </button>
+
+    </div>
 
 </div>
 `;
