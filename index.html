@@ -342,10 +342,13 @@ alert('Patient Added Successfully');
 document.getElementById('fileNo').value='';
 document.getElementById('patientName').value='';
 document.getElementById('remarks').value='';
+
 await loadDiagnoses();
-showPatients(diagnosis);
+
+await showPatients(diagnosis);
 
 closePatientModal();
+        
 }
 function openDiagnosisModal(){
     document.getElementById('diagnosisModal').style.display='block';
@@ -472,51 +475,46 @@ async function loadDiagnoses(){
     const container =
         document.getElementById('diagnosesContainer');
 
-    const { count: allCount } = await client
+    const { data: allPatients } = await client
         .from('patients')
-        .select('*', {
-            count:'exact',
-            head:true
-        })
-       .not('diagnosis', 'ilike', 'explain')
+        .select('id')
+        .not('diagnosis', 'ilike', 'explain');
 
-container.innerHTML = `
-<button
-class="diagnosis-btn active"
-onclick="
-showAllPatients();
-setActiveDiagnosis(this);
-">
-All Patients (${allCount || 0})
-</button>
+    const allCount = allPatients?.length || 0;
+
+    container.innerHTML = `
+    <button
+    class="diagnosis-btn active"
+    onclick="
+    showAllPatients();
+    setActiveDiagnosis(this);
+    ">
+    All Patients (${allCount})
+    </button>
     `;
 
     for(const item of data){
 
-        
-
-        const { count } = await client
+        const { data: patients } = await client
             .from('patients')
-            .select('*', {
-                count:'exact',
-                head:true
-            })
+            .select('id')
             .eq('diagnosis', item.name);
+
+        const count = patients?.length || 0;
 
         container.innerHTML += `
         <button
         class="diagnosis-btn"
         onclick="
-showPatients('${item.name}');
-setActiveDiagnosis(this);
-">
-        ${item.name} (${count || 0})
+        showPatients('${item.name}');
+        setActiveDiagnosis(this);
+        ">
+        ${item.name} (${count})
         </button>
         `;
     }
 
 }
-
 async function addDiagnosis(){
 
     const name =
@@ -723,7 +721,8 @@ async function deleteDiagnosis(id){
         return;
     }
 
-    loadDiagnoses();
+   await loadDiagnoses();
+await showAllPatients();
 
 }
 async function deletePatient(id){
@@ -859,9 +858,9 @@ async function updatePatient(){
 
     closeEditPatientModal();
 
-    loadDiagnoses();
+await loadDiagnoses();
 
-    showAllPatients();
+await showAllPatients();
 }
 </script>
 <div id="editPatientModal" class="modal">
