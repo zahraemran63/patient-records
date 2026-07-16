@@ -8,7 +8,8 @@
 
 
 
-<script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>"></script>
+ <script src="https://cdn.jsdelivr.net/npm/exceljs/distjs"></script>"></script>
+   
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -379,21 +380,66 @@ console.log(client);
 }
 async function exportExcel() {
 
-    if(typeof XLSX === 'undefined'){
-        alert('XLSX Library Not Loaded');
-        return;
-    }
-
     const btn =
         document.getElementById('exportBtn');
 
     btn.disabled = true;
     btn.innerHTML = '⏳ Exporting...';
 
-    try{
+    try {
 
         const workbook =
-            XLSX.utils.book_new();
+            new ExcelJS.Workbook();
+
+        workbook.creator =
+            'Patient Records System';
+
+        workbook.created =
+            new Date();
+
+        const summarySheet =
+            workbook.addWorksheet(
+                'Summary'
+            );
+
+        summarySheet.columns = [
+            {
+                header: 'Diagnosis',
+                key: 'diagnosis',
+                width: 40
+            },
+            {
+                header: 'Patients',
+                key: 'count',
+                width: 20
+            }
+        ];
+
+        summarySheet.getRow(1).eachCell(cell => {
+
+            cell.font = {
+                bold: true,
+                color: {
+                    argb: 'FFFFFFFF'
+                }
+            };
+
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: {
+                    argb: '1F4E78'
+                }
+            };
+
+            cell.border = {
+                top: { style:'thin' },
+                left:{ style:'thin' },
+                bottom:{ style:'thin' },
+                right:{ style:'thin' }
+            };
+
+        });
 
         const { data: diagnoses } =
             await client
@@ -401,14 +447,7 @@ async function exportExcel() {
                 .select('*')
                 .order('name');
 
-        const summaryRows = [];
-
-        summaryRows.push([
-            'Diagnosis',
-            'Total Patients'
-        ]);
-
-        for(const diag of diagnoses){
+        for (const diag of diagnoses) {
 
             if(
                 diag.name.toLowerCase() ===
@@ -428,129 +467,215 @@ async function exportExcel() {
                 )
                 .order('file_no');
 
-            summaryRows.push([
-                diag.name,
-                patients.length
-            ]);
+            summarySheet.addRow({
+                diagnosis: diag.name,
+                count: patients.length
+            });
 
-            const exportDate =
-                new Date()
-                .toLocaleDateString();
+            const sheet =
+                workbook.addWorksheet(
+                    diag.name.substring(0,31)
+                );
 
-            const rows = [
+            sheet.mergeCells('A1:E1');
 
-                [
-                    'PATIENT RECORDS SYSTEM'
-                ],
+            sheet.getCell('A1').value =
+                'PATIENT RECORDS SYSTEM';
 
-                [
-                    `Diagnosis: ${diag.name}`
-                ],
+            sheet.getCell('A1').font = {
+                size:18,
+                bold:true,
+                color:{
+                    argb:'FFFFFFFF'
+                }
+            };
 
-                [
-                    `Total Patients: ${patients.length}`
-                ],
+            sheet.getCell('A1').alignment = {
+                horizontal:'center'
+            };
 
-                [
-                    `Export Date: ${exportDate}`
-                ],
+            sheet.getCell('A1').fill = {
+                type:'pattern',
+                pattern:'solid',
+                fgColor:{
+                    argb:'1F4E78'
+                }
+            };
 
-                [],
+            sheet.mergeCells('A2:E2');
 
-                [
-                    'S.No',
-                    'MRN',
-                    'Name',
-                    'Remark',
-                    'Last Update'
-                ]
+            sheet.getCell('A2').value =
+                `Diagnosis: ${diag.name}`;
 
+            sheet.mergeCells('A3:E3');
+
+            sheet.getCell('A3').value =
+                `Total Patients: ${patients.length}`;
+
+            sheet.mergeCells('A4:E4');
+
+            sheet.getCell('A4').value =
+                `Export Date: ${new Date().toLocaleDateString()}`;
+
+            sheet.columns = [
+                {
+                    header:'S.No',
+                    key:'no',
+                    width:10
+                },
+                {
+                    header:'MRN',
+                    key:'mrn',
+                    width:20
+                },
+                {
+                    header:'Name',
+                    key:'name',
+                    width:35
+                },
+                {
+                    header:'Remark',
+                    key:'remark',
+                    width:50
+                },
+                {
+                    header:'Last Update',
+                    key:'update',
+                    width:20
+                }
             ];
 
-            patients.forEach(
-                (
-                    patient,
-                    index
-                ) => {
+            const headerRow =
+                sheet.getRow(6);
 
-                rows.push([
-                    index + 1,
-                    patient.file_no || '',
-                    patient.name || '',
-                    patient.remarks || '',
-                    patient.last_update || ''
-                ]);
+            headerRow.values = [
+                'S.No',
+                'MRN',
+                'Name',
+                'Remark',
+                'Last Update'
+            ];
+
+            headerRow.eachCell(cell => {
+
+                cell.font = {
+                    bold:true,
+                    color:{
+                        argb:'FFFFFFFF'
+                    }
+                };
+
+                cell.fill = {
+                    type:'pattern',
+                    pattern:'solid',
+                    fgColor:{
+                        argb:'4472C4'
+                    }
+                };
+
+                cell.alignment = {
+                    horizontal:'center'
+                };
+
+                cell.border = {
+                    top:{style:'thin'},
+                    left:{style:'thin'},
+                    bottom:{style:'thin'},
+                    right:{style:'thin'}
+                };
 
             });
 
-            const worksheet =
-                XLSX.utils.aoa_to_sheet(
-                    rows
-                );
+            patients.forEach(
+                (patient,index) => {
 
-            worksheet['!cols'] = [
+                const row =
+                    sheet.addRow({
 
-                { wch: 8  },
-                { wch: 18 },
-                { wch: 35 },
-                { wch: 50 },
-                { wch: 18 }
+                    no:index+1,
 
+                    mrn:
+                        patient.file_no || '',
+
+                    name:
+                        patient.name || '',
+
+                    remark:
+                        patient.remarks || '',
+
+                    update:
+                        patient.last_update || ''
+
+                });
+
+                row.eachCell(cell => {
+
+                    cell.border = {
+                        top:{style:'thin'},
+                        left:{style:'thin'},
+                        bottom:{style:'thin'},
+                        right:{style:'thin'}
+                    };
+
+                });
+
+                if(index % 2 === 0){
+
+                    row.eachCell(cell => {
+
+                        cell.fill = {
+                            type:'pattern',
+                            pattern:'solid',
+                            fgColor:{
+                                argb:'F3F6FA'
+                            }
+                        };
+
+                    });
+                }
+
+            });
+
+            sheet.views = [
+                {
+                    state:'frozen',
+                    ySplit:6
+                }
             ];
 
-            worksheet['!autofilter'] = {
-                ref:
-                `A6:E${rows.length}`
+            sheet.autoFilter = {
+                from:'A6',
+                to:'E6'
             };
-
-            XLSX.utils
-                .book_append_sheet(
-                    workbook,
-                    worksheet,
-                    diag.name
-                        .substring(
-                            0,
-                            31
-                        )
-                );
         }
 
-        const summarySheet =
-            XLSX.utils.aoa_to_sheet(
-                summaryRows
+        const buffer =
+            await workbook.xlsx.writeBuffer();
+
+        const blob =
+            new Blob(
+                [buffer],
+                {
+                    type:
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }
             );
 
-        summarySheet['!cols'] = [
-            { wch: 35 },
-            { wch: 20 }
-        ];
-
-        XLSX.utils.book_append_sheet(
-            workbook,
-            summarySheet,
-            'Summary'
-        );
-
-        workbook.SheetNames.unshift(
-            workbook.SheetNames.pop()
-        );
-
-        workbook.Sheets[
-            'Summary'
-        ] =
-        workbook.Sheets[
-            'Summary'
-        ];
+        const link =
+            document.createElement('a');
 
         const today =
             new Date()
             .toISOString()
             .split('T')[0];
 
-        XLSX.writeFile(
-            workbook,
-            `Patient_Records_${today}.xlsx`
-        );
+        link.href =
+            URL.createObjectURL(blob);
+
+        link.download =
+            `Patient_Records_${today}.xlsx`;
+
+        link.click();
 
     }
     catch(error){
