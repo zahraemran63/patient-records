@@ -123,6 +123,7 @@ onclick="openDiagnosisModal()">
 </div>
 
 <div id="diagnosesContainer"></div>
+    <div id="patientsContainer"></div>
     <div id="diagnosisModal" class="modal">
 
     <div class="modal-content">
@@ -192,12 +193,11 @@ async function loadDiagnoses(){
 container.innerHTML += `
 <button
 class="diagnosis-btn"
-onclick="deleteDiagnosis(${item.id})"
-title="Click to delete"
+onclick="showPatients('${item.name}')"
 >
-${item.name}
+${item.name} (0)
 </button>
-        `;
+`;
 
     });
 
@@ -245,7 +245,37 @@ closeDiagnosisModal();
 
 loadDiagnoses();
 }
+async function showPatients(diagnosis){
 
+    const { data, error } = await client
+        .from('patients')
+        .select('*')
+        .eq('diagnosis', diagnosis);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    const container =
+        document.getElementById('patientsContainer');
+
+    container.innerHTML = '';
+
+    data.forEach(patient => {
+
+        container.innerHTML += `
+        <div class="card">
+            <div>
+                <b>${patient.file_no}</b><br>
+                ${patient.name}
+            </div>
+        </div>
+        `;
+
+    });
+
+}
 async function deleteDiagnosis(id){
 
     if(!confirm('Delete Diagnosis ?')){
