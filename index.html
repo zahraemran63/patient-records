@@ -187,7 +187,25 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 
 <style>
+.card.followup-card{
 
+    background:#efe6dc;
+
+    border-left:6px solid #ff8c1a;
+
+    box-shadow:
+        0 10px 25px rgba(255,140,26,.15);
+}
+
+.card.followup-card::before{
+
+    background:
+    linear-gradient(
+        180deg,
+        #ff8c1a,
+        #ffc107
+    );
+}
     
 .followup-icon{
     position:absolute;
@@ -204,6 +222,7 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 .followup-icon.active{
     color:#ff8c1a;
+    text-shadow:0 0 8px rgba(255,140,26,.35);
 }
 
 .followup-icon:hover{
@@ -1686,7 +1705,7 @@ loadDiagnoses();
     data.forEach(patient => {
 
         container.innerHTML += `
-<div class="card">
+<div class="card followup-card">
 
 <span
 class="followup-icon active"
@@ -1797,7 +1816,8 @@ Number(a.needs_followup)
     data.forEach(patient => {
 
        container.innerHTML += `
-<div class="card">
+<div class="card ${patient.needs_followup ? 'followup-card' : ''}">
+
 <span
 class="followup-icon ${patient.needs_followup ? 'active' : ''}"
 onclick="
@@ -1910,7 +1930,7 @@ Number(a.needs_followup)
 
  container.innerHTML += `
 
-<div class="card">
+<div class="card ${patient.needs_followup ? 'followup-card' : ''}">
 <span
 class="followup-icon ${patient.needs_followup ? 'active' : ''}"
 onclick="
