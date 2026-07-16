@@ -342,7 +342,7 @@ alert('Patient Added Successfully');
 document.getElementById('fileNo').value='';
 document.getElementById('patientName').value='';
 document.getElementById('remarks').value='';
-
+await loadDiagnoses();
 showPatients(diagnosis);
 
 closePatientModal();
@@ -478,7 +478,7 @@ async function loadDiagnoses(){
             count:'exact',
             head:true
         })
-        .neq('diagnosis', 'Explain');
+       .not('diagnosis', 'ilike', 'explain')
 
 container.innerHTML = `
 <button
@@ -564,7 +564,7 @@ async function showAllPatients(){
     const { data, error } = await client
         .from('patients')
         .select('*')
-        .neq('diagnosis', 'Explain');
+        .not('diagnosis', 'ilike', 'explain');
 
     if(error){
         alert(error.message);
