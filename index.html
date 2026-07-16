@@ -454,13 +454,15 @@ async function loadDiagnoses(){
     const container =
         document.getElementById('diagnosesContainer');
 
-    container.innerHTML='';
+    container.innerHTML = `
     <button
-class="diagnosis-btn"
-style="background:#198754;"
-onclick="showAllPatients()">
-All Patients
-</button>
+    class="diagnosis-btn"
+    style="background:#198754;"
+    onclick="showAllPatients()">
+    All Patients
+    </button>
+    `;
+
     for(const item of data){
 
         const { count } = await client
@@ -474,8 +476,7 @@ All Patients
         container.innerHTML += `
         <button
         class="diagnosis-btn"
-        onclick="showPatients('${item.name}')"
-        >
+        onclick="showPatients('${item.name}')">
         ${item.name} (${count || 0})
         </button>
         `;
@@ -547,17 +548,56 @@ async function showAllPatients(){
         container.innerHTML += `
         <div class="card">
 
-            <b>File No:</b> ${patient.file_no}<br>
-            <b>Name:</b> ${patient.name}<br>
-            <b>Diagnosis:</b> ${patient.diagnosis}<br>
-            <b>Remarks:</b> ${patient.remarks || '-'}<br>
-            <b>Last Update:</b> ${patient.last_update || '-'}
+        <div style="font-size:22px;">
+        📁 <b>File No:</b> ${patient.file_no}
+        </div>
+
+        <div style="margin-top:10px;">
+        👤 <b>Name:</b> ${patient.name}
+        </div>
+
+        <div style="margin-top:10px;">
+        🩺 <b>Diagnosis:</b> ${patient.diagnosis}
+        </div>
+
+        <div style="margin-top:10px;">
+        📝 <b>Remarks:</b> ${patient.remarks || '-'}
+        </div>
+
+        <div style="margin-top:10px;">
+        📅 <b>Last Update:</b> ${patient.last_update || '-'}
+        </div>
+
+        <div style="margin-top:15px;display:flex;gap:10px;">
+
+        <button
+        style="
+        background:#ffc107;
+        color:black;
+        padding:10px 20px;
+        border:none;
+        border-radius:8px;">
+        Edit
+        </button>
+
+        <button
+        style="
+        background:#dc3545;
+        color:white;
+        padding:10px 20px;
+        border:none;
+        border-radius:8px;">
+        Delete
+        </button>
+
+        </div>
 
         </div>
         `;
+
     });
 
-}    
+}
 async function showPatients(diagnosis){
 
     const { data, error } = await client
