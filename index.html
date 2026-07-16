@@ -264,7 +264,15 @@ onclick="openDeleteDiagnosisModal()">
     </div>
 
 </div>
-async function savePatient(){
+
+<script>
+
+const client = window.supabase.createClient(
+'https://frgoxmfoucaqhevfmfbb.supabase.co',
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88'
+);
+console.log(client);
+    async function savePatient(){
 
     const fileNo =
         document.getElementById('fileNo').value.trim();
@@ -324,13 +332,6 @@ async function savePatient(){
 
     closePatientModal();
 }
-<script>
-
-const client = window.supabase.createClient(
-'https://frgoxmfoucaqhevfmfbb.supabase.co',
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZ294bWZvdWNhcWhldmZtZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMTMyOTksImV4cCI6MjA5OTY4OTI5OX0.P_T6rCs7k0MY5YPvPHG7XYbfJrY7TdmFnYooolh6r88'
-);
-console.log(client);
 function openDiagnosisModal(){
     document.getElementById('diagnosisModal').style.display='block';
 }
