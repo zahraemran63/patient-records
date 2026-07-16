@@ -33,7 +33,8 @@ function login(){
         .getElementById(
             'loginPassword'
         )
-        .value;
+        .value
+        .trim();
 
     const welcome =
         document.getElementById(
@@ -41,6 +42,11 @@ function login(){
         );
 
     if(password === '3130'){
+
+        sessionStorage.setItem(
+            'loggedIn',
+            'zahy'
+        );
 
         welcome.innerHTML =
             '👋 Welcome Zahy';
@@ -55,6 +61,11 @@ function login(){
     }
 
     if(password === '000'){
+
+        sessionStorage.setItem(
+            'loggedIn',
+            'admin'
+        );
 
         welcome.innerHTML =
             '🛡️ Welcome Admin';
@@ -71,9 +82,8 @@ function login(){
     document.getElementById(
         'loginError'
     ).innerHTML =
-        'Incorrect password';
+        '❌ Incorrect Password';
 }
-
 document.addEventListener(
     'keydown',
     e => {
@@ -289,6 +299,20 @@ button{
 </div>
 
 <div id="welcomeUser"></div>
+        <button
+id="logoutBtn"
+onclick="logout()"
+style="
+position:fixed;
+top:15px;
+right:15px;
+display:none;
+background:#dc3545;
+color:white;
+z-index:1000;
+">
+Logout
+</button>
 
     <div style="text-align:center;margin-bottom:25px;">
 
@@ -496,6 +520,12 @@ style="width:100%;height:70px;"></textarea>
 </div>
 
 <script>
+    function logout(){
+
+    sessionStorage.clear();
+
+    location.reload();
+}
 function searchPatients(){
 
     const keyword =
