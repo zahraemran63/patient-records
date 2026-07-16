@@ -189,31 +189,25 @@ console.log('ExcelJS =', typeof ExcelJS);
 <style>
 
     
-
-.followup-btn{
+.followup-icon{
     position:absolute;
-    top:15px;
-    right:15px;
+    top:18px;
+    right:20px;
 
-    background:#ff8c1a;
-    color:white;
+    font-size:28px;
+    cursor:pointer;
 
-    border:none;
-    border-radius:12px;
-
-    padding:8px 12px;
-
-    font-size:14px;
-    font-weight:700;
-
-    box-shadow:0 4px 12px rgba(255,140,26,.3);
+    color:#c7c7c7;
 
     transition:.2s;
 }
 
-.followup-btn:hover{
-    background:#e67e00;
-    transform:translateY(-2px);
+.followup-icon.active{
+    color:#ff8c1a;
+}
+
+.followup-icon:hover{
+    transform:scale(1.15);
 }
     
 .diagnosis-btn.active{
@@ -846,6 +840,42 @@ console.log(client);
         });
 
     button.classList.add('active');
+}
+    async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
+
+    if(!needsFollowup){
+
+        const { error } = await client
+            .from('patients')
+            .update({
+                needs_followup: true,
+                original_diagnosis: currentDiagnosis
+            })
+            .eq('id', id);
+
+        if(error){
+            alert(error.message);
+            return;
+        }
+
+    } else {
+
+        const { error } = await client
+            .from('patients')
+            .update({
+                needs_followup: false
+            })
+            .eq('id', id);
+
+        if(error){
+            alert(error.message);
+            return;
+        }
+
+    }
+
+    await loadDiagnoses();
+    await showAllPatients();
 }
     async function moveToFollowUp(id){
 
@@ -1674,15 +1704,29 @@ async function showAllPatients(){
 
        container.innerHTML += `
 <div class="card">
-<button
-class="followup-btn"
-onclick="moveToFollowUp(${patient.id})">
-🔔 Review Needed
-</button>
+<span
+class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+onclick="
+toggleFollowUp(
+${patient.id},
+'${patient.diagnosis}',
+${patient.needs_followup}
+)">
+🔔
+</span>
     <div style="margin-bottom:14px;font-size:18px;">
         📁 <b>File No:</b> ${patient.file_no}
     </div>
-
+${patient.needs_followup ? `
+<div style="
+margin-bottom:10px;
+font-size:15px;
+font-weight:700;
+color:#ff8c1a;
+">
+🔔 Follow‑Up Needed
+</div>
+` : ''}
     <div style="margin-bottom:12px;font-size:17px;">
         👤 <b>Name:</b> ${patient.name}
     </div>
