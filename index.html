@@ -190,7 +190,32 @@ console.log('ExcelJS =', typeof ExcelJS);
 
     
 
+.followup-btn{
+    position:absolute;
+    top:15px;
+    right:15px;
 
+    background:#ff8c1a;
+    color:white;
+
+    border:none;
+    border-radius:12px;
+
+    padding:8px 12px;
+
+    font-size:14px;
+    font-weight:700;
+
+    box-shadow:0 4px 12px rgba(255,140,26,.3);
+
+    transition:.2s;
+}
+
+.followup-btn:hover{
+    background:#e67e00;
+    transform:translateY(-2px);
+}
+    
 .diagnosis-btn.active{
     background:#198754 !important;
     color:white !important;
@@ -821,6 +846,25 @@ console.log(client);
         });
 
     button.classList.add('active');
+}
+    async function moveToFollowUp(id){
+
+    const { error } = await client
+        .from('patients')
+        .update({
+            diagnosis:'🔔 Follow Up'
+        })
+        .eq('id', id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    await loadDiagnoses();
+    await showAllPatients();
+
+    alert('Patient moved to Follow Up');
 }
 async function exportExcel() {
 
@@ -1630,7 +1674,11 @@ async function showAllPatients(){
 
        container.innerHTML += `
 <div class="card">
-
+<button
+class="followup-btn"
+onclick="moveToFollowUp(${patient.id})">
+🔔 Review Needed
+</button>
     <div style="margin-bottom:14px;font-size:18px;">
         📁 <b>File No:</b> ${patient.file_no}
     </div>
@@ -1710,7 +1758,11 @@ async function showPatients(diagnosis){
  container.innerHTML += `
 
 <div class="card">
-
+<button
+class="followup-btn"
+onclick="moveToFollowUp(${patient.id})">
+🔔 Review Needed
+</button>
     <div style="margin-bottom:14px;font-size:18px;">
         📁 <b>File No:</b> ${patient.file_no}
     </div>
