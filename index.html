@@ -26,6 +26,32 @@ button{cursor:pointer;border:none;border-radius:8px;}
 #results{margin-top:30px;}
 </style>
 </head>
+  <script>
+async function addDiagnosis() {
+
+  const patientId = prompt("Patient ID");
+
+  if (!patientId) return;
+
+  const diagnosis = prompt("Diagnosis Name");
+
+  if (!diagnosis) return;
+
+  const { error } = await client
+    .from('diagnoses')
+    .insert({
+      patient_id: patientId,
+      diagnosis_name: diagnosis
+    });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Diagnosis Added");
+}
+</script>
 <body>
 <div class="topbar">
 <div class="welcome">🛡️ Welcome Zahy</div>
@@ -37,8 +63,15 @@ button{cursor:pointer;border:none;border-radius:8px;}
 </div>
 <div class="search-row">
 <input id="searchFile" placeholder="Search File No or Name">
+
 <button class="btn-blue">Search</button>
+
 <button class="btn-green">+ Add Patient</button>
+
+<button class="btn-green" onclick="addDiagnosis()">
++ Add Diagnosis
+</button>
+
 </div>
 <div class="filters">
 <button class="all">All Patients (0)</button>
