@@ -182,6 +182,23 @@ console.log('ExcelJS =', typeof ExcelJS);
 .diagnosis-btn:hover{
     background:#0b5ed7;
 }
+    .special-followup{
+    background:#8e7dff !important;
+    color:white !important;
+}
+
+.special-followup:hover{
+    background:#7866f0 !important;
+}
+
+.special-explain{
+    background:#57b8a4 !important;
+    color:white !important;
+}
+
+.special-explain:hover{
+    background:#46a18f !important;
+}
     
 body{
     font-family:Arial,sans-serif;
@@ -1278,26 +1295,84 @@ async function loadDiagnoses(){
     </button>
     `;
 
-    for(const item of data){
+   const followUp =
+    data.find(x => x.name === '🔔 Follow Up');
 
-        const { data: patients } = await client
-            .from('patients')
-            .select('id')
-            .eq('diagnosis', item.name);
+const explain =
+    data.find(x => x.name === 'Explain');
 
-        const count = patients?.length || 0;
 
-        container.innerHTML += `
-        <button
-        class="diagnosis-btn"
-        onclick="
-        showPatients('${item.name}');
-        setActiveDiagnosis(this);
-        ">
-        ${item.name} (${count})
-        </button>
-        `;
+if (followUp) {
+
+    const { data: patients } = await client
+        .from('patients')
+        .select('id')
+        .eq('diagnosis', followUp.name);
+
+    const count = patients?.length || 0;
+
+    container.innerHTML += `
+    <button
+    class="diagnosis-btn special-followup"
+    onclick="
+    showPatients('${followUp.name}');
+    setActiveDiagnosis(this);
+    ">
+    ${followUp.name} (${count})
+    </button>
+    `;
+}
+
+
+if (explain) {
+
+    const { data: patients } = await client
+        .from('patients')
+        .select('id')
+        .eq('diagnosis', explain.name);
+
+    const count = patients?.length || 0;
+
+    container.innerHTML += `
+    <button
+    class="diagnosis-btn special-explain"
+    onclick="
+    showPatients('${explain.name}');
+    setActiveDiagnosis(this);
+    ">
+    ${explain.name} (${count})
+    </button>
+    `;
+}
+
+
+for(const item of data){
+
+    if(
+        item.name === '🔔 Follow Up' ||
+        item.name === 'Explain'
+    ){
+        continue;
     }
+
+    const { data: patients } = await client
+        .from('patients')
+        .select('id')
+        .eq('diagnosis', item.name);
+
+    const count = patients?.length || 0;
+
+    container.innerHTML += `
+    <button
+    class="diagnosis-btn"
+    onclick="
+    showPatients('${item.name}');
+    setActiveDiagnosis(this);
+    ">
+    ${item.name} (${count})
+    </button>
+    `;
+}
 
 }
 async function addDiagnosis(){
