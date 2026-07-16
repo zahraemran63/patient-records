@@ -1530,16 +1530,16 @@ async function loadDiagnoses(){
 
     const allCount = allPatients?.length || 0;
 
-    container.innerHTML = `
-    <button
-    class="diagnosis-btn active"
+container.innerHTML = `
+<button
+class="diagnosis-btn active"
 onclick="
-showFollowUpPatients();
+showAllPatients();
 setActiveDiagnosis(this);
-    ">
-    All Patients (${allCount})
-    </button>
-    `;
+">
+All Patients (${allCount})
+</button>
+`;
 
    const followUp =
     data.find(x => x.name === '🔔 Follow Up');
@@ -1671,15 +1671,15 @@ loadDiagnoses();
     const { data, error } = await client
         .from('patients')
         .select('*')
-        .eq('needs_followup', t*ue);
+        .eq('needs_followup', true);
 
     if(error){
-        alert*error.message);
+        alert(error.message);
         return;
   * }
 
     const container =
-        *ocument.getElementById('patientsCo*tainer');
+       document.getElementById('patientsContainer');
 
     container.innerHTML*= '';
 
