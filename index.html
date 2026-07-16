@@ -13,6 +13,80 @@
     <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"</script>
     
 <script>
+    document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        document.body.style.display = 'none';
+
+        setTimeout(() => {
+            document.body.style.display = '';
+        }, 50);
+
+    }
+);
+
+function login(){
+
+    const password =
+        document
+        .getElementById(
+            'loginPassword'
+        )
+        .value;
+
+    const welcome =
+        document.getElementById(
+            'welcomeUser'
+        );
+
+    if(password === '3130'){
+
+        welcome.innerHTML =
+            '👋 Welcome Zahy';
+
+        document
+        .getElementById(
+            'loginOverlay'
+        )
+        .style.display = 'none';
+
+        return;
+    }
+
+    if(password === '000'){
+
+        welcome.innerHTML =
+            '🛡️ Welcome Admin';
+
+        document
+        .getElementById(
+            'loginOverlay'
+        )
+        .style.display = 'none';
+
+        return;
+    }
+
+    document.getElementById(
+        'loginError'
+    ).innerHTML =
+        'Incorrect password';
+}
+
+document.addEventListener(
+    'keydown',
+    e => {
+
+        if(
+            e.key === 'Enter'
+        ){
+
+            login();
+        }
+
+    }
+);
 console.log('ExcelJS =', typeof ExcelJS);
 </script>
 
@@ -134,6 +208,31 @@ button{
 
 </style>
 </head>
+<div id="loginOverlay">
+    <div class="login-box">
+
+        <div class="login-logo">🩺</div>
+
+        <h2>Patient Records System</h2>
+
+        <p>Please enter password</p>
+
+        <input
+            type="password"
+            id="loginPassword"
+            placeholder="Password"
+        >
+
+        <button onclick="login()">
+            Login
+        </button>
+
+        <div id="loginError"></div>
+
+    </div>
+</div>
+
+<div id="welcomeUser"></div>
 
 <body>
     <div style="text-align:center;margin-bottom:25px;">
