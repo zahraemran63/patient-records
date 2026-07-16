@@ -312,17 +312,15 @@ button{
 
     background:white;
 
-    padding:24px;
+    padding:24px 24px 24px 30px;
 
     margin-top:18px;
 
     border-radius:20px;
 
-    line-height:1.6;
+    overflow:hidden;
 
     border:none;
-
-    overflow:hidden;
 
     box-shadow:
         0 10px 25px rgba(0,0,0,.08);
@@ -334,7 +332,7 @@ button{
     transform:translateY(-3px);
 
     box-shadow:
-        0 16px 35px rgba(0,0,0,.12);
+        0 15px 35px rgba(0,0,0,.12);
 }
     .card::before{
 
@@ -342,52 +340,49 @@ button{
 
     position:absolute;
 
-    top:-60px;
-    right:-60px;
+    top:0;
+    left:0;
 
-    width:140px;
-    height:140px;
-
-    border-radius:50%;
+    width:8px;
+    height:100%;
 
     background:
     linear-gradient(
-        135deg,
-        rgba(13,110,253,.12),
-        rgba(25,135,84,.12)
-    );
-}
-
-.card::after{
-
-    content:'';
-
-    position:absolute;
-
-    bottom:-40px;
-    left:-40px;
-
-    width:90px;
-    height:90px;
-
-    border-radius:50%;
-
-    background:
-    rgba(13,110,253,.08);
-}
-    .card{
-    border-top:4px solid transparent;
-
-    border-image:
-    linear-gradient(
-        90deg,
+        180deg,
         #0d6efd,
         #198754
-    ) 1;
+    );
 }
-    .card .shine{
+    .card::after{
+
+    content:'✚';
+
     position:absolute;
-    inset:0;
+
+    top:10px;
+    right:20px;
+
+    font-size:90px;
+
+    font-weight:bold;
+
+    color:rgba(13,110,253,.05);
+
+    pointer-events:none;
+}
+    .card::after{
+
+    content:'🩺';
+
+    position:absolute;
+
+    right:15px;
+    bottom:10px;
+
+    font-size:70px;
+
+    opacity:.05;
+
     pointer-events:none;
 }
 #loginOverlay{
