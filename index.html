@@ -1928,10 +1928,10 @@ async function showFollowUpPatients(){
     const { data, error } = await client
         .from('patients')
         .select('*')
-        .eq('diagnosis', diag*osis);
+        .eq('diagnosis', diagnosis);
 
     if(error){
-        ale*t(error.message);
+        alert(error.message);
         return;
 *   }
 
@@ -1942,14 +1942,14 @@ async function showFollowUpPatients(){
         Number(a.needs_*ollowup)
     );
 
-    const contain*r =
+    const container =
         document.getElementByI*('patientsContainer');
 
     contai*er.innerHTML = '';
 
     data.forEa*h(patient => {
 
-        container.*nnerHTML += `
+        container.innerHTML += `
 <div class="card ${p*tient.needs_followup ? 'followup-c*rd' : ''}">
 
     <div class="card-*op">
