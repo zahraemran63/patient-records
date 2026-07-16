@@ -377,52 +377,101 @@ console.log(client);
 
     button.classList.add('active');
 }
-    async function exportExcel() {
-        if(typeof XLSX === 'undefined'){
-    alert('XLSX Library Not Loaded');
-    return;
-}
+async function exportExcel() {
+
+    if(typeof XLSX === 'undefined'){
+        alert('XLSX Library Not Loaded');
+        return;
+    }
+
     const btn =
         document.getElementById('exportBtn');
 
     btn.disabled = true;
     btn.innerHTML = '⏳ Exporting...';
 
-    try {
+    try{
 
-        const { data: diagnoses } = await client
-            .from('diagnoses')
-            .select('*')
-            .order('name');
-
-       const workbook =
+        const workbook =
             XLSX.utils.book_new();
 
-        for (const diag of diagnoses) {
+        const { data: diagnoses } =
+            await client
+                .from('diagnoses')
+                .select('*')
+                .order('name');
 
-            if (
-                diag.name.toLowerCase() === 'explain'
-            ) {
+        const summaryRows = [];
+
+        summaryRows.push([
+            'Diagnosis',
+            'Total Patients'
+        ]);
+
+        for(const diag of diagnoses){
+
+            if(
+                diag.name.toLowerCase() ===
+                'explain'
+            ){
                 continue;
             }
 
-            const { data: patients } =
-                await client
-                    .from('patients')
-                    .select('*')
-                    .eq('diagnosis', diag.name);
+            const {
+                data: patients
+            } = await client
+                .from('patients')
+                .select('*')
+                .eq(
+                    'diagnosis',
+                    diag.name
+                )
+                .order('file_no');
 
-            const rows = [];
-
-            rows.push([
-                'S.No',
-                'MRN',
-                'Name',
-                'Remark',
-                'Last Update'
+            summaryRows.push([
+                diag.name,
+                patients.length
             ]);
 
-            patients.forEach((patient, index) => {
+            const exportDate =
+                new Date()
+                .toLocaleDateString();
+
+            const rows = [
+
+                [
+                    'PATIENT RECORDS SYSTEM'
+                ],
+
+                [
+                    `Diagnosis: ${diag.name}`
+                ],
+
+                [
+                    `Total Patients: ${patients.length}`
+                ],
+
+                [
+                    `Export Date: ${exportDate}`
+                ],
+
+                [],
+
+                [
+                    'S.No',
+                    'MRN',
+                    'Name',
+                    'Remark',
+                    'Last Update'
+                ]
+
+            ];
+
+            patients.forEach(
+                (
+                    patient,
+                    index
+                ) => {
 
                 rows.push([
                     index + 1,
@@ -435,35 +484,88 @@ console.log(client);
             });
 
             const worksheet =
-                XLSX.utils.aoa_to_sheet(rows);
+                XLSX.utils.aoa_to_sheet(
+                    rows
+                );
 
-            XLSX.utils.book_append_sheet(
-                workbook,
-                worksheet,
-                diag.name.substring(0, 31)
+            worksheet['!cols'] = [
+
+                { wch: 8  },
+                { wch: 18 },
+                { wch: 35 },
+                { wch: 50 },
+                { wch: 18 }
+
+            ];
+
+            worksheet['!autofilter'] = {
+                ref:
+                `A6:E${rows.length}`
+            };
+
+            XLSX.utils
+                .book_append_sheet(
+                    workbook,
+                    worksheet,
+                    diag.name
+                        .substring(
+                            0,
+                            31
+                        )
+                );
+        }
+
+        const summarySheet =
+            XLSX.utils.aoa_to_sheet(
+                summaryRows
             );
 
-        }
+        summarySheet['!cols'] = [
+            { wch: 35 },
+            { wch: 20 }
+        ];
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            summarySheet,
+            'Summary'
+        );
+
+        workbook.SheetNames.unshift(
+            workbook.SheetNames.pop()
+        );
+
+        workbook.Sheets[
+            'Summary'
+        ] =
+        workbook.Sheets[
+            'Summary'
+        ];
+
+        const today =
+            new Date()
+            .toISOString()
+            .split('T')[0];
 
         XLSX.writeFile(
             workbook,
-            'Patient_Records.xlsx'
+            `Patient_Records_${today}.xlsx`
         );
 
-    } catch(error){
+    }
+    catch(error){
 
         alert(error.message);
 
-    } finally {
+    }
+    finally{
 
         btn.disabled = false;
 
         btn.innerHTML =
             '📊 Export Excel';
-
     }
 }
-    
     async function importExcel(event){
         if(typeof XLSX === 'undefined'){
     alert('XLSX Library Not Loaded');
