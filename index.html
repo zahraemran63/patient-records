@@ -95,8 +95,10 @@ h1{
 
 .row{
     display:flex;
-    gap:10px;
-    margin-bottom:20px;
+    gap:12px;
+    margin-bottom:25px;
+    justify-content:center;
+    flex-wrap:wrap;
 }
 
 input{
@@ -137,12 +139,33 @@ button{
 
 <body>
 
+<div style="margin-bottom:15px;">
 
+    <input
+        id="searchInput"
+        type="text"
+        placeholder="Search File No or Name"
+        onkeyup="searchPatients()"
+        style="
+            width:100%;
+            padding:16px;
+            font-size:20px;
+            border:1px solid #ccc;
+            border-radius:8px;
+        "
+    >
+
+</div>
 <div class="row">
 <button
 class="add"
 onclick="document.getElementById('excelFile').click()">
 Import Excel
+</button>
+    <button
+style="background:#198754;color:white;"
+onclick="exportExcel()">
+📊 Export Excel
 </button>
 
 <input
@@ -296,7 +319,31 @@ style="width:100%;height:70px;"></textarea>
     </div>
 
 </div>
+function searchPatients(){
 
+    const keyword =
+        document
+        .getElementById('searchInput')
+        .value
+        .toLowerCase();
+
+    const cards =
+        document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+
+        const text =
+            card.innerText.toLowerCase();
+
+        if(text.includes(keyword)){
+            card.style.display = '';
+        }else{
+            card.style.display = 'none';
+        }
+
+    });
+
+}
 <script>
 
 const client = window.supabase.createClient(
