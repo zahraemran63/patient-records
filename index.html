@@ -114,6 +114,12 @@ button{
 
 <div class="row">
 
+    <button
+class="add"
+onclick="openPatientModal()">
++ Add Patient
+</button>
+    
 <button
 class="add"
 onclick="openDiagnosisModal()">
@@ -125,6 +131,20 @@ class="delete"
 onclick="openDeleteDiagnosisModal()">
 - Delete Diagnosis
 </button>
+    <div class="row">
+
+<button class="add"
+onclick="openDiagnosisModal()">
++ Add Diagnosis
+</button>
+
+<button class="delete"
+onclick="openDeleteDiagnosisModal()">
+- Delete Diagnosis
+</button>
+
+</div>
+
 <div id="deleteDiagnosisModal" class="modal">
 
     <div class="modal-content">
@@ -159,6 +179,61 @@ onclick="openDeleteDiagnosisModal()">
 
 <div id="diagnosesContainer"></div>
     <div id="patientsContainer"></div>
+    <div id="patientModal" class="modal">
+
+    <div class="modal-content" style="width:900px;">
+
+        <h2>File Entry</h2>
+
+        <label>File No</label>
+        <input id="fileNo">
+
+        <br><br>
+
+        <label>Name</label>
+        <input id="patientName">
+
+        <br><br>
+
+        <label>Diagnosis</label>
+        <select
+        id="patientDiagnosis"
+        style="width:100%;padding:12px;">
+        </select>
+
+        <br><br>
+
+        <label>Remarks</label>
+        <textarea
+        id="remarks"
+        style="width:100%;height:100px;"></textarea>
+
+        <br><br>
+
+        <label>Last Update</label>
+        <input
+        id="lastUpdate"
+        type="date">
+
+        <div class="modal-actions">
+
+            <button
+            class="add"
+            onclick="savePatient()">
+            OK
+            </button>
+
+            <button
+            class="delete"
+            onclick="closePatientModal()">
+            Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
     <div id="diagnosisModal" class="modal">
 
     <div class="modal-content">
@@ -189,7 +264,66 @@ onclick="openDeleteDiagnosisModal()">
     </div>
 
 </div>
+async function savePatient(){
 
+    const fileNo =
+        document.getElementById('fileNo').value.trim();
+
+    const name =
+        document.getElementById('patientName').value.trim();
+
+    const diagnosis =
+        document.getElementById('patientDiagnosis').value;
+
+    const remarks =
+        document.getElementById('remarks').value;
+
+    const lastUpdate =
+        document.getElementById('lastUpdate').value;
+
+    if(!fileNo || !name){
+
+        alert('Please fill required fields');
+
+        return;
+    }
+
+    const { data: existing } = await client
+        .from('patients')
+        .select('id')
+        .eq('file_no', fileNo)
+        .eq('diagnosis', diagnosis);
+
+    if(existing && existing.length > 0){
+
+        alert(
+          `Patient already exists in diagnosis ${diagnosis}`
+        );
+
+        return;
+    }
+
+    const { error } = await client
+        .from('patients')
+        .insert({
+            file_no:fileNo,
+            name:name,
+            diagnosis:diagnosis,
+            remarks:remarks,
+            last_update:lastUpdate
+        });
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    alert('Patient Added Successfully');
+
+    closePatientModal();
+}
 <script>
 
 const client = window.supabase.createClient(
@@ -238,7 +372,48 @@ function closeDeleteDiagnosisModal(){
     ).style.display = 'none';
 }
 loadDiagnoses();
+async function openPatientModal(){
 
+    const today =
+        new Date().toISOString().split('T')[0];
+
+    document.getElementById(
+        'lastUpdate'
+    ).value = today;
+
+    const select =
+        document.getElementById(
+            'patientDiagnosis'
+        );
+
+    select.innerHTML = '';
+
+    const { data } = await client
+        .from('diagnoses')
+        .select('*')
+        .order('name');
+
+    data.forEach(item => {
+
+        select.innerHTML += `
+        <option value="${item.name}">
+            ${item.name}
+        </option>
+        `;
+
+    });
+
+    document.getElementById(
+        'patientModal'
+    ).style.display='block';
+}
+
+function closePatientModal(){
+
+    document.getElementById(
+        'patientModal'
+    ).style.display='none';
+}
     async function confirmDeleteDiagnosis(){
 
     const id =
