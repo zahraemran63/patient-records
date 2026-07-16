@@ -363,6 +363,68 @@ console.log(client);
 
     button.classList.add('active');
 }
+    async function exportExcel() {
+
+    const { data: diagnoses } = await client
+        .from('diagnoses')
+        .select('*')
+        .order('name');
+
+    const workbook = XLSX.utils.book_new();
+
+    for (const diag of diagnoses) {
+
+        // Skip Explain
+        if (diag.name.toLowerCase() === 'explain') {
+            continue;
+        }
+
+        const { data: patients } = await client
+            .from('patients')
+            .select('*')
+            .eq('diagnosis', diag.name)
+            .order('file_no');
+
+        const rows = [];
+
+        // Header Row
+        rows.push([
+            'S.No',
+            'MRN',
+            'Name',
+            'Remark',
+            'Last Update'
+        ]);
+
+        // Data Rows
+        patients.forEach((patient, index) => {
+
+            rows.push([
+                index + 1,
+                patient.file_no || '',
+                patient.name || '',
+                patient.remarks || '',
+                patient.last_update || ''
+            ]);
+
+        });
+
+        const worksheet =
+            XLSX.utils.aoa_to_sheet(rows);
+
+        XLSX.utils.book_append_sheet(
+            workbook,
+            worksheet,
+            diag.name.substring(0, 31)
+        );
+    }
+
+    XLSX.writeFile(
+        workbook,
+        'Patient_Records.xlsx'
+    );
+}
+    
     async function importExcel(event){
 
     const file = event.target.files[0];
