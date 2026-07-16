@@ -187,19 +187,7 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 
 <style>
-.main-container{
 
-    background:white;
-
-    border-radius:25px;
-
-    padding:30px;
-
-    min-height:calc(100vh - 50px);
-
-    box-shadow:
-        0 20px 50px rgba(0,0,0,.15);
-}
     
 
 
@@ -249,17 +237,9 @@ console.log('ExcelJS =', typeof ExcelJS);
     
 body{
     font-family:Arial,sans-serif;
-
-    background:
-    linear-gradient(
-        135deg,
-        #0d6efd,
-        #198754
-    );
-
-    min-height:100vh;
-
-    padding:25px;
+    background:#f5f5f5;
+    padding:20px;
+    padding-top:90px;
 }
 .modal{
     display:none;
@@ -328,6 +308,8 @@ button{
 }
 
 .card{
+    position:relative;
+
     background:white;
 
     padding:24px;
@@ -336,7 +318,11 @@ button{
 
     border-radius:20px;
 
+    line-height:1.6;
+
     border:none;
+
+    overflow:hidden;
 
     box-shadow:
         0 10px 25px rgba(0,0,0,.08);
@@ -349,6 +335,60 @@ button{
 
     box-shadow:
         0 16px 35px rgba(0,0,0,.12);
+}
+    .card::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:-60px;
+    right:-60px;
+
+    width:140px;
+    height:140px;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(13,110,253,.12),
+        rgba(25,135,84,.12)
+    );
+}
+
+.card::after{
+
+    content:'';
+
+    position:absolute;
+
+    bottom:-40px;
+    left:-40px;
+
+    width:90px;
+    height:90px;
+
+    border-radius:50%;
+
+    background:
+    rgba(13,110,253,.08);
+}
+    .card{
+    border-top:4px solid transparent;
+
+    border-image:
+    linear-gradient(
+        90deg,
+        #0d6efd,
+        #198754
+    ) 1;
+}
+    .card .shine{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
 }
 #loginOverlay{
     position:fixed;
@@ -485,7 +525,6 @@ button{
 </style>
 </head>
     <body>
-        <div class="main-container">
 
         <div id="loginOverlay">
     <div class="login-box">
@@ -533,20 +572,11 @@ Logout
     </div>
 
     <h1 style="
-color:#0d6efd;
-font-size:52px;
-font-weight:800;
-margin-top:10px;
-margin-bottom:5px;
-">
-        <p style="
-color:#6b7280;
-font-size:18px;
-margin:0;
-">
-Manage Patients Records Easily
-</p>
-        
+        color:#0d6efd;
+        font-size:48px;
+        margin-top:10px;
+    ">
+        Patient Records System
     </h1>
 
 </div>
@@ -1941,6 +1971,5 @@ style="width:100%;padding:12px;">
     </div>
 
 </div>
-            </div>
 </body>
 </html>
