@@ -582,25 +582,27 @@ async function showAllPatients(){
 
         <div style="margin-top:15px;display:flex;gap:10px;">
 
-        <button
-        style="
-        background:#ffc107;
-        color:black;
-        padding:10px 20px;
-        border:none;
-        border-radius:8px;">
-        Edit
-        </button>
+<button
+onclick="openEditPatient(${patient.id})"
+style="
+background:#ffc107;
+color:black;
+padding:10px 20px;
+border:none;
+border-radius:8px;">
+Edit
+</button>
 
-        <button
-        style="
-        background:#dc3545;
-        color:white;
-        padding:10px 20px;
-        border:none;
-        border-radius:8px;">
-        Delete
-        </button>
+<button
+onclick="deletePatient(${patient.id})"
+style="
+background:#dc3545;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:8px;">
+Delete
+</button>
 
         </div>
 
@@ -702,8 +704,192 @@ async function deleteDiagnosis(id){
     loadDiagnoses();
 
 }
+async function deletePatient(id){
 
+    if(!confirm('Delete this patient ?')){
+        return;
+    }
+
+    const { error } = await client
+        .from('patients')
+        .delete()
+        .eq('id', id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert('Patient deleted successfully');
+
+    loadDiagnoses();
+
+    showAllPatients();
+
+}
+    async function openEditPatient(id){
+
+    const { data } = await client
+        .from('patients')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+    document.getElementById('editPatientId').value =
+        data.id;
+
+    document.getElementById('editFileNo').value =
+        data.file_no;
+
+    document.getElementById('editPatientName').value =
+        data.name;
+
+    document.getElementById('editRemarks').value =
+        data.remarks || '';
+
+    document.getElementById('editLastUpdate').value =
+        new Date().toISOString().split('T')[0];
+
+    const select =
+        document.getElementById('editDiagnosis');
+
+    select.innerHTML='';
+
+    const { data: diagnoses } = await client
+        .from('diagnoses')
+        .select('*')
+        .order('name');
+
+    diagnoses.forEach(item => {
+
+        select.innerHTML += `
+        <option value="${item.name}">
+        ${item.name}
+        </option>
+        `;
+
+    });
+
+    select.value = data.diagnosis;
+
+    document.getElementById(
+        'editPatientModal'
+    ).style.display='block';
+}
+
+function closeEditPatientModal(){
+
+    document.getElementById(
+        'editPatientModal'
+    ).style.display='none';
+}
+
+async function updatePatient(){
+
+    const id =
+        document.getElementById(
+            'editPatientId'
+        ).value;
+
+    const { error } = await client
+        .from('patients')
+        .update({
+
+            file_no:
+                document.getElementById(
+                    'editFileNo'
+                ).value,
+
+            name:
+                document.getElementById(
+                    'editPatientName'
+                ).value,
+
+            diagnosis:
+                document.getElementById(
+                    'editDiagnosis'
+                ).value,
+
+            remarks:
+                document.getElementById(
+                    'editRemarks'
+                ).value,
+
+            last_update:
+                document.getElementById(
+                    'editLastUpdate'
+                ).value
+
+        })
+        .eq('id', id);
+
+    if(error){
+        alert(error.message);
+        return;
+    }
+
+    alert('Patient updated');
+
+    closeEditPatientModal();
+
+    loadDiagnoses();
+
+    showAllPatients();
+}
 </script>
+<div id="editPatientModal" class="modal">
 
+    <div class="modal-content" style="width:550px;">
+
+        <h2>Edit Patient</h2>
+
+        <input type="hidden" id="editPatientId">
+
+        <label>File No:</label>
+        <input id="editFileNo">
+
+        <br><br>
+
+        <label>Name:</label>
+        <input id="editPatientName">
+
+        <br><br>
+
+        <label>Diagnosis:</label>
+        <select id="editDiagnosis"></select>
+
+        <br><br>
+
+        <label>Remarks:</label>
+        <textarea
+        id="editRemarks"
+        style="width:100%;height:70px;"></textarea>
+
+        <br><br>
+
+        <label>Last Update:</label>
+        <input
+        id="editLastUpdate"
+        type="date">
+
+        <div class="modal-actions">
+
+            <button
+            class="add"
+            onclick="updatePatient()">
+            Save
+            </button>
+
+            <button
+            class="delete"
+            onclick="closeEditPatientModal()">
+            Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 </body>
 </html>
