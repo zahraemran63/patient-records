@@ -1110,23 +1110,26 @@ width:20
                 (patient,index) => {
 
                 const row =
-                    sheet.addRow({
+sheet.addRow({
 
-                    no:index+1,
+    no:index+1,
 
-                    mrn:
-                        patient.file_no || '',
+    mrn:
+        patient.file_no || '',
 
-                    name:
-                        patient.name || '',
+    name:
+        patient.name || '',
 
-                    remark:
-                        patient.remarks || '',
+    phone:
+        patient.phone || '',
 
-                    update:
-                        patient.last_update || ''
+    remark:
+        patient.remarks || '',
 
-                });
+    update:
+        patient.last_update || ''
+
+});
 
                 row.eachCell(cell => {
 
@@ -1484,10 +1487,10 @@ data.forEach(item => {
     
 if(
     item.name === '🔔 Follow Up' ||
-    item.name === 'Explain
-
-        return;
-    }
+    item.name === 'Explain'
+){
+    return;
+}
 
     select.innerHTML += `
     <option value="${item.name}">
@@ -2098,12 +2101,14 @@ data.phone || '';
 
 diagnoses.forEach(item => {
 
-if(
+ if(
     item.name === '🔔 Follow Up' ||
     item.name === 'Explain'
+){
+    return;
+}
 
-        return;
-    }
+       
 
     select.innerHTML += `
     <option value="${item.name}">
