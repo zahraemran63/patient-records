@@ -96,13 +96,11 @@ button{
 
 .card{
     background:white;
-    padding:15px;
-    margin-bottom:10px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    padding:20px;
+    margin-top:15px;
+    border-radius:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    line-height:1.8;
 }
 
 </style>
@@ -131,12 +129,7 @@ onclick="openDeleteDiagnosisModal()">
 - Delete Diagnosis
 </button>
 
-    <button
-class="diagnosis-btn"
-style="background:#198754;"
-onclick="showAllPatients()">
-All Patients
-</button>
+
     
 </div>
 
@@ -462,7 +455,12 @@ async function loadDiagnoses(){
         document.getElementById('diagnosesContainer');
 
     container.innerHTML='';
-
+    <button
+class="diagnosis-btn"
+style="background:#198754;"
+onclick="showAllPatients()">
+All Patients
+</button>
     for(const item of data){
 
         const { count } = await client
@@ -579,16 +577,50 @@ async function showPatients(diagnosis){
 
     data.forEach(patient => {
 
-        container.innerHTML += `
+ container.innerHTML += `
 <div class="card">
 
-<div>
+<div style="font-size:22px;">
+📁 <b>File No:</b> ${patient.file_no}
+</div>
 
-<b>File No:</b> ${patient.file_no}<br>
-<b>Name:</b> ${patient.name}<br>
-<b>Diagnosis:</b> ${patient.diagnosis}<br>
-<b>Remarks:</b> ${patient.remarks || '-'}<br>
-<b>Last Update:</b> ${patient.last_update || '-'}
+<div style="margin-top:10px;">
+👤 <b>Name:</b> ${patient.name}
+</div>
+
+<div style="margin-top:10px;">
+🩺 <b>Diagnosis:</b> ${patient.diagnosis}
+</div>
+
+<div style="margin-top:10px;">
+📝 <b>Remarks:</b> ${patient.remarks || '-'}
+</div>
+
+<div style="margin-top:10px;">
+📅 <b>Last Update:</b> ${patient.last_update || '-'}
+</div>
+
+<div style="margin-top:15px;display:flex;gap:10px;">
+
+<button
+style="
+background:#ffc107;
+color:black;
+padding:10px 20px;
+border:none;
+border-radius:8px;">
+Edit
+</button>
+
+<button
+style="
+background:#dc3545;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:8px;">
+Delete
+</button>
 
 </div>
 
