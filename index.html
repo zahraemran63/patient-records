@@ -202,19 +202,20 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 .card-row{
     display:flex !important;
-    flex-direction:row !important;
-    gap:30px;
-    justify-content:space-between;
-    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:20px;
+    width:100%;
+}
+
+.card-row > div{
+    flex:1 1 250px;
+    min-width:250px;
+}
+
+.card hr{
+    border:none;
+    border-top:1px solid #e5e7eb;
     margin:15px 0;
-}
-
-.card-row > div{
-    flex:1;
-}
-
-.card-row > div{
-    flex:1;
 }
 
 .card-top{
@@ -372,6 +373,11 @@ button{
 }
 
 .card{
+    
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+
     position:relative;
 
     background:white;
