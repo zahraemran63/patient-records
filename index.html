@@ -877,20 +877,7 @@ console.log(client);
     await loadDiagnoses();
     await showAllPatients();
 }
-    async function moveToFollowUp(id){
-
-    const { error } = await client
-        .from('patients')
-        .update({
-            diagnosis:'🔔 Follow Up'
-        })
-        .eq('id', id);
-
-    if(error){
-        alert(error.message);
-        return;
-    }
-
+    
     await loadDiagnoses();
     await showAllPatients();
 
@@ -1791,7 +1778,12 @@ async function showPatients(diagnosis){
         alert(error.message);
         return;
     }
-
+data.sort(
+(a,b)=>
+Number(b.needs_followup)
+-
+Number(a.needs_followup)
+);
     const container =
         document.getElementById('patientsContainer');
 
@@ -1802,11 +1794,16 @@ async function showPatients(diagnosis){
  container.innerHTML += `
 
 <div class="card">
-<button
-class="followup-btn"
-onclick="moveToFollowUp(${patient.id})">
-🔔 Review Needed
-</button>
+<span
+class="followup-icon ${patient.needs_followup ? 'active' : ''}"
+onclick="
+toggleFollowUp(
+${patient.id},
+'${patient.diagnosis}',
+${patient.needs_followup}
+)">
+🔔
+</span>
     <div style="margin-bottom:14px;font-size:18px;">
         📁 <b>File No:</b> ${patient.file_no}
     </div>
