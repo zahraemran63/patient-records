@@ -879,9 +879,10 @@ console.log(client);
 
         const { error } = await client
             .from('patients')
-            .update({
-                needs_followup: false
-            })
+.update({
+    needs_followup: false,
+    original_diagnosis: null
+})
             .eq('id', id);
 
         if(error){
@@ -967,12 +968,12 @@ async function exportExcel() {
 
         for (const diag of diagnoses) {
 
-            if(
-                diag.name.toLowerCase() ===
-                'explain'
-            ){
-                continue;
-            }
+if(
+    diag.name === 'Explain' ||
+    diag.name === '🔔 Follow Up'
+){
+    continue;
+}
 
             const {
                 data: patients
@@ -1721,8 +1722,21 @@ loadDiagnoses();
         container.innerHTML += `
 <div class="card followup-card">
 
+<div style="
+position:absolute;
+top:15px;
+right:15px;
+display:flex;
+gap:12px;
+align-items:center;
+">
+
 <span
 class="followup-icon active"
+style="
+position:static;
+font-size:24px;
+"
 onclick="
 toggleFollowUp(
 ${patient.id},
@@ -1731,6 +1745,26 @@ true
 )">
 🔔
 </span>
+
+<span
+onclick="openEditPatient(${patient.id})"
+style="
+cursor:pointer;
+font-size:24px;
+">
+✏️
+</span>
+
+<span
+onclick="deletePatient(${patient.id})"
+style="
+cursor:pointer;
+font-size:24px;
+">
+🗑️
+</span>
+
+</div>
 
 <div style="
 display:flex;
