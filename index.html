@@ -5,6 +5,7 @@
  
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
 
 
 
@@ -962,6 +963,27 @@ type="date">
 </div>
 
 <script>
+ function sendWhatsApp(patient){
+
+    const phone = '966546850222';
+
+    const message = `
+🩺 Patient Information
+
+📁 File No: ${patient.file_no || '-'}
+👤 Name: ${patient.name || '-'}
+📞 Mobile: ${patient.phone || '-'}
+🩺 Diagnosis: ${patient.diagnosis || '-'}
+📝 Remarks: ${patient.remarks || '-'}
+📅 Last Update: ${patient.last_update || '-'}
+`;
+
+    const url =
+        `https://wa.me/${phone}?text=` +
+        encodeURIComponent(message);
+
+    window.open(url, '_blank');
+}
     function logout(){
 
     sessionStorage.clear();
@@ -1981,7 +2003,17 @@ data-date="${patient.last_update || ''}"
             style="cursor:pointer;font-size:24px;">
             🗑️
             </span>
-
+<span
+onclick='sendWhatsApp(${JSON.stringify(patient)})'
+style="
+cursor:pointer;
+font-size:24px;
+color:#25D366;
+"
+title="Send WhatsApp">
+📱
+</span>
+``
             <span
             onclick="openEditPatient(${patient.id})"
             style="cursor:pointer;font-size:24px;">
@@ -2105,7 +2137,17 @@ data-date="${patient.last_update || ''}"
             style="cursor:pointer;font-size:24px;">
             🗑️
             </span>
-
+<span
+onclick='sendWhatsApp(${JSON.stringify(patient)})'
+style="
+cursor:pointer;
+font-size:24px;
+color:#25D366;
+"
+title="Send WhatsApp">
+📱
+</span>
+``
             <span
             onclick="openEditPatient(${patient.id})"
             style="cursor:pointer;font-size:24px;">
@@ -2229,7 +2271,17 @@ data-date="${patient.last_update || ''}"
             style="cursor:pointer;font-size:24px;">
             🗑️
             </span>
-
+<span
+onclick='sendWhatsApp(${JSON.stringify(patient)})'
+style="
+cursor:pointer;
+font-size:24px;
+color:#25D366;
+"
+title="Send WhatsApp">
+📱
+</span>
+``
             <span
             onclick="openEditPatient(${patient.id})"
             style="cursor:pointer;font-size:24px;">
