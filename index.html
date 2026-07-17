@@ -756,6 +756,18 @@ Logout
             border-radius:8px;
         "
     >
+ <input
+    id="dateSearch"
+    type="date"
+    onchange="searchByDate()"
+    style="
+        padding:12px;
+        font-size:16px;
+        border:1px solid #ccc;
+        border-radius:8px;
+    "
+>
+
 
 
     <button
@@ -971,6 +983,27 @@ console.log(client);
         });
 
     button.classList.add('active');
+}
+ function searchByDate(){
+
+    const selectedDate =
+        document.getElementById('dateSearch').value;
+
+    const cards =
+        document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+
+        const cardDate =
+            card.dataset.date || '';
+
+        card.style.display =
+            !selectedDate ||
+            cardDate === selectedDate
+            ? ''
+            : 'none';
+
+    });
 }
     async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
 
@@ -1887,7 +1920,10 @@ async function showFollowUpPatients(){
     data.forEach(patient => {
 
         container.innerHTML += `
-<div class="card followup-card">
+<div
+class="card followup-card"
+data-date="${patient.last_update || ''}"
+>
 
     <div class="card-top">
 
@@ -2008,7 +2044,10 @@ async function showFollowUpPatients(){
     data.forEach(patient => {
 
         container.innerHTML += `
-<div class="card ${patient.needs_followup ? 'followup-card' : ''}">
+<div
+class="card ${patient.needs_followup ? 'followup-card' : ''}"
+data-date="${patient.last_update || ''}"
+>
 
     <div class="card-top">
 
@@ -2129,7 +2168,10 @@ async function showFollowUpPatients(){
     data.forEach(patient => {
 
         container.innerHTML += `
-<div class="card ${patient.needs_followup ? 'followup-card' : ''}">
+<div
+class="card ${patient.needs_followup ? 'followup-card' : ''}"
+data-date="${patient.last_update || ''}"
+>
 
     <div class="card-top">
 
