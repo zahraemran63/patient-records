@@ -767,20 +767,6 @@ Logout
     width:600px;
 ">
 
-    <input
-        id="searchInput"
-        type="text"
-        placeholder="Search File No, Name or Date"
-        onkeyup="searchPatients()"
-        style="
-            width:100%;
-            padding:12px 50px 12px 12px;
-            font-size:18px;
-            border:1px solid #ccc;
-            border-radius:8px;
-            box-sizing:border-box;
-        "
-    >
 
     <input
         id="hiddenDate"
@@ -1032,27 +1018,7 @@ console.log(client);
 
     button.classList.add('active');
 }
- function searchByDate(){
-
-    const selectedDate =
-        document.getElementById('dateSearch').value;
-
-    const cards =
-        document.querySelectorAll('.card');
-
-    cards.forEach(card => {
-
-        const cardDate =
-            card.dataset.date || '';
-
-        card.style.display =
-            !selectedDate ||
-            cardDate === selectedDate
-            ? ''
-            : 'none';
-
-    });
-}
+ 
  function setDateSearch(date){
 
     document.getElementById(
