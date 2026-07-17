@@ -16,7 +16,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
     
 
-          </script>
+       
     <script>
       document.addEventListener(
     'DOMContentLoaded',
@@ -1173,55 +1173,8 @@ if(
 ){
     continue;
 }
-         summarySheet.addRow([]);
 
-const totalRow1 = summarySheet.addRow({
-    diagnosis: 'Total Diagnoses',
-    count: diagnoses.filter(
-        d =>
-        d.name !== 'Explain' &&
-        d.name !== '🔔 Follow Up'
-    ).length
-});
 
-const totalPatients =
-(
-    await client
-        .from('patients')
-        .select('id', { count:'exact', head:true })
-        .not('diagnosis', 'ilike', 'explain')
-).count || 0;
-
-const totalRow2 = summarySheet.addRow({
-    diagnosis: 'Total Patients',
-    count: totalPatients
-});
-
-[totalRow1, totalRow2].forEach(row => {
-
-    row.eachCell(cell => {
-
-        cell.font = {
-            bold:true,
-            color:{ argb:'FFFFFFFF' }
-        };
-
-        cell.fill = {
-            type:'pattern',
-            pattern:'solid',
-            fgColor:{ argb:'1F4E78' }
-        };
-
-        cell.border = {
-            top:{style:'thin'},
-            left:{style:'thin'},
-            bottom:{style:'thin'},
-            right:{style:'thin'}
-        };
-
-    });
-
-});
 
             const {
                 data: patients
@@ -1424,7 +1377,60 @@ from:'A6',
 to:'F6'
 };
         }
+summarySheet.addRow([]);
 
+const totalRow1 = summarySheet.addRow({
+    diagnosis: 'Total Diagnoses',
+    count: diagnoses.filter(
+        d =>
+        d.name !== 'Explain' &&
+        d.name !== '🔔 Follow Up'
+    ).length
+});
+
+const { count: totalPatientsCount } =
+    await client
+        .from('patients')
+        .select('id', {
+            count: 'exact',
+            head: true
+        })
+        .not('diagnosis', 'ilike', 'explain');
+
+const totalRow2 = summarySheet.addRow({
+    diagnosis: 'Total Patients',
+    count: totalPatientsCount || 0
+});
+
+[totalRow1, totalRow2].forEach(row => {
+
+    row.eachCell(cell => {
+
+        cell.font = {
+            bold: true,
+            color: {
+                argb: 'FFFFFFFF'
+            }
+        };
+
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: {
+                argb: '1F4E78'
+            }
+        };
+
+        cell.border = {
+            top: { style:'thin' },
+            left:{ style:'thin' },
+            bottom:{ style:'thin' },
+            right:{ style:'thin' }
+        };
+
+    });
+
+});
         const buffer =
             await workbook.xlsx.writeBuffer();
 
