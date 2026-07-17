@@ -735,38 +735,40 @@ Logout
 
 
 <div style="
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:12px;
-    margin-bottom:20px;
-    flex-wrap:wrap;
+    position:relative;
+    width:600px;
 ">
-
     <input
         id="searchInput"
         type="text"
-        placeholder="Search File No or Name"
+        placeholder="Search File No, Name or Date"
         onkeyup="searchPatients()"
         style="
-            width:600px;
-            padding:12px;
+            width:100%;
+            padding:12px 50px 12px 12px;
             font-size:18px;
             border:1px solid #ccc;
             border-radius:8px;
+            box-sizing:border-box;
         "
     >
- <input
-    id="dateSearch"
-    type="date"
-    onchange="searchByDate()"
-    style="
-        padding:12px;
-        font-size:16px;
-        border:1px solid #ccc;
-        border-radius:8px;
-    "
->
+
+    <input
+        id="hiddenDate"
+        type="date"
+        onchange="setDateSearch(this.value)"
+        style="
+            position:absolute;
+            right:10px;
+            top:50%;
+            transform:translateY(-50%);
+            border:none;
+            background:transparent;
+            width:30px;
+            cursor:pointer;
+        "
+    >
+
 
 
 
