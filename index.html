@@ -1663,9 +1663,13 @@ async function openPatientModal(){
 data.forEach(item => {
 
     
+if(item.name === '🔔 Follow Up'){
+    return;
+}
+
 if(
-    item.name === '🔔 Follow Up' ||
-    item.name === 'Explain'
+    item.name === 'Explain' &&
+    sessionStorage.getItem('loggedIn') !== 'zahy'
 ){
     return;
 }
@@ -2396,9 +2400,13 @@ data.phone || '';
 
 diagnoses.forEach(item => {
 
- if(
-    item.name === '🔔 Follow Up' ||
-    item.name === 'Explain'
+if(item.name === '🔔 Follow Up'){
+    return;
+}
+
+if(
+    item.name === 'Explain' &&
+    sessionStorage.getItem('loggedIn') !== 'zahy'
 ){
     return;
 }
