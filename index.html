@@ -2309,36 +2309,24 @@ title="Send WhatsApp">
 
     <div class="card-row">
 
-<div class="card-item">
-    <div class="card-label">
-        👤 Name:
-    </div>
-
-    <div class="card-value">
-        ${patient.name}
-    </div>
+<div>
+    👤 <b>Name:</b><br>
+    ${patient.name}
 </div>
 
-<div class="card-item">
-    <div class="card-label">
-        📞 Mobile:
-    </div>
-
-    <div class="card-value">
-        ${patient.phone || '-'}
-    </div>
+<div>
+    📞 <b>Mobile:</b><br>
+    ${patient.phone || '-'}
 </div>
 
+<div>
+    🩺 <b>Diagnosis:</b><br>
+    <span class="diagnosis-badge">
+        ${patient.diagnosis}
+    </span>
+</div>
 
-        <div>
-            🩺 <b>Diagnosis:</b><br>
-            <span class="diagnosis-badge">
-                ${patient.diagnosis}
-            </span>
-        </div>
-
-    </div>
-
+</div>
     <hr>
 
     <div class="card-row">
