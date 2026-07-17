@@ -745,7 +745,7 @@ Logout
 
     <div style="
         position:relative;
-        width:600px;
+        width:850px;
     ">
     <input
         id="searchInput"
@@ -1018,13 +1018,17 @@ console.log(client);
  
  function setDateSearch(date){
 
+    const parts = date.split('-');
+
+    const formatted =
+        `${parts[2]}/${parts[1]}/${parts[0]}`;
+
     document.getElementById(
         'searchInput'
-    ).value = date;
+    ).value = formatted;
 
     searchPatients();
 }
-
     async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
 
     if(!needsFollowup){
