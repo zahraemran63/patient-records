@@ -948,6 +948,7 @@ function searchPatients(){
         document
             .getElementById('searchInput')
             .value
+            .trim()
             .toLowerCase();
 
     const cards =
@@ -958,8 +959,13 @@ function searchPatients(){
         const text =
             card.innerText.toLowerCase();
 
+        const date =
+            (card.dataset.date || '')
+            .toLowerCase();
+
         card.style.display =
-            text.includes(keyword)
+            text.includes(keyword) ||
+            date.includes(keyword)
             ? ''
             : 'none';
 
