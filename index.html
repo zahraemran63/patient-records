@@ -2021,15 +2021,26 @@ async function showFollowUpPatients(){
 
     <div class="card-row">
 
-        <div>
-            👤 <b>Name:</b><br>
-            ${patient.name}
-        </div>
+<div class="card-item">
+    <div class="card-label">
+        👤 Name:
+    </div>
 
-        <div>
-            📞 <b>Mobile:</b><br>
-            ${patient.phone || '-'}
-        </div>
+    <div class="card-value">
+        ${patient.name}
+    </div>
+</div>
+
+<div class="card-item">
+    <div class="card-label">
+        📞 Mobile:
+    </div>
+
+    <div class="card-value">
+        ${patient.phone || '-'}
+    </div>
+</div>
+
 
         <div>
             🩺 <b>Diagnosis:</b><br>
@@ -2044,15 +2055,24 @@ async function showFollowUpPatients(){
 
     <div class="card-row">
 
-        <div>
-            📝 <b>Remarks:</b><br>
-            ${patient.remarks || '-'}
-        </div>
+
+        <div class="card-item">
+    <div class="card-label">
+        📝 Remarks:
+    </div>
+
+    <div class="card-value">
+        ${patient.remarks || '-'}
+    </div>
+</div>
+
 
         <div>
             📅 <b>Last Update:</b><br>
             ${patient.last_update || '-'}
         </div>
+
+        
 
     </div>
 
