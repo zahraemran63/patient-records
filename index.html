@@ -735,9 +735,18 @@ Logout
 
 
 <div style="
-    position:relative;
-    width:600px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
 ">
+
+    <div style="
+        position:relative;
+        width:600px;
+    ">
     <input
         id="searchInput"
         type="text"
@@ -753,21 +762,20 @@ Logout
         "
     >
 
-    <input
-        id="hiddenDate"
-        type="date"
-        onchange="setDateSearch(this.value)"
-        style="
-            position:absolute;
-            right:10px;
-            top:50%;
-            transform:translateY(-50%);
-            border:none;
-            background:transparent;
-            width:30px;
-            cursor:pointer;
-        "
-    >
+<input
+    id="hiddenDate"
+    type="date"
+    onchange="setDateSearch(this.value)"
+    style="
+        position:absolute;
+        top:0;
+        right:0;
+        width:40px;
+        height:100%;
+        opacity:0;
+        cursor:pointer;
+    "
+>
   </div>
 
 
