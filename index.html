@@ -1006,8 +1006,10 @@ console.log(client);
 
     }
 
-    await loadDiagnoses();
-    await showAllPatients();
+   
+await showAllPatients();
+await refreshCounts();
+     
 }
     
 
@@ -1533,9 +1535,8 @@ document.getElementById('remarks').value='';
 
 closePatientModal();
 
-await loadDiagnoses();
-
 await showPatients(diagnosis);
+     await refreshCounts();
         
 }
 function openDiagnosisModal(){
@@ -1649,9 +1650,9 @@ function closePatientModal(){
         return;
     }
 
-    closeDeleteDiagnosisModal();
+closeDeleteDiagnosisModal();
 
-    loadDiagnoses();
+await loadDiagnoses();
 
     alert('Diagnosis deleted successfully');
 }
@@ -1685,7 +1686,7 @@ onclick="
 showAllPatients();
 setActiveDiagnosis(this);
 ">
-All Patients (${allCount})
+All Patients (<span id="all-count">${allCount}</span>)
 </button>
 `;
 
@@ -1712,7 +1713,7 @@ onclick="
 showFollowUpPatients();
 setActiveDiagnosis(this);
     ">
-    ${followUp.name} (${count})
+    ${followUp.name} (<span id="followup-count">${count}</span>)
     </button>
     `;
 }
@@ -1766,11 +1767,63 @@ for(const item of data){
     showPatients('${item.name}');
     setActiveDiagnosis(this);
     ">
-    ${item.name} (${count})
+    ${item.name} (<span id="count-${item.id}">${count}</span>)
     </button>
     `;
 }
 
+}
+ async function refreshCounts(){
+
+    const { data: diagnoses } = await client
+        .from('diagnoses')
+        .select('*');
+
+    const { data: allPatients } = await client
+        .from('patients')
+        .select('id')
+        .not('diagnosis', 'ilike', 'explain');
+
+    document.getElementById('all-count').textContent =
+        allPatients?.length || 0;
+
+    const { data: followups } = await client
+        .from('patients')
+        .select('id')
+        .eq('needs_followup', true);
+
+    const followupLabel =
+        document.getElementById('followup-count');
+
+    if(followupLabel){
+        followupLabel.textContent =
+            followups?.length || 0;
+    }
+
+    for(const diagnosis of diagnoses){
+
+        if(
+            diagnosis.name === '🔔 Follow Up' ||
+            diagnosis.name === 'Explain'
+        ){
+            continue;
+        }
+
+        const { data: patients } = await client
+            .from('patients')
+            .select('id')
+            .eq('diagnosis', diagnosis.name);
+
+        const el =
+            document.getElementById(
+                `count-${diagnosis.id}`
+            );
+
+        if(el){
+            el.textContent =
+                patients?.length || 0;
+        }
+    }
 }
 async function addDiagnosis(){
 
@@ -1812,7 +1865,7 @@ async function addDiagnosis(){
 
 closeDiagnosisModal();
 
-loadDiagnoses();
+await loadDiagnoses();
 }
 async function showFollowUpPatients(){
 
@@ -2228,8 +2281,8 @@ async function deletePatient(id){
 
     alert('Patient deleted successfully');
 
-loadDiagnoses();
-showAllPatients();
+await showAllPatients();
+await refreshCounts();
 
 setTimeout(() => {
     document
@@ -2360,9 +2413,9 @@ document.getElementById(
 
     closeEditPatientModal();
 
-await loadDiagnoses();
 
 await showAllPatients();
+ await refreshCounts();
 }
 </script>
 <div id="editPatientModal" class="modal">
