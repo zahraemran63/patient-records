@@ -1815,13 +1815,21 @@ async function showFollowUpPatients(){
     <div class="card-top">
 
 
+
 <div>
     📁 <b>File No:</b> ${patient.file_no}
 
-    <span class="followup-badge">
-        Follow Up Needed
-    </span>
+    ${
+        patient.needs_followup
+        ? `
+        <span class="followup-badge">
+            Follow Up Needed
+        </span>
+        `
+        : ''
+    }
 </div>
+
 
 
         <div style="display:flex;gap:12px;align-items:center;">
@@ -1928,13 +1936,21 @@ async function showFollowUpPatients(){
     <div class="card-top">
 
 
+
 <div>
     📁 <b>File No:</b> ${patient.file_no}
 
-    <span class="followup-badge">
-        Follow Up
-    </span>
+    ${
+        patient.needs_followup
+        ? `
+        <span class="followup-badge">
+            Follow Up Needed
+        </span>
+        `
+        : ''
+    }
 </div>
+
 
 
         <div style="display:flex;gap:12px;align-items:center;">
@@ -2041,13 +2057,21 @@ async function showFollowUpPatients(){
     <div class="card-top">
 
 
+
 <div>
     📁 <b>File No:</b> ${patient.file_no}
 
-    <span class="followup-badge">
-        Follow Up
-    </span>
+    ${
+        patient.needs_followup
+        ? `
+        <span class="followup-badge">
+            Follow Up Needed
+        </span>
+        `
+        : ''
+    }
 </div>
+
 
 
         <div style="display:flex;gap:12px;align-items:center;">
