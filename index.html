@@ -1013,6 +1013,15 @@ console.log(client);
 
     });
 }
+ function setDateSearch(date){
+
+    document.getElementById(
+        'searchInput'
+    ).value = date;
+
+    searchPatients();
+}
+
     async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
 
     if(!needsFollowup){
