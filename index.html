@@ -1531,11 +1531,11 @@ document.getElementById('patientName').value='';
 document.getElementById('phone').value='';
 document.getElementById('remarks').value='';
 
+closePatientModal();
+
 await loadDiagnoses();
 
 await showPatients(diagnosis);
-
-closePatientModal();
         
 }
 function openDiagnosisModal(){
