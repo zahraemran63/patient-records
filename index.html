@@ -736,105 +736,106 @@ Logout
 
 <div style="
     display:flex;
-    justify-content:center;
+    justify-content:space-between;
     align-items:center;
-    gap:12px;
+    gap:15px;
     margin-bottom:20px;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
 ">
 
+    <!-- Search -->
     <div style="
         position:relative;
-        width:850px;
+        width:650px;
+        flex-shrink:0;
     ">
-    <input
-        id="searchInput"
-        type="text"
-        placeholder="Search File No, Name or Date"
-        onkeyup="searchPatients()"
-        style="
-            width:100%;
-            padding:12px 50px 12px 12px;
-            font-size:18px;
-            border:1px solid #ccc;
-            border-radius:8px;
-            box-sizing:border-box;
-        "
-    >
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search File No, Name or Date"
+            onkeyup="searchPatients()"
+            style="
+                width:100%;
+                padding:12px 50px 12px 12px;
+                font-size:18px;
+                border:1px solid #ccc;
+                border-radius:8px;
+                box-sizing:border-box;
+            "
+        >
 
+        <input
+            id="hiddenDate"
+            type="date"
+            onchange="setDateSearch(this.value)"
+            style="
+                position:absolute;
+                top:0;
+                right:0;
+                width:40px;
+                height:100%;
+                opacity:0;
+                cursor:pointer;
+            "
+        >
 
-
-
-    <input
-        id="hiddenDate"
-        type="date"
-        onchange="setDateSearch(this.value)"
-        style="
+        <span style="
             position:absolute;
-            top:0;
-            right:0;
-            width:40px;
-            height:100%;
-            opacity:0;
-            cursor:pointer;
-        "
-    >
+            right:12px;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:22px;
+            pointer-events:none;
+        ">
+        📅
+        </span>
+    </div>
 
-    <span
-    style="
-        position:absolute;
-        right:12px;
-        top:50%;
-        transform:translateY(-50%);
-        font-size:22px;
-        pointer-events:none;
+    <!-- Buttons -->
+    <div style="
+        display:flex;
+        gap:12px;
+        align-items:center;
+        flex-wrap:wrap;
+        justify-content:flex-end;
     ">
-    📅
-    </span>
 
+        <button class="add" onclick="openPatientModal()">
+            + Add Patient
+        </button>
+
+        <button class="add" onclick="openDiagnosisModal()">
+            + Add Diagnosis
+        </button>
+
+        <button class="delete" onclick="openDeleteDiagnosisModal()">
+            - Delete Diagnosis
+        </button>
+
+        <button
+            id="importBtn"
+            class="add"
+            onclick="document.getElementById('excelFile').click()">
+            Import Excel
+        </button>
+
+        <button
+            id="exportBtn"
+            style="background:#198754;color:white;"
+            onclick="exportExcel()">
+            📊 Export Excel
+        </button>
+
+    </div>
+
+    <input
+        type="file"
+        id="excelFile"
+        accept=".xlsx,.xls"
+        style="display:none"
+        onchange="importExcel(event)">
 </div>
 
-
-    <button
-    class="add"
-    onclick="openPatientModal()">
-    + Add Patient
-    </button>
-
-    <button
-    class="add"
-    onclick="openDiagnosisModal()">
-    + Add Diagnosis
-    </button>
-
-    <button
-    class="delete"
-    onclick="openDeleteDiagnosisModal()">
-    - Delete Diagnosis
-    </button>
-
-<button
-id="exportBtn"
-style="background:#198754;color:white;"
-onclick="exportExcel()">
-📊 Export Excel
-</button>
-
-<button
-id="importBtn"
-class="add"
-onclick="document.getElementById('excelFile').click()">
-Import Excel
-</button>
-
-<input
-type="file"
-id="excelFile"
-accept=".xlsx,.xls"
-style="display:none"
-onchange="importExcel(event)">
-
-</div>
 <div id="deleteDiagnosisModal" class="modal">
 
     <div class="modal-content">
