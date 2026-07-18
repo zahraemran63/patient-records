@@ -1208,10 +1208,15 @@ function searchPatients(){
 }
 window.addEventListener('load', async () => {
 
+    await loadDiagnoses();
+
+    await showAllPatients();
+
     await refreshCounts();
 
     await loadDiagnosisChart();
- console.log("Chart Loaded");
+
+    console.log("Chart Loaded");
 
 });
 const client = window.supabase.createClient(
@@ -1311,7 +1316,7 @@ console.log(counts);
 
         {
 
-            type:'pie',
+            type:'doughnut',
 
             data:{
 
@@ -1368,14 +1373,15 @@ console.log(counts);
                                         value / total * 100
                                     ).toFixed(1);
 
-                                return (
-                                    context.label +
-                                    ' | Patients: ' +
-                                    value +
-                                    ' | ' +
-                                    percentage +
-                                    '%'
-                                );
+return [
+
+    context.label,
+
+    `Patients: ${value}`,
+
+    `Percentage: ${percentage}%`
+
+];
                             }
                         }
                     }
@@ -2051,8 +2057,7 @@ function closeDeleteDiagnosisModal(){
         'deleteDiagnosisModal'
     ).style.display = 'none';
 }
-loadDiagnoses();
-    showAllPatients();
+
 async function openPatientModal(){
 
     const today =
