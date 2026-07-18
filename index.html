@@ -2253,13 +2253,15 @@ for(const item of data){
 
     const count = patients?.length || 0;
 
-    container.innerHTML += `
-    <button
-    class="diagnosis-btn"
-    onclick="
-    showPatients('${item.name}');
-    setActiveDiagnosis(this);
-    ">
+container.innerHTML += `
+<button
+class="diagnosis-btn"
+onclick="
+showPatients('${item.name}');
+showSpotlightDiagnosis('${item.name}');
+setActiveDiagnosis(this);
+">
+`
     ${item.name} (<span id="count-${item.id}">${count}</span>)
     </button>
     `;
