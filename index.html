@@ -1371,6 +1371,42 @@ console.log(client);
         ).toFixed(1)
         : 0;
 
+  let icon = '🩺';
+
+const name =
+    topDiagnosis.toLowerCase();
+
+if(name.includes('lupus') || name.includes('sle')){
+    icon = '🦋';
+}
+else if(name.includes('hypertension')){
+    icon = '🫀';
+}
+else if(name.includes('diabetes') || name.includes('dm')){
+    icon = '🍬';
+}
+else if(name.includes('aki')){
+    icon = '⚡';
+}
+else if(name.includes('iga')){
+    icon = '🧬';
+}
+else if(name.includes('mcd')){
+    icon = '💧';
+}
+else if(name.includes('membranous')){
+    icon = '🔬';
+}
+else if(name.includes('polycystic')){
+    icon = '🫧';
+}
+else if(name.includes('granulomatosis')){
+    icon = '🛡️';
+}
+else{
+    icon = '🩺';
+}
+  
     document.getElementById(
         'diagnosisSpotlight'
     ).innerHTML = `
@@ -1396,8 +1432,9 @@ ${percent}% of Registry
 </div>
 
 <div class="spotlight-icon">
-🩺
+${icon}
 </div>
+
 
 `;
 }
