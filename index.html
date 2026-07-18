@@ -204,6 +204,28 @@ console.log('ExcelJS =', typeof ExcelJS);
     0 8px 20px rgba(25,135,84,.35);
 
 }
+ #diagnosisSpotlight{
+    width:520px;
+    height:180px;
+
+    position:relative;
+
+    overflow:hidden !important;
+
+    isolation:isolate;
+}
+ .spotlight-info{
+    position:relative;
+    z-index:1;
+    overflow:hidden;
+}
+
+.spotlight-diagnosis{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:300px;
+}
  .card:not(.followup-card){
     background:#f8fbff;
 }
@@ -511,16 +533,7 @@ console.log('ExcelJS =', typeof ExcelJS);
     transform:scale(1.15);
 }
     
-.diagnosis-btn.active{
 
-    filter:brightness(1.35);
-
-    transform:translateY(-2px);
-
-    box-shadow:
-    0 8px 20px rgba(0,0,0,.22);
-
-}
 #diagnosesContainer{
     display:flex;
     flex-wrap:wrap;
@@ -775,12 +788,8 @@ button{
 }
 
 .spotlight-count{
-
     font-size:28px;
-
-    font-weight:700;
-
-    margin-top:8px;
+    white-space:nowrap;
 }
 
 .spotlight-percent{
