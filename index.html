@@ -13,7 +13,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     
 
        
@@ -287,19 +287,7 @@ console.log('ExcelJS =', typeof ExcelJS);
     font-size:13px;
 }
 
-.registry-chart{
-    width:550px;
-    height:320px;
-    position:relative;
-}
- 
-#diagnosisChart{
 
-    width:100% !important;
-
-    height:100% !important;
-}
- 
  .system-header{
 
     display:flex;
@@ -712,7 +700,88 @@ button{
     font-weight:700;
 }
 
+#diagnosisSpotlight{
 
+    width:520px;
+    height:180px;
+
+    border-radius:24px;
+
+    padding:25px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    color:white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #2563eb,
+        #06b6d4
+    );
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    box-shadow:
+        0 15px 35px rgba(37,99,235,.25);
+
+    transition:.35s;
+}
+
+.spotlight-info{
+
+    z-index:2;
+}
+
+.spotlight-label{
+
+    font-size:13px;
+
+    opacity:.8;
+
+    letter-spacing:1px;
+}
+
+.spotlight-diagnosis{
+
+    font-size:38px;
+
+    font-weight:800;
+
+    margin-top:10px;
+}
+
+.spotlight-count{
+
+    font-size:28px;
+
+    font-weight:700;
+
+    margin-top:8px;
+}
+
+.spotlight-percent{
+
+    margin-top:5px;
+
+    font-size:15px;
+
+    opacity:.9;
+}
+
+.spotlight-icon{
+
+    font-size:90px;
+
+    opacity:.25;
+}
+ 
 #loginOverlay{
     position:fixed;
     inset:0;
@@ -913,11 +982,10 @@ Logout
 
     </div>
 
-    <div class="registry-chart">
-        <canvas id="diagnosisChart"></canvas>
-    </div>
+    <div id="diagnosisSpotlight"></div>
 
 </div>
+
 
 
 
@@ -1214,7 +1282,8 @@ window.addEventListener('load', async () => {
 
     await refreshCounts();
 
-    await loadDiagnosisChart();
+ await loadSpotlight();
+    
 
     console.log("Chart Loaded");
 
@@ -1250,21 +1319,22 @@ console.log(client);
 
     searchPatients();
 }
- let diagnosisChart = null;
- async function loadDiagnosisChart(){
+ async function loadSpotlight(){
 
-    const { data } =
+    const { data: diagnoses } =
         await client
         .from('diagnoses')
         .select('*');
 
-    const labels = [];
-    const counts = [];
+    let topDiagnosis = null;
+    let topCount = 0;
+    let totalPatients = 0;
 
-    for(const diagnosis of data){
+    for(const item of diagnoses){
 
         if(
-            diagnosis.name === '🔔 Follow Up'
+            item.name === 'Explain' ||
+            item.name === '🔔 Follow Up'
         ){
             continue;
         }
@@ -1278,125 +1348,58 @@ console.log(client);
             })
             .eq(
                 'diagnosis',
-                diagnosis.name
+                item.name
             );
 
-        labels.push(
-            diagnosis.name
-        );
+        totalPatients += count || 0;
 
-        counts.push(
-            count || 0
-        );
+        if((count || 0) > topCount){
+
+            topCount = count || 0;
+
+            topDiagnosis =
+                item.name;
+        }
     }
 
-    const colors = [
+    const percent =
+        totalPatients
+        ? (
+            topCount /
+            totalPatients *
+            100
+        ).toFixed(1)
+        : 0;
 
-        '#0d6efd',
-        '#198754',
-        '#ffc107',
-        '#dc3545',
-        '#20c997',
-        '#6f42c1',
-        '#fd7e14',
-        '#0dcaf0',
-        '#6610f2',
-        '#198754'
-    ];
-if(diagnosisChart){
-    diagnosisChart.destroy();
-}
-  console.log(labels);
-console.log(counts);
-    diagnosisChart = new Chart(
+    document.getElementById(
+        'diagnosisSpotlight'
+    ).innerHTML = `
 
-        document.getElementById(
-            'diagnosisChart'
-        ),
+<div class="spotlight-info">
 
-        {
+<div class="spotlight-label">
+CURRENT TOP DIAGNOSIS
+</div>
 
-            type:'pie',
+<div class="spotlight-diagnosis">
+${topDiagnosis}
+</div>
 
-            data:{
+<div class="spotlight-count">
+${topCount} Patients
+</div>
 
-                labels,
+<div class="spotlight-percent">
+${percent}% of Registry
+</div>
 
-                datasets:[{
-    data:counts,
-    backgroundColor:colors,
+</div>
 
-    hoverOffset:60,
+<div class="spotlight-icon">
+🩺
+</div>
 
-    borderColor:'#fff',
-    borderWidth:4,
-
-    offset:3
-}]
-            },
-
-            options:{
-
-    responsive:true,
-
-    maintainAspectRatio:false,
-
-    interaction:{
-        mode:'nearest',
-        intersect:true
-
-
-                plugins:{
-
-    legend:{
-        position:'bottom',
-        labels:{
-            padding:20,
-            boxWidth:14,
-            font:{
-                size:13
-            }
-        }
-    },
-
-    tooltip:{
-                        callbacks:{
-
-                            label:function(context){
-
-                                const total =
-                                    context.dataset.data.reduce(
-                                        (a,b) => a + b,
-                                        0
-                                    );
-
-                                const value =
-                                    context.raw;
-
-                                const percentage =
-                                    (
-                                        value / total * 100
-                                    ).toFixed(1);
-
-return [
-
-    context.label,
-
-    `Patients: ${value}`,
-
-    `Percentage: ${percentage}%`
-
-];
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-
-    );
-
+`;
 }
     async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
 
@@ -1435,7 +1438,8 @@ return [
    
 await showAllPatients();
 await refreshCounts();
-     await loadDiagnosisChart();
+     await loadSpotlight();
+     
      
 }
     
@@ -1926,6 +1930,7 @@ last_update:lastUpdate || null
         await loadDiagnoses();
 
         await showAllPatients();
+     await loadSpotlight();
 
         alert(
             'Import completed successfully'
@@ -2018,8 +2023,9 @@ document.getElementById('remarks').value='';
 closePatientModal();
 
 await showPatients(diagnosis);
-     await refreshCounts();
-     await loadDiagnosisChart();
+await refreshCounts();
+await loadSpotlight();
+     
         
 }
 function openDiagnosisModal(){
@@ -2139,6 +2145,7 @@ function closePatientModal(){
 closeDeleteDiagnosisModal();
 
 await loadDiagnoses();
+await loadSpotlight();
 
     alert('Diagnosis deleted successfully');
 }
@@ -2778,6 +2785,7 @@ async function deleteDiagnosis(id){
 
    await loadDiagnoses();
 await showAllPatients();
+ await loadSpotlight();
 
 }
 async function deletePatient(id){
@@ -2800,7 +2808,8 @@ async function deletePatient(id){
 
 await showAllPatients();
 await refreshCounts();
- await loadDiagnosisChart();
+ await loadSpotlight();
+ 
 
 setTimeout(() => {
     document
@@ -2938,7 +2947,8 @@ document.getElementById(
 
 await showAllPatients();
  await refreshCounts();
- await loadDiagnosisChart();
+ await loadSpotlight();
+ 
 }
 </script>
 <div id="editPatientModal" class="modal">
