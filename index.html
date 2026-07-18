@@ -190,6 +190,7 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 
 <style>
+ 
  .card:not(.followup-card){
     background:#f8fbff;
 }
@@ -1363,50 +1364,65 @@ console.log(client);
     }
 
     const percent =
-        totalPatients
-        ? (
-            topCount /
-            totalPatients *
-            100
-        ).toFixed(1)
-        : 0;
+    totalPatients
+    ? (
+        topCount /
+        totalPatients *
+        100
+    ).toFixed(1)
+    : 0;
 
-  let icon = '🩺';
+const colors =
+    getDiagnosisColor(
+        topDiagnosis
+    );
+  let icon =
+'<i class="fa-solid fa-heart-pulse"></i>';
 
-const name =
+const n =
     topDiagnosis.toLowerCase();
 
-if(name.includes('lupus') || name.includes('sle')){
-    icon = '🦋';
+if(
+    n.includes('sle') ||
+    n.includes('lupus')
+){
+    icon =
+    '<i class="fa-solid fa-shield-heart"></i>';
 }
-else if(name.includes('hypertension')){
-    icon = '🫀';
+else if(
+    n.includes('diabetes') ||
+    n.includes('dm')
+){
+    icon =
+    '<i class="fa-solid fa-syringe"></i>';
 }
-else if(name.includes('diabetes') || name.includes('dm')){
-    icon = '🍬';
+else if(
+    n.includes('hypertension')
+){
+    icon =
+    '<i class="fa-solid fa-heart-circle-bolt"></i>';
 }
-else if(name.includes('aki')){
-    icon = '⚡';
+else if(
+    n.includes('iga')
+){
+    icon =
+    '<i class="fa-solid fa-dna"></i>';
 }
-else if(name.includes('iga')){
-    icon = '🧬';
+else if(
+    n.includes('aki')
+){
+    icon =
+    '<i class="fa-solid fa-bolt"></i>';
 }
-else if(name.includes('mcd')){
-    icon = '💧';
-}
-else if(name.includes('membranous')){
-    icon = '🔬';
-}
-else if(name.includes('polycystic')){
-    icon = '🫧';
-}
-else if(name.includes('granulomatosis')){
-    icon = '🛡️';
-}
-else{
-    icon = '🩺';
-}
-  
+  document.getElementById(
+    'diagnosisSpotlight'
+).style.background =
+`linear-gradient(
+135deg,
+${colors[0]},
+${colors[1]}
+)`;
+
     document.getElementById(
         'diagnosisSpotlight'
     ).innerHTML = `
@@ -2289,19 +2305,29 @@ for(const item of data){
         .eq('diagnosis', item.name);
 
     const count = patients?.length || 0;
-
+const colors =
+    getDiagnosisColor(
+        item.name
+    );
 container.innerHTML += `
 <button
 class="diagnosis-btn"
+style="
+background:
+linear-gradient(
+135deg,
+${colors[0]},
+${colors[1]}
+);
+"
 onclick="
 showPatients('${item.name}');
-showSpotlightDiagnosis('${item.name}');
 setActiveDiagnosis(this);
 ">
-`
-    ${item.name} (<span id="count-${item.id}">${count}</span>)
-    </button>
-    `;
+${item.name}
+(<span id="count-${item.id}">${count}</span>)
+</button>
+`;
 }
 
 }
@@ -2922,7 +2948,36 @@ if(
         'editPatientModal'
     ).style.display='block';
 }
+function getDiagnosisColor(name){
 
+    const colors = [
+
+        ['#4F46E5','#6366F1'],
+        ['#0891B2','#06B6D4'],
+        ['#0F766E','#14B8A6'],
+        ['#65A30D','#84CC16'],
+        ['#CA8A04','#FACC15'],
+        ['#EA580C','#FB923C'],
+        ['#DC2626','#F87171'],
+        ['#BE185D','#EC4899'],
+        ['#7C3AED','#A78BFA'],
+        ['#475569','#94A3B8']
+
+    ];
+
+    let hash = 0;
+
+    for(let i=0;i<name.length;i++){
+
+        hash += name.charCodeAt(i);
+
+    }
+
+    return colors[
+        hash % colors.length
+    ];
+}
+ 
 function closeEditPatientModal(){
 
     document.getElementById(
