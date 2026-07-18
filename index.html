@@ -571,14 +571,12 @@ body{
     position:fixed;
     inset:0;
     background:rgba(0,0,0,.5);
+    z-index:999999;
 }
 
 .modal-content{
-    width:550px;
-    background:white;
-    margin:15px auto;
-    padding:15px;
-    border-radius:12px;
+    position:relative;
+    z-index:1000000;
 }
 
 .modal-content input{
