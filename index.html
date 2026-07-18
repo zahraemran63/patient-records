@@ -500,12 +500,12 @@ console.log('ExcelJS =', typeof ExcelJS);
     
 .diagnosis-btn.active{
 
+    filter:brightness(1.35);
+
     transform:translateY(-2px);
 
-    border:2px solid rgba(255,255,255,.9);
-
     box-shadow:
-    0 8px 20px rgba(0,0,0,.18);
+    0 8px 20px rgba(0,0,0,.22);
 
 }
 #diagnosesContainer{
@@ -1326,6 +1326,7 @@ console.log(client);
     searchPatients();
 }
  
+
  function showCurrentSpotlight(){
 
     if(
@@ -1430,110 +1431,9 @@ console.log(client);
         spotlightIndex = 0;
     }
 }
- function showCurrentSpotlight(){
-
-    if(
-        spotlightDiagnoses.length === 0
-    ){
-        return;
-    }
-
-    const item =
-        spotlightDiagnoses[
-            spotlightIndex
-        ];
-
-    const colors =
-        getDiagnosisColor(
-            item.name
-        );
-
-    let icon =
-    '<i class="fa-solid fa-heart-pulse"></i>';
-
-    const n =
-        item.name.toLowerCase();
-
-    if(
-        n.includes('sle') ||
-        n.includes('lupus')
-    ){
-        icon =
-        '<i class="fa-solid fa-shield-heart"></i>';
-    }
-    else if(
-        n.includes('diabetes') ||
-        n.includes('dm')
-    ){
-        icon =
-        '<i class="fa-solid fa-syringe"></i>';
-    }
-    else if(
-        n.includes('hypertension')
-    ){
-        icon =
-        '<i class="fa-solid fa-heart-circle-bolt"></i>';
-    }
-    else if(
-        n.includes('iga')
-    ){
-        icon =
-        '<i class="fa-solid fa-dna"></i>';
-    }
-    else if(
-        n.includes('aki')
-    ){
-        icon =
-        '<i class="fa-solid fa-bolt"></i>';
-    }
-
-    const card =
-        document.getElementById(
-            'diagnosisSpotlight'
-        );
-
-    card.style.background =
-    `linear-gradient(
-    135deg,
-    ${colors[0]},
-    ${colors[1]}
-    )`;
-
-    card.innerHTML = `
-    <div class="spotlight-info">
-
-        <div class="spotlight-label">
-        DIAGNOSIS OVERVIEW
-        </div>
-
-        <div class="spotlight-diagnosis">
-        ${item.name}
-        </div>
-
-        <div class="spotlight-count">
-        ${item.count} Patients
-        </div>
-
-        <div class="spotlight-percent">
-        ${item.percent}% of Registry
-        </div>
-
-    </div>
-
-    <div class="spotlight-icon">
-    ${icon}
-    </div>
-    `;
-
-    spotlightIndex++;
-
-    if(
-        spotlightIndex >=
-        spotlightDiagnoses.length
-    ){
-        spotlightIndex = 0;
-    }
-}
+ let spotlightDiagnoses = [];
+let spotlightIndex = 0;
+let spotlightTimer = null;
  async function loadSpotlight(){
 
     const { data: diagnoses } =
@@ -2442,11 +2342,20 @@ async function loadDiagnoses(){
 container.innerHTML = `
 <button
 class="diagnosis-btn active"
+style="
+background:
+linear-gradient(
+135deg,
+#334155,
+#64748B
+);
+"
 onclick="
 showAllPatients();
 setActiveDiagnosis(this);
 ">
-All Patients (<span id="all-count">${allCount}</span>)
+All Patients
+(<span id="all-count">${allCount}</span>)
 </button>
 `;
 
