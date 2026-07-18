@@ -1209,10 +1209,6 @@ function searchPatients(){
 }
 window.addEventListener('load', async () => {
 
-    await loadDiagnoses();
-
-    await showAllPatients();
-
     await refreshCounts();
 
     await loadDiagnosisChart();
@@ -1316,35 +1312,83 @@ console.log(counts);
 
         {
 
-            type:'doughnut',
+            type:'pie',
 
             data:{
 
                 labels,
 
                 datasets:[
-                    {
-                        data:counts,
-                        backgroundColor:
-                            colors
-                    }
-                ]
+{
+    data:counts,
+
+    backgroundColor:colors,
+
+    hoverOffset:35,
+
+    borderColor:'#fff',
+
+    borderWidth:3
+}
+]
             },
 
             options:{
-    plugins:{
-        legend:{
-            position:'bottom'
+
+                responsive:true,
+
+                plugins:{
+
+                    legend:{
+    position:'bottom',
+    labels:{
+        padding:20,
+        boxWidth:14,
+        font:{
+            size:13
         }
     }
 }
+
+                    tooltip:{
+
+                        callbacks:{
+
+                            label:function(context){
+
+                                const total =
+                                    context.dataset.data.reduce(
+                                        (a,b) => a + b,
+                                        0
+                                    );
+
+                                const value =
+                                    context.raw;
+
+                                const percentage =
+                                    (
+                                        value / total * 100
+                                    ).toFixed(1);
+
+                                return (
+                                    context.label +
+                                    ' | Patients: ' +
+                                    value +
+                                    ' | ' +
+                                    percentage +
+                                    '%'
+                                );
+                            }
+                        }
+                    }
+                }
+            }
 
         }
 
     );
 
 }
-
     async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
 
     if(!needsFollowup){
