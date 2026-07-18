@@ -13,7 +13,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 
        
@@ -207,6 +207,65 @@ console.log('ExcelJS =', typeof ExcelJS);
     border-bottom:2px solid #c7daff;
 
     border-radius:20px 20px 0 0;
+}
+ .registry-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:white;
+
+    border-radius:25px;
+
+    padding:25px 40px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.08);
+}
+
+.registry-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:25px;
+}
+
+.registry-icon{
+
+    font-size:60px;
+}
+
+.registry-tag{
+
+    display:inline-block;
+
+    margin-top:10px;
+
+    padding:8px 18px;
+
+    background:#0d6efd;
+
+    color:white;
+
+    border-radius:999px;
+
+    font-weight:700;
+
+    font-size:13px;
+}
+
+.registry-chart{
+
+    width:280px;
+
+    height:180px;
 }
  #quickStats{
 
@@ -866,21 +925,33 @@ Logout
 
 </div>
 
-    <div class="system-header">
+    <div class="registry-header">
 
-    <div class="system-icon">
-        🩺 ❤️
+    <div class="registry-left">
+
+        <div class="registry-icon">
+            🩺 ❤️
+        </div>
+
+        <div>
+
+            <h1>
+                Kidney Disease Registry
+            </h1>
+
+            <div class="registry-tag">
+                NEPHROLOGY RESEARCH DATABASE
+            </div>
+
+        </div>
+
     </div>
 
-    <div>
+    <div class="registry-chart">
 
-        <h1 class="system-title">
-            Kidney Disease Registry
-        </h1>
+        <canvas id="diagnosisChart"></canvas>
 
-        <div class="system-subtitle">
-            NEPHROLOGY RESEARCH DATABASE
-        </div>
+    </div>
 
     </div>
 
@@ -1204,6 +1275,93 @@ console.log(client);
 
     searchPatients();
 }
+ async function loadDiagnosisChart(){
+
+    const { data } =
+        await client
+        .from('diagnoses')
+        .select('*');
+
+    const labels = [];
+    const counts = [];
+
+    for(const diagnosis of data){
+
+        if(
+            diagnosis.name === '🔔 Follow Up'
+        ){
+            continue;
+        }
+
+        const { count } =
+            await client
+            .from('patients')
+            .select('*',{
+                count:'exact',
+                head:true
+            })
+            .eq(
+                'diagnosis',
+                diagnosis.name
+            );
+
+        labels.push(
+            diagnosis.name
+        );
+
+        counts.push(
+            count || 0
+        );
+    }
+
+    const colors = [
+
+        '#0d6efd',
+        '#198754',
+        '#ffc107',
+        '#dc3545',
+        '#20c997',
+        '#6f42c1',
+        '#fd7e14',
+        '#0dcaf0',
+        '#6610f2',
+        '#198754'
+    ];
+
+    new Chart(
+
+        document.getElementById(
+            'diagnosisChart'
+        ),
+
+        {
+
+            type:'doughnut',
+
+            data:{
+
+                labels,
+
+                datasets:[
+                    {
+                        data:counts,
+                        backgroundColor:
+                            colors
+                    }
+                ]
+            },
+
+            options:{
+                plugins:{
+                    legend:{
+                        position:'right'
+                    }
+                }
+            }
+
+        }
+    );
+}
     async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
 
     if(!needsFollowup){
@@ -1241,6 +1399,7 @@ console.log(client);
    
 await showAllPatients();
 await refreshCounts();
+     await loadDiagnosisChart();
      
 }
     
@@ -1824,6 +1983,7 @@ closePatientModal();
 
 await showPatients(diagnosis);
      await refreshCounts();
+     await loadDiagnosisChart();
         
 }
 function openDiagnosisModal(){
@@ -2628,6 +2788,7 @@ async function deletePatient(id){
 
 await showAllPatients();
 await refreshCounts();
+ await loadDiagnosisChart();
 
 setTimeout(() => {
     document
@@ -2765,6 +2926,7 @@ document.getElementById(
 
 await showAllPatients();
  await refreshCounts();
+ await loadDiagnosisChart();
 }
 </script>
 <div id="editPatientModal" class="modal">
