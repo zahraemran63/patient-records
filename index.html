@@ -499,11 +499,14 @@ console.log('ExcelJS =', typeof ExcelJS);
 }
     
 .diagnosis-btn.active{
-    background:#198754 !important;
-    color:white !important;
+
     transform:translateY(-2px);
-    border:2px solid #146c43;
-    box-shadow:0 4px 12px rgba(25,135,84,.35);
+
+    border:2px solid rgba(255,255,255,.9);
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.18);
+
 }
 #diagnosesContainer{
     display:flex;
@@ -513,16 +516,18 @@ console.log('ExcelJS =', typeof ExcelJS);
 }
 
 .diagnosis-btn{
-    background:#0d6efd;
     color:white;
     padding:12px 20px;
     border-radius:10px;
     border:none;
     font-size:16px;
+    transition:.25s;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
 }
 
 .diagnosis-btn:hover{
-    background:#0b5ed7;
+    transform:translateY(-2px);
+    filter:brightness(1.05);
 }
     .special-followup{
     background:#ff8c1a !important;
@@ -1319,6 +1324,287 @@ console.log(client);
     ).value = formatted;
 
     searchPatients();
+}
+ async function loadSpotlight(){
+
+    const { data: diagnoses } =
+        await client
+        .from('diagnoses')
+        .select('*')
+        .order('name');
+
+    spotlightDiagnoses = [];
+
+    let totalPatients = 0;
+
+    for(const item of diagnoses){
+
+        if(
+            item.name === 'Explain' ||
+            item.name === '🔔 Follow Up'
+        ){
+            continue;
+        }
+
+        const { count } =
+            await client
+            .from('patients')
+            .select('*',{
+                count:'exact',
+                head:true
+            })
+            .eq(
+                'diagnosis',
+                item.name
+            );
+
+        totalPatients += count || 0;
+
+        spotlightDiagnoses.push({
+            name:item.name,
+            count:count || 0
+        });
+    }
+
+    spotlightDiagnoses =
+        spotlightDiagnoses.filter(
+            x => x.count > 0
+        );
+
+    spotlightDiagnoses.forEach(item => {
+
+        item.percent =
+            totalPatients
+            ? (
+                item.count /
+                totalPatients *
+                100
+            ).toFixed(1)
+            : 0;
+
+    });
+
+    spotlightIndex = 0;
+
+    showCurrentSpotlight();
+
+    clearInterval(
+        spotlightTimer
+    );
+
+    spotlightTimer =
+        setInterval(
+            showCurrentSpotlight,
+            10000
+        );
+}
+ function showCurrentSpotlight(){
+
+    if(
+        spotlightDiagnoses.length === 0
+    ){
+        return;
+    }
+
+    const item =
+        spotlightDiagnoses[
+            spotlightIndex
+        ];
+
+    const colors =
+        getDiagnosisColor(
+            item.name
+        );
+
+    let icon =
+    '<i class="fa-solid fa-heart-pulse"></i>';
+
+    const n =
+        item.name.toLowerCase();
+
+    if(
+        n.includes('sle') ||
+        n.includes('lupus')
+    ){
+        icon =
+        '<i class="fa-solid fa-shield-heart"></i>';
+    }
+    else if(
+        n.includes('diabetes') ||
+        n.includes('dm')
+    ){
+        icon =
+        '<i class="fa-solid fa-syringe"></i>';
+    }
+    else if(
+        n.includes('hypertension')
+    ){
+        icon =
+        '<i class="fa-solid fa-heart-circle-bolt"></i>';
+    }
+    else if(
+        n.includes('iga')
+    ){
+        icon =
+        '<i class="fa-solid fa-dna"></i>';
+    }
+    else if(
+        n.includes('aki')
+    ){
+        icon =
+        '<i class="fa-solid fa-bolt"></i>';
+    }
+
+    const card =
+        document.getElementById(
+            'diagnosisSpotlight'
+        );
+
+    card.style.background =
+    `linear-gradient(
+    135deg,
+    ${colors[0]},
+    ${colors[1]}
+    )`;
+
+    card.innerHTML = `
+    <div class="spotlight-info">
+
+        <div class="spotlight-label">
+        DIAGNOSIS OVERVIEW
+        </div>
+
+        <div class="spotlight-diagnosis">
+        ${item.name}
+        </div>
+
+        <div class="spotlight-count">
+        ${item.count} Patients
+        </div>
+
+        <div class="spotlight-percent">
+        ${item.percent}% of Registry
+        </div>
+
+    </div>
+
+    <div class="spotlight-icon">
+    ${icon}
+    </div>
+    `;
+
+    spotlightIndex++;
+
+    if(
+        spotlightIndex >=
+        spotlightDiagnoses.length
+    ){
+        spotlightIndex = 0;
+    }
+}
+ function showCurrentSpotlight(){
+
+    if(
+        spotlightDiagnoses.length === 0
+    ){
+        return;
+    }
+
+    const item =
+        spotlightDiagnoses[
+            spotlightIndex
+        ];
+
+    const colors =
+        getDiagnosisColor(
+            item.name
+        );
+
+    let icon =
+    '<i class="fa-solid fa-heart-pulse"></i>';
+
+    const n =
+        item.name.toLowerCase();
+
+    if(
+        n.includes('sle') ||
+        n.includes('lupus')
+    ){
+        icon =
+        '<i class="fa-solid fa-shield-heart"></i>';
+    }
+    else if(
+        n.includes('diabetes') ||
+        n.includes('dm')
+    ){
+        icon =
+        '<i class="fa-solid fa-syringe"></i>';
+    }
+    else if(
+        n.includes('hypertension')
+    ){
+        icon =
+        '<i class="fa-solid fa-heart-circle-bolt"></i>';
+    }
+    else if(
+        n.includes('iga')
+    ){
+        icon =
+        '<i class="fa-solid fa-dna"></i>';
+    }
+    else if(
+        n.includes('aki')
+    ){
+        icon =
+        '<i class="fa-solid fa-bolt"></i>';
+    }
+
+    const card =
+        document.getElementById(
+            'diagnosisSpotlight'
+        );
+
+    card.style.background =
+    `linear-gradient(
+    135deg,
+    ${colors[0]},
+    ${colors[1]}
+    )`;
+
+    card.innerHTML = `
+    <div class="spotlight-info">
+
+        <div class="spotlight-label">
+        DIAGNOSIS OVERVIEW
+        </div>
+
+        <div class="spotlight-diagnosis">
+        ${item.name}
+        </div>
+
+        <div class="spotlight-count">
+        ${item.count} Patients
+        </div>
+
+        <div class="spotlight-percent">
+        ${item.percent}% of Registry
+        </div>
+
+    </div>
+
+    <div class="spotlight-icon">
+    ${icon}
+    </div>
+    `;
+
+    spotlightIndex++;
+
+    if(
+        spotlightIndex >=
+        spotlightDiagnoses.length
+    ){
+        spotlightIndex = 0;
+    }
 }
  async function loadSpotlight(){
 
