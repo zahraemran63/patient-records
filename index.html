@@ -1439,10 +1439,11 @@ let spotlightTimer = null;
     const { data: diagnoses } =
         await client
         .from('diagnoses')
-        .select('*');
+        .select('*')
+        .order('name');
 
-    let topDiagnosis = null;
-    let topCount = 0;
+    spotlightDiagnoses = [];
+
     let totalPatients = 0;
 
     for(const item of diagnoses){
@@ -1468,105 +1469,56 @@ let spotlightTimer = null;
 
         totalPatients += count || 0;
 
-        if((count || 0) > topCount){
+        spotlightDiagnoses.push({
+            name: item.name,
+            count: count || 0
+        });
 
-            topCount = count || 0;
-
-            topDiagnosis =
-                item.name;
-        }
     }
 
-    const percent =
-    totalPatients
-    ? (
-        topCount /
-        totalPatients *
-        100
-    ).toFixed(1)
-    : 0;
+    spotlightDiagnoses =
+        spotlightDiagnoses.filter(
+            x => x.count > 0
+        );
 
-const colors =
-    getDiagnosisColor(
-        topDiagnosis
+    spotlightDiagnoses.forEach(item => {
+
+        item.percent =
+            totalPatients
+            ? (
+                item.count /
+                totalPatients *
+                100
+            ).toFixed(1)
+            : 0;
+
+    });
+
+    if(
+        spotlightDiagnoses.length === 0
+    ){
+        document.getElementById(
+            'diagnosisSpotlight'
+        ).innerHTML =
+        '<div style="font-size:24px;">No Data</div>';
+
+        return;
+    }
+
+    spotlightIndex = 0;
+
+    showCurrentSpotlight();
+
+    clearInterval(
+        spotlightTimer
     );
-  let icon =
-'<i class="fa-solid fa-heart-pulse"></i>';
 
-const n =
-    topDiagnosis.toLowerCase();
+    spotlightTimer =
+        setInterval(
+            showCurrentSpotlight,
+            10000
+        );
 
-if(
-    n.includes('sle') ||
-    n.includes('lupus')
-){
-    icon =
-    '<i class="fa-solid fa-shield-heart"></i>';
-}
-else if(
-    n.includes('diabetes') ||
-    n.includes('dm')
-){
-    icon =
-    '<i class="fa-solid fa-syringe"></i>';
-}
-else if(
-    n.includes('hypertension')
-){
-    icon =
-    '<i class="fa-solid fa-heart-circle-bolt"></i>';
-}
-else if(
-    n.includes('iga')
-){
-    icon =
-    '<i class="fa-solid fa-dna"></i>';
-}
-else if(
-    n.includes('aki')
-){
-    icon =
-    '<i class="fa-solid fa-bolt"></i>';
-}
-  document.getElementById(
-    'diagnosisSpotlight'
-).style.background =
-`linear-gradient(
-135deg,
-${colors[0]},
-${colors[1]}
-)`;
-
-    document.getElementById(
-        'diagnosisSpotlight'
-    ).innerHTML = `
-
-<div class="spotlight-info">
-
-<div class="spotlight-label">
-CURRENT TOP DIAGNOSIS
-</div>
-
-<div class="spotlight-diagnosis">
-${topDiagnosis}
-</div>
-
-<div class="spotlight-count">
-${topCount} Patients
-</div>
-
-<div class="spotlight-percent">
-${percent}% of Registry
-</div>
-
-</div>
-
-<div class="spotlight-icon">
-${icon}
-</div>
-
-
-`;
 }
     async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
 
