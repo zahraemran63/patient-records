@@ -288,8 +288,8 @@ console.log('ExcelJS =', typeof ExcelJS);
 }
 
 .registry-chart{
-    width:500px;
-    height:260px;
+    width:550px;
+    height:320px;
     position:relative;
 }
  
@@ -1322,24 +1322,29 @@ console.log(counts);
 
                 labels,
 
-                datasets:[
-{
+                datasets:[{
     data:counts,
-
     backgroundColor:colors,
 
-    hoverOffset:35,
+    hoverOffset:60,
 
     borderColor:'#fff',
+    borderWidth:4,
 
-    borderWidth:3
-}
-]
+    offset:3
+}]
             },
 
             options:{
 
-                responsive:true,
+    responsive:true,
+
+    maintainAspectRatio:false,
+
+    interaction:{
+        mode:'nearest',
+        intersect:true
+
 
                 plugins:{
 
