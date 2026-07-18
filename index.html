@@ -239,7 +239,33 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 .registry-icon{
 
-    font-size:60px;
+    width:120px;
+    height:120px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        #f5f9ff,
+        #ffffff
+    );
+
+    border:3px solid #cfe2ff;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:5px;
+
+    font-size:50px;
+ line-height:1;
+
+    box-shadow:
+        0 8px 20px rgba(13,110,253,.12);
 }
 
 .registry-tag{
@@ -263,62 +289,19 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 .registry-chart{
 
-    width:280px;
+    width:420px;
 
-    height:180px;
+    height:220px;
+
+    position:relative;
 }
- #quickStats{
+#diagnosisChart{
 
-    position:fixed;
+    width:100% !important;
 
-    top:85px;
-
-    right:20px;
-
-    display:flex;
-
-    gap:12px;
-
-    z-index:9999;
-
+    height:100% !important;
 }
-
-.stat-circle{
-
-    width:95px;
-    height:95px;
-
-    border-radius:50%;
-
-    background:white;
-
-    box-shadow:
-        0 8px 25px rgba(0,0,0,.12);
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-}
-
-.stat-circle div{
-
-    font-size:24px;
-
-    font-weight:800;
-
-    color:#0d6efd;
-}
-
-.stat-circle span{
-
-    font-size:12px;
-
-    color:#6b7280;
-}
+ 
  .system-header{
 
     display:flex;
@@ -907,22 +890,7 @@ z-index:1000;
 ">
 Logout
 </button>
-     <div id="quickStats">
-
-    <div class="stat-circle">
-        <div id="totalPatients">
-            0
-        </div>
-        <span>Patients</span>
-    </div>
-
-    <div class="stat-circle">
-        <div id="totalDiagnosis">
-            0
-        </div>
-        <span>Diagnosis</span>
-    </div>
-
+     
 </div>
 
     <div class="registry-header">
@@ -930,8 +898,9 @@ Logout
     <div class="registry-left">
 
         <div class="registry-icon">
-            🩺 ❤️
-        </div>
+    <div>🩺</div>
+    <div>❤️</div>
+</div>
 
         <div>
 
@@ -942,8 +911,6 @@ Logout
             <div class="registry-tag">
                 NEPHROLOGY RESEARCH DATABASE
             </div>
-
-        </div>
 
     </div>
 
@@ -1243,7 +1210,18 @@ function searchPatients(){
     });
 
 }
+window.addEventListener('load', async () => {
 
+    await loadDiagnoses();
+
+    await showAllPatients();
+
+    await refreshCounts();
+
+    await loadDiagnosisChart();
+ console.log("Chart Loaded");
+
+});
 const client = window.supabase.createClient(
 'https://frgoxmfoucaqhevfmfbb.supabase.co',
 
@@ -1275,6 +1253,7 @@ console.log(client);
 
     searchPatients();
 }
+ let diagnosisChart = null;
  async function loadDiagnosisChart(){
 
     const { data } =
@@ -1327,8 +1306,10 @@ console.log(client);
         '#6610f2',
         '#198754'
     ];
-
-    new Chart(
+if(diagnosisChart){
+    diagnosisChart.destroy();
+}
+    diagnosisChart = new Chart(
 
         document.getElementById(
             'diagnosisChart'
@@ -1354,7 +1335,8 @@ console.log(client);
             options:{
                 plugins:{
                     legend:{
-                        position:'right'
+    position:'bottom'
+}
                     }
                 }
             }
@@ -2281,10 +2263,6 @@ await client
         head:true
     });
 
-document.getElementById(
-    'totalPatients'
-).textContent =
-patientCount || 0;
 
 const { count: diagnosisCount } =
 await client
@@ -2294,10 +2272,6 @@ await client
         head:true
     });
 
-document.getElementById(
-    'totalDiagnosis'
-).textContent =
-diagnosisCount || 0;
          
         }
     }
