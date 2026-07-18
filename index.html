@@ -288,13 +288,11 @@ console.log('ExcelJS =', typeof ExcelJS);
 }
 
 .registry-chart{
-
-    width:420px;
-
-    height:220px;
-
+    width:500px;
+    height:260px;
     position:relative;
 }
+ 
 #diagnosisChart{
 
     width:100% !important;
@@ -891,16 +889,15 @@ z-index:1000;
 Logout
 </button>
      
-</div>
 
     <div class="registry-header">
 
     <div class="registry-left">
 
         <div class="registry-icon">
-    <div>🩺</div>
-    <div>❤️</div>
-</div>
+            <div>🩺</div>
+            <div>❤️</div>
+        </div>
 
         <div>
 
@@ -912,15 +909,15 @@ Logout
                 NEPHROLOGY RESEARCH DATABASE
             </div>
 
+        </div>
+
     </div>
 
     <div class="registry-chart">
-
         <canvas id="diagnosisChart"></canvas>
-
     </div>
 
-    </div>
+</div>
 
 </div>
 
@@ -1309,6 +1306,8 @@ console.log(client);
 if(diagnosisChart){
     diagnosisChart.destroy();
 }
+  console.log(labels);
+console.log(counts);
     diagnosisChart = new Chart(
 
         document.getElementById(
@@ -1333,17 +1332,19 @@ if(diagnosisChart){
             },
 
             options:{
-                plugins:{
-                    legend:{
-    position:'bottom'
+    plugins:{
+        legend:{
+            position:'bottom'
+        }
+    }
 }
-                    }
-                }
-            }
 
         }
+
     );
+
 }
+
     async function toggleFollowUp(id, currentDiagnosis, needsFollowup){
 
     if(!needsFollowup){
@@ -2255,22 +2256,7 @@ for(const item of data){
         if(el){
             el.textContent =
                 patients?.length || 0;
-         const { count: patientCount } =
-await client
-    .from('patients')
-    .select('*', {
-        count:'exact',
-        head:true
-    });
-
-
-const { count: diagnosisCount } =
-await client
-    .from('diagnoses')
-    .select('*', {
-        count:'exact',
-        head:true
-    });
+         
 
          
         }
