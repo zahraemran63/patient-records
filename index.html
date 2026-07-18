@@ -190,7 +190,20 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 
 <style>
- 
+ .diagnosis-btn.active{
+
+    background:#198754 !important;
+
+    filter:none !important;
+
+    color:white !important;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 8px 20px rgba(25,135,84,.35);
+
+}
  .card:not(.followup-card){
     background:#f8fbff;
 }
@@ -1306,24 +1319,24 @@ console.log(client);
     document
         .querySelectorAll('.diagnosis-btn')
         .forEach(btn => {
+
             btn.classList.remove('active');
+
+            const original =
+                btn.dataset.original;
+
+            if(original){
+                btn.style.background =
+                    original;
+            }
+
         });
 
     button.classList.add('active');
-}
- 
- function setDateSearch(date){
 
-    const parts = date.split('-');
+    button.style.background =
+        '#198754';
 
-    const formatted =
-        `${parts[2]}/${parts[1]}/${parts[0]}`;
-
-    document.getElementById(
-        'searchInput'
-    ).value = formatted;
-
-    searchPatients();
 }
  
 
@@ -2387,6 +2400,12 @@ const colors =
 container.innerHTML += `
 <button
 class="diagnosis-btn"
+data-original="
+linear-gradient(
+135deg,
+${colors[0]},
+${colors[1]}
+)"
 style="
 background:
 linear-gradient(
