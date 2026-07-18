@@ -204,16 +204,7 @@ console.log('ExcelJS =', typeof ExcelJS);
     0 8px 20px rgba(25,135,84,.35);
 
 }
- #diagnosisSpotlight{
-    width:520px;
-    height:180px;
-
-    position:relative;
-
-    overflow:hidden !important;
-
-    isolation:isolate;
-}
+ 
  .spotlight-info{
     position:relative;
     z-index:1;
@@ -579,17 +570,39 @@ body{
     padding:20px;
     padding-top:90px;
 }
-    .modal{
+   
+.modal-content{
+
+    width:550px;
+
+    background:white;
+
+    margin:30px auto;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-sizing:border-box;
+
+    position:relative;
+
+    z-index:1000000;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.25);
+
+}
+ .modal{
     display:none;
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.5);
-    z-index:999999;
-}
 
-.modal-content{
-    position:relative;
-    z-index:1000000;
+    background:rgba(0,0,0,.5);
+
+    z-index:999999;
+
+    overflow:auto;
 }
 
 .modal-content input{
@@ -739,18 +752,13 @@ button{
 
     padding:25px;
 
-    overflow:hidden;
-
     position:relative;
 
-    color:white;
+    overflow:hidden;
 
-    background:
-    linear-gradient(
-        135deg,
-        #2563eb,
-        #06b6d4
-    );
+    isolation:isolate;
+
+    color:white;
 
     display:flex;
 
