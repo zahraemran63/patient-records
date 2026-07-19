@@ -65,7 +65,7 @@ function warningMessage(msg){
 
 
 
-function login(){
+async function login(){
     const password =
         document
         .getElementById('loginPassword')
@@ -136,10 +136,22 @@ welcome.innerHTML = `
         return;
     }
 
-errorMessage(
-    'Incorrect Password'
-);
+await Swal.fire({
+    icon: 'error',
+    title: 'Incorrect Password',
+    text: 'Please try again',
+    confirmButtonText: 'OK'
+});
 
+document.getElementById(
+    'loginPassword'
+).value = '';
+
+document.getElementById(
+    'loginPassword'
+).focus();
+
+return;
 
 }
 
