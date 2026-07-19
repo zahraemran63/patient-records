@@ -1495,6 +1495,24 @@ console.log(client);
         spotlightDiagnoses[
             spotlightIndex
         ];
+  card.onclick = () => {
+
+    showPatients(item.name);
+
+    document
+        .querySelectorAll('.diagnosis-btn')
+        .forEach(btn => {
+
+            if(
+                btn.innerText
+                .startsWith(item.name)
+            ){
+                setActiveDiagnosis(btn);
+            }
+
+        });
+
+};
 
     const colors =
         getDiagnosisColor(
