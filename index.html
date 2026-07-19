@@ -992,10 +992,6 @@ button{
     border-radius:10px;
 }
 
-#loginError{
-    color:red;
-    margin-top:10px;
-}
 
 #welcomeUser{
      position:absolute;
@@ -3279,36 +3275,7 @@ ${colors[1]}
     });
 
 }
-async function deleteDiagnosis(id){
 
-    const result = await Swal.fire({
-    title:'Delete Diagnosis?',
-    text:'This action cannot be undone',
-    icon:'warning',
-    showCancelButton:true,
-    confirmButtonColor:'#dc3545',
-    confirmButtonText:'Delete'
-});
-
-if(!result.isConfirmed){
-    return;
-}
-
-    const { error } = await client
-        .from('diagnoses')
-        .delete()
-        .eq('id', id);
-
-    if(error){
-        errorMessage(error.message);
-        return;
-    }
-
-   await loadDiagnoses();
-await showAllPatients();
- await loadSpotlight();
-
-}
 async function deletePatient(id){
 
     const result = await Swal.fire({
