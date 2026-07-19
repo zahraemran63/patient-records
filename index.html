@@ -1280,18 +1280,28 @@ type="date">
 }
  function setDateSearch(date){
 
+    const searchInput =
+        document.getElementById(
+            'searchInput'
+        );
+
     if(!date){
+
+        searchInput.value = '';
+
+        searchPatients();
+
         return;
     }
 
-    const parts = date.split('-');
+    const parts =
+        date.split('-');
 
     const formatted =
         `${parts[2]}/${parts[1]}/${parts[0]}`;
 
-    document.getElementById(
-        'searchInput'
-    ).value = formatted;
+    searchInput.value =
+        formatted;
 
     searchPatients();
 }
