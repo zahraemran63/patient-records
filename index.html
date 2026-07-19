@@ -13,11 +13,43 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     
 
        
     <script>
+     function successMessage(msg){
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: msg,
+        timer: 2000,
+        showConfirmButton: false
+    });
+
+}
+
+function errorMessage(msg){
+
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: msg
+    });
+
+}
+
+function warningMessage(msg){
+
+    Swal.fire({
+        icon: 'warning',
+        title: 'Warning',
+        text: msg
+    });
+
+}
       document.addEventListener(
     'DOMContentLoaded',
     () => {
@@ -104,11 +136,9 @@ welcome.innerHTML = `
         return;
     }
 
-    document.getElementById(
-        'loginError'
-    ).innerHTML =
-        '❌ Incorrect Password';
-}
+errorMessage(
+    'Incorrect Password'
+);
 
 
 document.addEventListener(
@@ -1074,8 +1104,6 @@ button{
             Login
         </button>
 
-        <div id="loginError"></div>
-
     </div>
 </div>
 
@@ -1803,7 +1831,7 @@ let spotlightTimer = null;
             .eq('id', id);
 
         if(error){
-            alert(error.message);
+            errorMessage(error.message);
             return;
         }
 
@@ -1818,7 +1846,7 @@ let spotlightTimer = null;
             .eq('id', id);
 
         if(error){
-            alert(error.message);
+            errorMessage(error.message);
             return;
         }
 
@@ -2199,7 +2227,7 @@ const totalRow2 = summarySheet.addRow({
     }
     catch(error){
 
-        alert(error.message);
+        errorMessage(error.message);
 
     }
     finally{
@@ -2212,7 +2240,11 @@ const totalRow2 = summarySheet.addRow({
 }
     async function importExcel(event){
         if(typeof XLSX === 'undefined'){
-    alert('XLSX Library Not Loaded');
+
+    errorMessage(
+        'XLSX Library Not Loaded'
+    );
+
     return;
 }
 
@@ -2321,14 +2353,14 @@ last_update:lastUpdate || null
         await showAllPatients();
      await loadSpotlight();
 
-        alert(
-            'Import completed successfully'
-        );
+successMessage(
+    'Import Completed Successfully'
+);
 
     }
     catch(error){
 
-        alert(error.message);
+        errorMessage(error.message);
 
     }
     finally {
@@ -2364,7 +2396,9 @@ document.getElementById('patientDiagnosis').value;
 
     if(!fileNo || !name){
 
-        alert('Please fill required fields');
+        warningMessage(
+'Please fill required fields'
+);
 
         return;
     }
@@ -2377,9 +2411,9 @@ document.getElementById('patientDiagnosis').value;
 
     if(existing && existing.length > 0){
 
-        alert(
-          `Patient already exists in diagnosis ${diagnosis}`
-        );
+warningMessage(
+`Patient already exists in diagnosis ${diagnosis}`
+);
 
         return;
     }
@@ -2397,12 +2431,14 @@ document.getElementById('patientDiagnosis').value;
 
     if(error){
 
-        alert(error.message);
+        errorMessage(error.message);
 
         return;
     }
 
-alert('Patient Added Successfully');
+successMessage(
+'Patient Added Successfully'
+);
 
 document.getElementById('fileNo').value='';
 document.getElementById('patientName').value='';
@@ -2513,7 +2549,19 @@ function closePatientModal(){
     ).style.display='none';
 }
     async function confirmDeleteDiagnosis(){
+const result = await Swal.fire({
+    title:'Delete Diagnosis?',
+    text:'This action cannot be undone',
+    icon:'warning',
+    showCancelButton:true,
+    confirmButtonColor:'#dc3545',
+    cancelButtonText:'Cancel',
+    confirmButtonText:'Delete'
+});
 
+if(!result.isConfirmed){
+    return;
+}
     const id =
         document.getElementById(
             'deleteDiagnosisSelect'
@@ -2527,7 +2575,7 @@ function closePatientModal(){
         .eq('id', id);
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
@@ -2536,7 +2584,10 @@ closeDeleteDiagnosisModal();
 await loadDiagnoses();
 await loadSpotlight();
 
-    alert('Diagnosis deleted successfully');
+    successMessage(
+'Diagnosis Deleted Successfully'
+);
+
 }
     
 async function loadDiagnoses(){
@@ -2547,7 +2598,7 @@ async function loadDiagnoses(){
         .order('name');
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
@@ -2745,7 +2796,9 @@ async function addDiagnosis(){
         .trim();
 
     if(!name){
-        alert('Enter diagnosis name');
+        warningMessage(
+'Enter diagnosis name'
+);
         return;
     }
 
@@ -2757,7 +2810,9 @@ async function addDiagnosis(){
     if(existing && existing.length > 0){
 
 
-        alert('Diagnosis already exists');
+        warningMessage(
+'Diagnosis already exists'
+);
 
         return;
     }
@@ -2769,7 +2824,7 @@ async function addDiagnosis(){
         });
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
@@ -2778,6 +2833,9 @@ async function addDiagnosis(){
 closeDiagnosisModal();
 
 await loadDiagnoses();
+ successMessage(
+    'Diagnosis Added Successfully'
+);
 }
 async function showFollowUpPatients(){
 
@@ -2787,7 +2845,7 @@ async function showFollowUpPatients(){
         .eq('needs_followup', true);
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
@@ -2928,7 +2986,7 @@ ${colors[1]}
         .not('diagnosis', 'ilike', 'explain');
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
@@ -3074,7 +3132,7 @@ ${colors[1]}
         .eq('diagnosis', diagnosis);
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
@@ -3221,9 +3279,18 @@ ${colors[1]}
 }
 async function deleteDiagnosis(id){
 
-    if(!confirm('Delete Diagnosis ?')){
-        return;
-    }
+    const result = await Swal.fire({
+    title:'Delete Diagnosis?',
+    text:'This action cannot be undone',
+    icon:'warning',
+    showCancelButton:true,
+    confirmButtonColor:'#dc3545',
+    confirmButtonText:'Delete'
+});
+
+if(!result.isConfirmed){
+    return;
+}
 
     const { error } = await client
         .from('diagnoses')
@@ -3231,7 +3298,7 @@ async function deleteDiagnosis(id){
         .eq('id', id);
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
@@ -3242,9 +3309,18 @@ await showAllPatients();
 }
 async function deletePatient(id){
 
-    if(!confirm('Delete this patient ?')){
-        return;
-    }
+    const result = await Swal.fire({
+    title:'Delete Patient?',
+    text:'This action cannot be undone',
+    icon:'warning',
+    showCancelButton:true,
+    confirmButtonColor:'#dc3545',
+    confirmButtonText:'Delete'
+});
+
+if(!result.isConfirmed){
+    return;
+}
 
     const { error } = await client
         .from('patients')
@@ -3252,11 +3328,14 @@ async function deletePatient(id){
         .eq('id', id);
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
-    alert('Patient deleted successfully');
+    successMessage(
+'Patient Deleted Successfully'
+);
+
 
 await showAllPatients();
 await refreshCounts();
@@ -3417,11 +3496,13 @@ document.getElementById(
         .eq('id', id);
 
     if(error){
-        alert(error.message);
+        errorMessage(error.message);
         return;
     }
 
-    alert('Patient updated');
+    successMessage(
+'Patient Updated Successfully'
+);
 
     closeEditPatientModal();
 
