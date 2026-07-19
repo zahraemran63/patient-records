@@ -773,7 +773,45 @@ button{
 
     transition:.35s;
 }
+#diagnosisSpotlight{
 
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background .35s ease;
+
+    cursor:pointer;
+}
+
+#diagnosisSpotlight:hover{
+
+    transform:
+    translateY(-4px)
+    scale(1.01);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.18);
+}
+ #diagnosisSpotlight:hover{
+
+    filter:brightness(1.03);
+}
+ #diagnosisSpotlight .spotlight-info,
+#diagnosisSpotlight .spotlight-icon{
+
+    transition:
+        transform .25s ease;
+}
+
+#diagnosisSpotlight:hover .spotlight-info{
+
+    transform:translateX(6px);
+}
+
+#diagnosisSpotlight:hover .spotlight-icon{
+
+    transform:scale(1.08);
+}
 .spotlight-info{
 
     z-index:2;
