@@ -1299,10 +1299,10 @@ type="date">
 
     const keyword =
         document
-            .getElementById('searchInput')
-            .value
-            .trim()
-            .toLowerCase();
+        .getElementById('searchInput')
+        .value
+        .trim()
+        .toLowerCase();
 
     const cards =
         document.querySelectorAll('.card');
@@ -1312,9 +1312,18 @@ type="date">
         const text =
             card.innerText.toLowerCase();
 
-        const date =
+        let date =
             (card.dataset.date || '')
             .toLowerCase();
+
+        if(date.includes('-')){
+
+            const parts =
+                date.split('-');
+
+            date =
+                `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
 
         card.style.display =
             text.includes(keyword) ||
@@ -1323,7 +1332,6 @@ type="date">
             : 'none';
 
     });
-
 }
 window.addEventListener('load', async () => {
 
