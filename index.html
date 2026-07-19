@@ -217,6 +217,83 @@ console.log('ExcelJS =', typeof ExcelJS);
     text-overflow:ellipsis;
     max-width:300px;
 }
+ .registry-header{
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+}
+
+.registry-header:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.12);
+}
+ .registry-icon,
+.registry-left h1,
+.registry-tag{
+
+    transition:
+        transform .3s ease;
+}
+
+.registry-header:hover .registry-icon{
+
+    transform:
+        translateY(-3px)
+        scale(1.05);
+}
+
+.registry-header:hover h1{
+
+    transform:translateX(6px);
+}
+
+.registry-header:hover .registry-tag{
+
+    transform:translateX(10px);
+}
+ .registry-header:hover .registry-icon{
+
+    transform:
+        translateY(-3px)
+        scale(1.08)
+        rotate(-3deg);
+}
+ .registry-header{
+    position:relative;
+    overflow:hidden;
+}
+
+.registry-header::after{
+
+    content:'';
+
+    position:absolute;
+
+    top:0;
+    left:-150%;
+
+    width:50%;
+    height:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.35),
+            transparent
+        );
+
+    transition:.8s;
+}
+
+.registry-header:hover::after{
+
+    left:150%;
+}
  .card:not(.followup-card){
     background:#f8fbff;
 }
