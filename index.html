@@ -213,8 +213,6 @@ console.log('ExcelJS =', typeof ExcelJS);
 
 .spotlight-diagnosis{
 
-    font-size:32px;
-
     font-weight:800;
 
     margin-top:10px;
@@ -225,7 +223,7 @@ console.log('ExcelJS =', typeof ExcelJS);
 
     text-overflow:ellipsis;
 
-    max-width:380px;
+    max-width:440px;
 }
  .registry-header{
 
@@ -891,14 +889,6 @@ button{
     letter-spacing:1px;
 }
 
-.spotlight-diagnosis{
-
-    font-size:38px;
-
-    font-weight:800;
-
-    margin-top:10px;
-}
 
 .spotlight-count{
     font-size:28px;
@@ -1562,7 +1552,19 @@ console.log(client);
     ${colors[0]},
     ${colors[1]}
     )`;
+let diagnosisSize = '38px';
 
+if(item.name.length > 18){
+    diagnosisSize = '32px';
+}
+
+if(item.name.length > 28){
+    diagnosisSize = '26px';
+}
+
+if(item.name.length > 40){
+    diagnosisSize = '22px';
+}
     card.innerHTML = `
     <div class="spotlight-info">
 
@@ -1570,9 +1572,12 @@ console.log(client);
         DIAGNOSIS OVERVIEW
         </div>
 
-        <div class="spotlight-diagnosis">
-        ${item.name}
-        </div>
+        <div
+class="spotlight-diagnosis"
+style="font-size:${diagnosisSize};"
+>
+${item.name}
+</div>
 
         <div class="spotlight-count">
         ${item.count} Patients
