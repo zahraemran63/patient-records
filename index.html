@@ -2569,7 +2569,10 @@ async function showFollowUpPatients(){
     container.innerHTML = '';
 
     data.forEach(patient => {
-
+const colors =
+    getDiagnosisColor(
+        patient.diagnosis
+    );
         container.innerHTML += `
 <div
 class="card followup-card"
@@ -2652,9 +2655,18 @@ title="Send WhatsApp">
 
         <div>
             🩺 <b>Diagnosis:</b><br>
-            <span class="diagnosis-badge">
-                ${patient.diagnosis}
-            </span>
+            <span
+class="diagnosis-badge"
+style="
+background:
+linear-gradient(
+135deg,
+${colors[0]},
+${colors[1]}
+);
+">
+    ${patient.diagnosis}
+</span>
         </div>
 
     </div>
@@ -2705,7 +2717,10 @@ title="Send WhatsApp">
     container.innerHTML = '';
 
     data.forEach(patient => {
-
+const colors =
+    getDiagnosisColor(
+        patient.diagnosis
+    );
         container.innerHTML += `
 <div
 class="card ${patient.needs_followup ? 'followup-card' : ''}"
@@ -2786,9 +2801,18 @@ title="Send WhatsApp">
 
         <div>
             🩺 <b>Diagnosis:</b><br>
-            <span class="diagnosis-badge">
-                ${patient.diagnosis}
-            </span>
+            <span
+class="diagnosis-badge"
+style="
+background:
+linear-gradient(
+135deg,
+${colors[0]},
+${colors[1]}
+);
+">
+    ${patient.diagnosis}
+</span>
         </div>
 
     </div>
@@ -2839,7 +2863,10 @@ title="Send WhatsApp">
     container.innerHTML = '';
 
     data.forEach(patient => {
-
+const colors =
+    getDiagnosisColor(
+        patient.diagnosis
+    );
         container.innerHTML += `
 <div
 class="card ${patient.needs_followup ? 'followup-card' : ''}"
@@ -2920,9 +2947,18 @@ title="Send WhatsApp">
 
 <div>
     🩺 <b>Diagnosis:</b><br>
-    <span class="diagnosis-badge">
-        ${patient.diagnosis}
-    </span>
+    <span
+class="diagnosis-badge"
+style="
+background:
+linear-gradient(
+135deg,
+${colors[0]},
+${colors[1]}
+);
+">
+    ${patient.diagnosis}
+</span>
 </div>
 
 </div>
