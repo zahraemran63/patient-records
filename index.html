@@ -1280,27 +1280,13 @@ type="date">
 }
  function setDateSearch(date){
 
-    const cards =
-        document.querySelectorAll('.card');
-
-    cards.forEach(card => {
-
-        const cardDate =
-            (card.dataset.date || '')
-            .trim();
-
-        card.style.display =
-            cardDate === date
-            ? ''
-            : 'none';
-
-    });
-
     document.getElementById(
         'searchInput'
     ).value = date;
+
+    searchPatients();
 }
-function searchPatients(){
+ function searchPatients(){
 
     const keyword =
         document
